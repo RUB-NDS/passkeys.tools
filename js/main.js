@@ -125,32 +125,30 @@ editors.assertionAuthenticatorDataDecEditor.on("change", () => {
 
 /* keys */
 
-const encodeKeys = () => {
+const encodeKeys = async () => {
     const data = editors.keysJwkEditor.getValue()
-    const b64url = encoders.keys(data, "cose", "b64url")
+    const b64url = await encoders.keys(data, "cose", "b64url")
     keysCoseB64urlTextarea.value = b64url
-    const hex = encoders.keys(data, "cose", "hex")
+    const hex = await encoders.keys(data, "cose", "hex")
     keysCoseHexTextarea.value = hex
+    const pem = await encoders.keys(data, "pem", "str")
+    keysPemStrTextarea.value = pem
 }
 
-const decodeKeys = () => {
-    const b64url = keysCoseB64urlTextarea.value
-    const data = decoders.keys(b64url, "cose", "b64url")
+keysCoseB64urlTextarea.oninput = async () => {
+    const data = await decoders.keys(keysCoseB64urlTextarea.value, "cose", "b64url")
     editors.keysJwkEditor.setValue(data)
-}
-
-keysCoseB64urlTextarea.oninput = () => {
-    keysCoseHexTextarea.value = b64urlToHex(keysCoseB64urlTextarea.value)
-    decodeKeys()
-}
-
-keysCoseHexTextarea.oninput = () => {
-    keysCoseB64urlTextarea.value = hexToB64url(keysCoseHexTextarea.value)
-    decodeKeys()
-}
-
-editors.keysJwkEditor.on("change", () => {
     encodeKeys()
+}
+
+keysCoseHexTextarea.oninput = async () => {
+    const data = await decoders.keys(keysCoseHexTextarea.value, "cose", "hex")
+    editors.keysJwkEditor.setValue(data)
+    encodeKeys()
+}
+
+editors.keysJwkEditor.on("change", async () => {
+    await encodeKeys()
 })
 
 /* converters */

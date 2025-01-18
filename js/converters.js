@@ -98,3 +98,24 @@ export const jwkToCose = (jwk) => {
     const cose = cosekey.KeyParser.jwk2cose(jwkUint8)
     return cose
 }
+
+export const jwkToPem = async (jwk) => {
+    const jwkB64url = {...jwk}
+    for (const k in jwkB64url) {
+        if (typeof jwkB64url[k] === "string" && jwkB64url[k].startsWith("0x")) {
+            jwkB64url[k] = hexToB64url(jwkB64url[k].slice(2))
+        }
+    }
+    const pem = await cosekey.KeyParser.jwk2pem({...jwkB64url, "ext": true})
+    return pem
+}
+
+export const pemToJwk = async (pem) => {
+    const jwk = await cosekey.KeyParser.pem2jwk(pem)
+    for (const k in jwk) {
+        if (jwk[k] instanceof Uint8Array) {
+            jwk[k] = "0x" + uint8ToHex(jwk[k])
+        }
+    }
+    return jwk
+}

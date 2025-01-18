@@ -1,5 +1,5 @@
 import { decode as decodeCbor, decodeFirst } from "cborg"
-import { b64urlToStr, hexToStr, b64urlToUint8, uint8ToHex, uint8ToInt, hexToUint8, coseToJwk } from "./converters.js"
+import { b64urlToStr, hexToStr, b64urlToUint8, uint8ToHex, uint8ToInt, hexToUint8, coseToJwk, pemToJwk } from "./converters.js"
 
 export const clientDataJSON = (data, codec) => {
     if (codec == "b64url") {
@@ -167,7 +167,7 @@ export const authenticatorData = (data, codec) => {
     return authenticatorData
 }
 
-export const keys = (data, format, codec) => {
+export const keys = async (data, format, codec) => {
     if (format == "cose" && codec == "b64url") {
         const uint8 = b64urlToUint8(data)
         const cbor = decodeCbor(uint8, {useMaps: true})
@@ -178,7 +178,11 @@ export const keys = (data, format, codec) => {
         const cbor = decodeCbor(uint8, {useMaps: true})
         const jwk = coseToJwk(cbor)
         return jwk
-    } else {
+    } else if (format == "pem" && codec == "str") {
+        // TODO: TypeError: crypto.createPublicKey is not a function
+        const jwk = await pemToJwk(data)
+        return jwk
+    } {
         throw new Error(`Unsupported format and codec: ${format}, ${codec}`)
     }
 }

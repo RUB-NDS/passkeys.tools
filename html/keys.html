@@ -6,8 +6,8 @@
 
 <div class="row mb-3">
     <div class="col-md-6">
-        <div class="d-flex flex-column justify-content-between half-height">
-            <div class="card mb-3 quarter-height">
+        <div class="d-flex flex-column justify-content-between full-height">
+            <div class="card mb-3 one-third-height">
                 <div class="card-header">
                     <i class="bi bi-code-square"></i> COSE <span class="ms-1 small-gray">B64URL</span>
                 </div>
@@ -15,7 +15,7 @@
                     <textarea class="form-control border-0" id="keysCoseB64urlTextarea"></textarea>
                 </div>
             </div>
-            <div class="card quarter-height">
+            <div class="card mb-3 one-third-height">
                 <div class="card-header">
                     <i class="bi bi-code-square"></i> COSE <span class="ms-1 small-gray">HEX</span>
                 </div>
@@ -23,10 +23,18 @@
                     <textarea class="form-control border-0" id="keysCoseHexTextarea"></textarea>
                 </div>
             </div>
+            <div class="card one-third-height">
+                <div class="card-header">
+                    <i class="bi bi-code-square"></i> PEM <span class="ms-1 small-gray">STR</span>
+                </div>
+                <div class="card-body p-0">
+                    <textarea class="form-control border-0" id="keysPemStrTextarea" disabled></textarea>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="card half-height">
+        <div class="card full-height">
             <div class="card-header">
                 <i class="bi bi-pencil-square"></i> JWK <span class="ms-1 small-gray">JSON</span>
             </div>
