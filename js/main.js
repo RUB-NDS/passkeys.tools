@@ -1,7 +1,7 @@
 import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
 import * as decoders from "./decoders.js"
-import { b64urlToHex, hexToB64url } from "./converters.js"
+import { b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr } from "./converters.js"
 
 /* attestation -> clientDataJSON */
 
@@ -152,3 +152,20 @@ keysCoseHexTextarea.oninput = () => {
 editors.keysJwkEditor.on("change", () => {
     encodeKeys()
 })
+
+/* converters */
+
+convertersStrTextarea.oninput = () => {
+    convertersHexTextarea.value = strToHex(convertersStrTextarea.value)
+    convertersB64urlTextarea.value = strToB64url(convertersStrTextarea.value)
+}
+
+convertersB64urlTextarea.oninput = () => {
+    convertersStrTextarea.value = b64urlToStr(convertersB64urlTextarea.value)
+    convertersHexTextarea.value = b64urlToHex(convertersB64urlTextarea.value)
+}
+
+convertersHexTextarea.oninput = () => {
+    convertersStrTextarea.value = hexToStr(convertersHexTextarea.value)
+    convertersB64urlTextarea.value = hexToB64url(convertersHexTextarea.value)
+}
