@@ -166,3 +166,19 @@ export const authenticatorData = (data, codec) => {
 
     return authenticatorData
 }
+
+export const keys = (data, format, codec) => {
+    if (format == "cose" && codec == "b64url") {
+        const uint8 = b64urlToUint8(data)
+        const cbor = decodeCbor(uint8, {useMaps: true})
+        const jwk = coseToJwk(cbor)
+        return jwk
+    } else if (format == "cose" && codec == "hex") {
+        const uint8 = hexToUint8(data)
+        const cbor = decodeCbor(uint8, {useMaps: true})
+        const jwk = coseToJwk(cbor)
+        return jwk
+    } else {
+        throw new Error(`Unsupported format and codec: ${format}, ${codec}`)
+    }
+}

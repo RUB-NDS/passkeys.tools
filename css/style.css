@@ -17,9 +17,17 @@ textarea {
 }
 
 .full-height {
-    height: 800px;
+    height: 900px;
 }
 
 .half-height {
-    height: 400px;
+    height: 450px;
+}
+
+.one-third-height {
+    height: 300px;
+}
+
+.quarter-height {
+    height: 225px;
 }

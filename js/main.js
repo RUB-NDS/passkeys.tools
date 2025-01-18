@@ -122,3 +122,33 @@ assertionAuthenticatorDataEncHexTextarea.oninput = () => {
 editors.assertionAuthenticatorDataDecEditor.on("change", () => {
     encodeAssertionAuthenticatorData()
 })
+
+/* keys */
+
+const encodeKeys = () => {
+    const data = editors.keysJwkEditor.getValue()
+    const b64url = encoders.keys(data, "cose", "b64url")
+    keysCoseB64urlTextarea.value = b64url
+    const hex = encoders.keys(data, "cose", "hex")
+    keysCoseHexTextarea.value = hex
+}
+
+const decodeKeys = () => {
+    const b64url = keysCoseB64urlTextarea.value
+    const data = decoders.keys(b64url, "cose", "b64url")
+    editors.keysJwkEditor.setValue(data)
+}
+
+keysCoseB64urlTextarea.oninput = () => {
+    keysCoseHexTextarea.value = b64urlToHex(keysCoseB64urlTextarea.value)
+    decodeKeys()
+}
+
+keysCoseHexTextarea.oninput = () => {
+    keysCoseB64urlTextarea.value = hexToB64url(keysCoseHexTextarea.value)
+    decodeKeys()
+}
+
+editors.keysJwkEditor.on("change", () => {
+    encodeKeys()
+})

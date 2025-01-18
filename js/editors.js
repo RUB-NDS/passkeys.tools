@@ -1,4 +1,4 @@
-import { attestationObjectSchema, authenticatorDataSchema, clientDataJSONSchema } from "./schemas.js"
+import { attestationObjectSchema, authenticatorDataSchema, clientDataJSONSchema, jwkSchema } from "./schemas.js"
 
 const config = {
     theme: "bootstrap5",
@@ -31,4 +31,10 @@ export const assertionAuthenticatorDataDecEditor = new JSONEditor(assertionAuthe
     ...config,
     form_name_root: "authenticatorData",
     schema: authenticatorDataSchema,
+})
+
+export const keysJwkEditor = new JSONEditor(keysJwkCard, {
+    ...config,
+    form_name_root: "jwk",
+    schema: jwkSchema,
 })

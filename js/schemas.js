@@ -200,3 +200,11 @@ export const attestationObjectSchema = {
         }
     ]
 }
+
+// https://datatracker.ietf.org/doc/html/rfc7517
+export const jwkSchema = {
+    "type": "object",
+    "required": true,
+    "additionalProperties": true,
+    "properties": {}
+}
