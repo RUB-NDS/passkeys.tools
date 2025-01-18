@@ -13,20 +13,16 @@ const encodeAttestationClientDataJSON = () => {
     attestationClientDataJSONEncHexTextarea.value = hex
 }
 
-const decodeAttestationClientDataJSON = () => {
-    const b64url = attestationClientDataJSONEncB64urlTextarea.value
-    const data = decoders.clientDataJSON(b64url, "b64url")
-    editors.attestationClientDataJSONDecEditor.setValue(data)
-}
-
 attestationClientDataJSONEncB64urlTextarea.oninput = () => {
-    attestationClientDataJSONEncHexTextarea.value = b64urlToHex(attestationClientDataJSONEncB64urlTextarea.value)
-    decodeAttestationClientDataJSON()
+    const data = decoders.clientDataJSON(attestationClientDataJSONEncB64urlTextarea.value, "b64url")
+    editors.attestationClientDataJSONDecEditor.setValue(data)
+    encodeAttestationClientDataJSON()
 }
 
 attestationClientDataJSONEncHexTextarea.oninput = () => {
-    attestationClientDataJSONEncB64urlTextarea.value = hexToB64url(attestationClientDataJSONEncHexTextarea.value)
-    decodeAttestationClientDataJSON()
+    const data = decoders.clientDataJSON(attestationClientDataJSONEncHexTextarea.value, "hex")
+    editors.attestationClientDataJSONDecEditor.setValue(data)
+    encodeAttestationClientDataJSON()
 }
 
 editors.attestationClientDataJSONDecEditor.on("change", () => {
@@ -43,20 +39,16 @@ const encodeAttestationAttestationObject = () => {
     attestationAttestationObjectEncHexTextarea.value = hex
 }
 
-const decodeAttestationAttestationObject = () => {
-    const b64url = attestationAttestationObjectEncB64urlTextarea.value
-    const data = decoders.attestationObject(b64url, "b64url")
-    editors.attestationAttestationObjectDecEditor.setValue(data)
-}
-
 attestationAttestationObjectEncB64urlTextarea.oninput = () => {
-    attestationAttestationObjectEncHexTextarea.value = b64urlToHex(attestationAttestationObjectEncB64urlTextarea.value)
-    decodeAttestationAttestationObject()
+    const data = decoders.attestationObject(attestationAttestationObjectEncB64urlTextarea.value, "b64url")
+    editors.attestationAttestationObjectDecEditor.setValue(data)
+    encodeAttestationAttestationObject()
 }
 
 attestationAttestationObjectEncHexTextarea.oninput = () => {
-    attestationAttestationObjectEncB64urlTextarea.value = hexToB64url(attestationAttestationObjectEncHexTextarea.value)
-    decodeAttestationAttestationObject()
+    const data = decoders.attestationObject(attestationAttestationObjectEncHexTextarea.value, "hex")
+    editors.attestationAttestationObjectDecEditor.setValue(data)
+    encodeAttestationAttestationObject()
 }
 
 editors.attestationAttestationObjectDecEditor.on("change", () => {
@@ -73,20 +65,16 @@ const encodeAssertionClientDataJSON = () => {
     assertionClientDataJSONEncHexTextarea.value = hex
 }
 
-const decodeAssertionClientDataJSON = () => {
-    const b64url = assertionClientDataJSONEncB64urlTextarea.value
-    const data = decoders.clientDataJSON(b64url, "b64url")
-    editors.assertionClientDataJSONDecEditor.setValue(data)
-}
-
 assertionClientDataJSONEncB64urlTextarea.oninput = () => {
-    assertionClientDataJSONEncHexTextarea.value = b64urlToHex(assertionClientDataJSONEncB64urlTextarea.value)
-    decodeAssertionClientDataJSON()
+    const data = decoders.clientDataJSON(assertionClientDataJSONEncB64urlTextarea.value, "b64url")
+    editors.assertionClientDataJSONDecEditor.setValue(data)
+    encodeAssertionClientDataJSON()
 }
 
 assertionClientDataJSONEncHexTextarea.oninput = () => {
-    assertionClientDataJSONEncB64urlTextarea.value = hexToB64url(assertionClientDataJSONEncHexTextarea.value)
-    decodeAssertionClientDataJSON()
+    const data = decoders.clientDataJSON(assertionClientDataJSONEncHexTextarea.value, "hex")
+    editors.assertionClientDataJSONDecEditor.setValue(data)
+    encodeAssertionClientDataJSON()
 }
 
 editors.assertionClientDataJSONDecEditor.on("change", () => {
@@ -103,20 +91,16 @@ const encodeAssertionAuthenticatorData = () => {
     assertionAuthenticatorDataEncHexTextarea.value = hex
 }
 
-const decodeAssertionAuthenticatorData = () => {
-    const b64url = assertionAuthenticatorDataEncB64urlTextarea.value
-    const data = decoders.authenticatorData(b64url, "b64url")
-    editors.assertionAuthenticatorDataDecEditor.setValue(data)
-}
-
 assertionAuthenticatorDataEncB64urlTextarea.oninput = () => {
-    assertionAuthenticatorDataEncHexTextarea.value = b64urlToHex(assertionAuthenticatorDataEncB64urlTextarea.value)
-    decodeAssertionAuthenticatorData()
+    const data = decoders.authenticatorData(assertionAuthenticatorDataEncB64urlTextarea.value, "b64url")
+    editors.assertionAuthenticatorDataDecEditor.setValue(data)
+    encodeAssertionAuthenticatorData()
 }
 
 assertionAuthenticatorDataEncHexTextarea.oninput = () => {
-    assertionAuthenticatorDataEncB64urlTextarea.value = hexToB64url(assertionAuthenticatorDataEncHexTextarea.value)
-    decodeAssertionAuthenticatorData()
+    const data = decoders.authenticatorData(assertionAuthenticatorDataEncHexTextarea.value, "hex")
+    editors.assertionAuthenticatorDataDecEditor.setValue(data)
+    encodeAssertionAuthenticatorData()
 }
 
 editors.assertionAuthenticatorDataDecEditor.on("change", () => {
