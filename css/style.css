@@ -1,0 +1,25 @@
+textarea {
+    height: 100%;
+    resize: none;
+}
+
+.card-body {
+    overflow: auto;
+}
+
+.small-scaps {
+    font-variant: small-caps;
+}
+
+.small-gray {
+    font-size: small;
+    color: gray;
+}
+
+.full-height {
+    height: 800px;
+}
+
+.half-height {
+    height: 400px;
+}

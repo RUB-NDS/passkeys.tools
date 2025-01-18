@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebAuthn Debugger</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <include src="html/nav.html"></include>
+
+    <div class="container">
+
+        <div class="row mb-3">
+            <div class="col my-3 bg-light rounded-3 text-center p-3">
+                <img src="FIDO_Passkey_mark_B_black.svg" width="150px">
+                <h1 class="small-caps">WebAuthn Debugger</h1>
+                <h3>This site allows you to encode, decode, verify, and generate WebAuthn attestations and assertions.</h3>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col">
+                <div class="d-flex justify-content-center mb-3">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="attestation-tab" data-bs-toggle="tab" data-bs-target="#attestation-tab-pane" type="button">
+                                <i class="bi bi-person-plus-fill"></i> Attestation
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="assertion-tab" data-bs-toggle="tab" data-bs-target="#assertion-tab-pane" type="button">
+                                <i class="bi bi-person-badge-fill"></i> Assertion
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="keys-tab" data-bs-toggle="tab" data-bs-target="#keys-tab-pane" type="button">
+                                <i class="bi bi-key"></i> Keys
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="attestation-tab-pane" tabindex="0">
+                        <include src="html/attestation.html"></include>
+                    </div>
+                    <div class="tab-pane fade" id="assertion-tab-pane" tabindex="0">
+                        <include src="html/assertion.html"></include>
+                    </div>
+                    <div class="tab-pane fade" id="keys-tab-pane" tabindex="0">
+                        <include src="html/keys.html"></include>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
+    <script type="module" src="/js/main.js"></script>
+
+</body>
+</html>
