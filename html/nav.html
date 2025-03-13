@@ -1,6 +1,7 @@
 <nav class="navbar navbar-expand-md navbar-light bg-light mb-3">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">
+            <img class="d-inline-block align-top" width="30" height="30" src="FIDO_Passkey_mark_B_black.svg">
             <span class="small-caps">WebAuthn Debugger</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
@@ -9,7 +10,12 @@
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="nav nav-pills me-auto">
                 <li class="nav-item">
-                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#attestation-tab-pane">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#info-tab-pane">
+                        <i class="bi bi-info-circle"></i> Info
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#attestation-tab-pane">
                         <i class="bi bi-person-plus-fill"></i> Attestation
                     </button>
                 </li>

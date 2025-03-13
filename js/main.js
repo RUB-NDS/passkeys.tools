@@ -2,6 +2,7 @@ import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
 import * as decoders from "./decoders.js"
 import { examples } from "./examples.js"
+import { algs, getKey, storeKey, generateKey, deleteKey, renderKeysTable } from "./keys.js"
 import { b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr } from "./converters.js"
 
 /* attestation -> clientDataJSON */
@@ -135,6 +136,45 @@ keysCoseHexTextarea.oninput = async () => {
 editors.keysJwkEditor.on("change", async () => {
     await encodeKeys()
 })
+
+renderKeysTable()
+
+algs.forEach(alg => {
+    const option = document.createElement("option")
+    option.value = alg
+    option.text = alg
+    generateKeyAlgSelect.appendChild(option)
+})
+
+loadKeyBtn.onclick = async () => {
+    const id = loadKeyIdInput.value
+    const type = loadKeyTypeSelect.value
+    const key = getKey(id)[type] || {}
+    editors.keysJwkEditor.setValue(key)
+    encodeKeys()
+}
+
+storeKeyBtn.onclick = () => {
+    const id = storeKeyIdInput.value
+    const type = storeKeyTypeSelect.value
+    const key = editors.keysJwkEditor.getValue()
+    storeKey(id, { [type]:  key })
+    renderKeysTable()
+}
+
+generateKeyBtn.onclick = async () => {
+    const id = generateKeyIdInput.value
+    const alg = generateKeyAlgSelect.value
+    const { publicKey, privateKey } = await generateKey(alg)
+    storeKey(id, { publicKey, privateKey })
+    renderKeysTable()
+}
+
+deleteKeyBtn.onclick = () => {
+    const id = deleteKeyIdInput.value
+    deleteKey(id)
+    renderKeysTable()
+}
 
 /* converters */
 

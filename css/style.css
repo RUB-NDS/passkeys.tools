@@ -31,3 +31,24 @@ textarea {
 .quarter-height {
     height: 225px;
 }
+
+.keys-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.keys-table th:nth-child(1),
+.keys-table td:nth-child(1) {
+    width: 20%;
+    white-space: nowrap;
+    overflow: auto;
+}
+
+.keys-table th:nth-child(2),
+.keys-table td:nth-child(2),
+.keys-table th:nth-child(3),
+.keys-table td:nth-child(3) {
+    width: 40%;
+    white-space: nowrap;
+    overflow: auto;
+}

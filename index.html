@@ -15,17 +15,12 @@
     <div class="container">
 
         <div class="row mb-3">
-            <div class="col my-3 bg-light rounded-3 text-center p-3">
-                <img src="FIDO_Passkey_mark_B_black.svg" width="150px">
-                <h1 class="small-caps">WebAuthn Debugger</h1>
-                <h3>This site allows you to encode, decode, generate, and verify WebAuthn attestations and assertions.</h3>
-            </div>
-        </div>
-
-        <div class="row mb-3">
             <div class="col">
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="attestation-tab-pane" tabindex="0">
+                    <div class="tab-pane fade show active" id="info-tab-pane" tabindex="0">
+                        <include src="html/info.html"></include>
+                    </div>
+                    <div class="tab-pane" id="attestation-tab-pane" tabindex="0">
                         <include src="html/attestation.html"></include>
                     </div>
                     <div class="tab-pane fade" id="assertion-tab-pane" tabindex="0">

@@ -1,3 +1,9 @@
+<div class="row">
+    <div class="col text-center">
+        <h1>Key Parser</h1>
+    </div>
+</div>
+
 <div class="row mb-3">
     <div class="col-md-6">
         <div class="d-flex flex-column justify-content-between full-height">
@@ -35,5 +41,68 @@
             <div class="card-body" id="keysJwkCard">
             </div>
         </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col text-center">
+        <h1>Key Storage</h1>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <p>
+            <div class="input-group">
+                <span class="input-group-text">Load Key</span>
+                <input type="text" class="form-control" id="loadKeyIdInput" placeholder="ID" style="max-width: 200px;">
+                <select class="form-select" id="loadKeyTypeSelect" style="max-width: 200px;">
+                    <option value="publicKey" selected>Public Key</option>
+                    <option value="privateKey">Private Key</option>
+                </select>
+                <button class="btn btn-primary" id="loadKeyBtn">Load</button>
+            </div>
+        </p>
+        <p>
+            <div class="input-group">
+                <span class="input-group-text">Store Key</span>
+                <input type="text" class="form-control" id="storeKeyIdInput" placeholder="ID" style="max-width: 200px;">
+                <select class="form-select" id="storeKeyTypeSelect" style="max-width: 200px;">
+                    <option value="publicKey" selected>Public Key</option>
+                    <option value="privateKey">Private Key</option>
+                </select>
+                <button class="btn btn-primary" id="storeKeyBtn">Store</button>
+            </div>
+        </p>
+        <p>
+            <div class="input-group">
+                <span class="input-group-text">Generate Key</span>
+                <input type="text" class="form-control" id="generateKeyIdInput" placeholder="ID" style="max-width: 200px;">
+                <select class="form-select" id="generateKeyAlgSelect" style="max-width: 200px;"></select>
+                <button class="btn btn-primary" id="generateKeyBtn">Generate</button>
+            </div>
+        </p>
+        <p>
+            <div class="input-group">
+                <span class="input-group-text">Delete Key</span>
+                <input type="text" class="form-control" id="deleteKeyIdInput" placeholder="ID" style="max-width: 200px;">
+                <button class="btn btn-danger" id="deleteKeyBtn">Delete</button>
+            </div>
+        </p>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <table class="table table-striped keys-table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Public Key</th>
+                    <th scope="col">Private Key</th>
+                </tr>
+            </thead>
+            <tbody id="keyTable"></tbody>
+        </table>
     </div>
 </div>
