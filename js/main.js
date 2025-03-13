@@ -1,6 +1,7 @@
 import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
 import * as decoders from "./decoders.js"
+import { examples } from "./examples.js"
 import { b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr } from "./converters.js"
 
 /* attestation -> clientDataJSON */
@@ -150,4 +151,25 @@ convertersB64urlTextarea.oninput = () => {
 convertersHexTextarea.oninput = () => {
     convertersStrTextarea.value = hexToStr(convertersHexTextarea.value)
     convertersB64urlTextarea.value = hexToB64url(convertersHexTextarea.value)
+}
+
+/* examples */
+
+for (const key of Object.keys(examples)) {
+    const option = document.createElement("option")
+    option.value = key
+    option.text = key
+    examplesSelect.appendChild(option)
+}
+
+examplesLoadBtn.onclick = () => {
+    const example = examples[examplesSelect.value]
+    attestationClientDataJSONEncHexTextarea.value = example.attestation.clientDataJSON
+    attestationClientDataJSONEncHexTextarea.dispatchEvent(new Event("input"))
+    attestationAttestationObjectEncHexTextarea.value = example.attestation.attestationObject
+    attestationAttestationObjectEncHexTextarea.dispatchEvent(new Event("input"))
+    assertionClientDataJSONEncHexTextarea.value = example.assertion.clientDataJSON
+    assertionClientDataJSONEncHexTextarea.dispatchEvent(new Event("input"))
+    assertionAuthenticatorDataEncHexTextarea.value = example.assertion.authenticatorData
+    assertionAuthenticatorDataEncHexTextarea.dispatchEvent(new Event("input"))
 }
