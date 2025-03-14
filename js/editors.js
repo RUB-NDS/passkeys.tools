@@ -6,7 +6,7 @@ const config = {
     disable_collapse: true,
     remove_button_labels: true,
     no_additional_properties: true,
-    required_by_default: true,
+    required_by_default: false,
 }
 
 export const attestationClientDataJSONDecEditor = new JSONEditor(attestationClientDataJSONDecCard, {
@@ -35,7 +35,6 @@ export const assertionAuthenticatorDataDecEditor = new JSONEditor(assertionAuthe
 
 export const keysJwkEditor = new JSONEditor(keysJwkCard, {
     ...config,
-    required_by_default: false,
     form_name_root: "jwk",
     schema: jwkSchema,
 })

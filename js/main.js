@@ -2,33 +2,36 @@ import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
 import * as decoders from "./decoders.js"
 import { examples } from "./examples.js"
+import { verifyAssertion, signAssertion } from "./signatures.js"
 import { algs, getKey, storeKey, generateKey, deleteKey, renderKeysTable } from "./keys.js"
-import { b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr } from "./converters.js"
+import { b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr, uint8ToHex, strSha256Uint8 } from "./converters.js"
 
 /* attestation -> clientDataJSON */
 
-const encodeAttestationClientDataJSON = () => {
+const encodeAttestationClientDataJSON = async () => {
     const data = editors.attestationClientDataJSONDecEditor.getValue()
     const b64url = encoders.clientDataJSON(data, "b64url")
     attestationClientDataJSONEncB64urlTextarea.value = b64url
     const hex = encoders.clientDataJSON(data, "hex")
     attestationClientDataJSONEncHexTextarea.value = hex
+    const hash = uint8ToHex(await strSha256Uint8(JSON.stringify(data)))
+    attestationClientDataJSONHashHexTextarea.value = hash
 }
 
-attestationClientDataJSONEncB64urlTextarea.oninput = () => {
+attestationClientDataJSONEncB64urlTextarea.oninput = async () => {
     const data = decoders.clientDataJSON(attestationClientDataJSONEncB64urlTextarea.value, "b64url")
     editors.attestationClientDataJSONDecEditor.setValue(data)
-    encodeAttestationClientDataJSON()
+    await encodeAttestationClientDataJSON()
 }
 
-attestationClientDataJSONEncHexTextarea.oninput = () => {
+attestationClientDataJSONEncHexTextarea.oninput = async () => {
     const data = decoders.clientDataJSON(attestationClientDataJSONEncHexTextarea.value, "hex")
     editors.attestationClientDataJSONDecEditor.setValue(data)
-    encodeAttestationClientDataJSON()
+    await encodeAttestationClientDataJSON()
 }
 
-editors.attestationClientDataJSONDecEditor.on("change", () => {
-    encodeAttestationClientDataJSON()
+editors.attestationClientDataJSONDecEditor.on("change", async () => {
+    await encodeAttestationClientDataJSON()
 })
 
 /* attestation -> attestationObject */
@@ -59,28 +62,30 @@ editors.attestationAttestationObjectDecEditor.on("change", () => {
 
 /* assertion -> clientDataJSON */
 
-const encodeAssertionClientDataJSON = () => {
+const encodeAssertionClientDataJSON = async () => {
     const data = editors.assertionClientDataJSONDecEditor.getValue()
     const b64url = encoders.clientDataJSON(data, "b64url")
     assertionClientDataJSONEncB64urlTextarea.value = b64url
     const hex = encoders.clientDataJSON(data, "hex")
     assertionClientDataJSONEncHexTextarea.value = hex
+    const hash = uint8ToHex(await strSha256Uint8(JSON.stringify(data)))
+    assertionClientDataJSONHashHexTextarea.value = hash
 }
 
-assertionClientDataJSONEncB64urlTextarea.oninput = () => {
+assertionClientDataJSONEncB64urlTextarea.oninput = async () => {
     const data = decoders.clientDataJSON(assertionClientDataJSONEncB64urlTextarea.value, "b64url")
     editors.assertionClientDataJSONDecEditor.setValue(data)
-    encodeAssertionClientDataJSON()
+    await encodeAssertionClientDataJSON()
 }
 
-assertionClientDataJSONEncHexTextarea.oninput = () => {
+assertionClientDataJSONEncHexTextarea.oninput = async () => {
     const data = decoders.clientDataJSON(assertionClientDataJSONEncHexTextarea.value, "hex")
     editors.assertionClientDataJSONDecEditor.setValue(data)
-    encodeAssertionClientDataJSON()
+    await encodeAssertionClientDataJSON()
 }
 
-editors.assertionClientDataJSONDecEditor.on("change", () => {
-    encodeAssertionClientDataJSON()
+editors.assertionClientDataJSONDecEditor.on("change", async () => {
+    await encodeAssertionClientDataJSON()
 })
 
 /* assertion -> authenticatorData */
@@ -108,6 +113,49 @@ assertionAuthenticatorDataEncHexTextarea.oninput = () => {
 editors.assertionAuthenticatorDataDecEditor.on("change", () => {
     encodeAssertionAuthenticatorData()
 })
+
+/* assertion -> signature */
+
+assertionSignatureEncB64urlTextarea.oninput = () => {
+    const b64url = assertionSignatureEncB64urlTextarea.value
+    const hex = b64urlToHex(b64url)
+    assertionSignatureEncHexTextarea.value = hex
+}
+
+assertionSignatureEncHexTextarea.oninput = () => {
+    const hex = assertionSignatureEncHexTextarea.value
+    const b64url = hexToB64url(hex)
+    assertionSignatureEncB64urlTextarea.value = b64url
+}
+
+verifyAssertionWithAttestationKeyBtn.onclick = async () => {
+    const clientDataHash = assertionClientDataJSONHashHexTextarea.value
+    const authenticatorData = assertionAuthenticatorDataEncHexTextarea.value
+    const signature = assertionSignatureEncHexTextarea.value
+    const jwk = editors.attestationAttestationObjectDecEditor.getValue().authData.attestedCredentialData.credentialPublicKey
+    const valid = await verifyAssertion(clientDataHash, authenticatorData, signature, jwk)
+    alert(valid)
+}
+
+verifyAssertionWithStoredKeyBtn.onclick = async () => {
+    const clientDataHash = assertionClientDataJSONHashHexTextarea.value
+    const authenticatorData = assertionAuthenticatorDataEncHexTextarea.value
+    const signature = assertionSignatureEncHexTextarea.value
+    const id = verifyAssertionWithStoredKeyInput.value
+    const jwk = getKey(id).publicKey
+    const valid = await verifyAssertion(clientDataHash, authenticatorData, signature, jwk)
+    alert(valid)
+}
+
+signAssertionWithStoredKeyBtn.onclick = async () => {
+    const clientDataHash = assertionClientDataJSONHashHexTextarea.value
+    const authenticatorData = assertionAuthenticatorDataEncHexTextarea.value
+    const id = signAssertionWithStoredKeyInput.value
+    const jwk = getKey(id).privateKey
+    const signature = await signAssertion(clientDataHash, authenticatorData, jwk)
+    assertionSignatureEncHexTextarea.value = uint8ToHex(signature)
+    assertionSignatureEncHexTextarea.dispatchEvent(new Event("input"))
+}
 
 /* keys */
 
@@ -212,4 +260,6 @@ examplesLoadBtn.onclick = () => {
     assertionClientDataJSONEncHexTextarea.dispatchEvent(new Event("input"))
     assertionAuthenticatorDataEncHexTextarea.value = example.assertion.authenticatorData
     assertionAuthenticatorDataEncHexTextarea.dispatchEvent(new Event("input"))
+    assertionSignatureEncHexTextarea.value = example.assertion.signature
+    assertionSignatureEncHexTextarea.dispatchEvent(new Event("input"))
 }

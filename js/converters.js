@@ -78,44 +78,89 @@ export const intToHex = (int, octets) => {
     return hex
 }
 
-export const coseToJwk = (cose) => {
-    const jwt = cosekey.KeyParser.cose2jwk(cose)
-    for (const k in jwt) {
-        if (jwt[k] instanceof Uint8Array) {
-            jwt[k] = "0x" + uint8ToHex(jwt[k])
+export const uint8MapToBufferMap = (uint8Map) => {
+    const bufferMap = new Map()
+    for (const [k, v] of uint8Map.entries()) {
+        if (v instanceof Uint8Array) {
+            bufferMap.set(k, Buffer.from(v))
+        } else {
+            bufferMap.set(k, v)
         }
     }
-    return jwt
+    return bufferMap
+}
+
+export const coseToJwk = (cose) => {
+    const map = uint8MapToBufferMap(cose)
+    const jwk = cosekey.KeyParser.cose2jwk(map)
+    return jwk
 }
 
 export const jwkToCose = (jwk) => {
-    const jwkUint8 = {...jwk}
-    for (const k in jwkUint8) {
-        if (typeof jwkUint8[k] === "string" && jwkUint8[k].startsWith("0x")) {
-            jwkUint8[k] = hexToUint8(jwkUint8[k].slice(2))
-        }
-    }
-    const cose = cosekey.KeyParser.jwk2cose(jwkUint8)
+    const cose = cosekey.KeyParser.jwk2cose(jwk)
     return cose
 }
 
 export const jwkToPem = async (jwk) => {
-    const jwkB64url = {...jwk}
-    for (const k in jwkB64url) {
-        if (typeof jwkB64url[k] === "string" && jwkB64url[k].startsWith("0x")) {
-            jwkB64url[k] = hexToB64url(jwkB64url[k].slice(2))
-        }
-    }
-    const pem = await cosekey.KeyParser.jwk2pem({...jwkB64url, "ext": true})
+    const pem = await cosekey.KeyParser.jwk2pem({...jwk, "ext": true})
     return pem
 }
 
 export const pemToJwk = async (pem) => {
     const jwk = await cosekey.KeyParser.pem2jwk(pem)
-    for (const k in jwk) {
-        if (jwk[k] instanceof Uint8Array) {
-            jwk[k] = "0x" + uint8ToHex(jwk[k])
-        }
-    }
     return jwk
+}
+
+export const jwkToCryptoKey = async (jwk, usage) => {
+    const rsaHashAlgorithms = {
+        "RS256": "SHA-256", "PS256": "SHA-256",
+        "RS384": "SHA-384", "PS384": "SHA-384",
+        "RS512": "SHA-512", "PS512": "SHA-512",
+    }
+
+    let algorithm
+    if (jwk.kty === "RSA") {
+        const hash = rsaHashAlgorithms[jwk.alg]
+        if (!hash) {
+            throw new Error(`Invalid hash algorithm for jwk: ${jwk}`)
+        }
+        algorithm = {
+            name: jwk.alg.startsWith("PS") ? "RSA-PSS" : "RSASSA-PKCS1-v1_5", // RSASSA-PKCS1-v1_5, RSA-PSS, or RSA-OAEP
+            hash: { name: hash } // SHA-256, SHA-384, or SHA-512
+        }
+    } else if (jwk.kty === "EC") {
+        algorithm = {
+            name: "ECDSA", // ECDSA or ECDH
+            namedCurve: jwk.crv // P-256, P-384, P-521
+        }
+    } else if (jwk.kty === "OKP" && jwk.crv === "Ed25519") {
+        algorithm = {
+            name: "Ed25519"
+        }
+    } else {
+        throw new Error(`Invalid key type: ${jwk.kty}`)
+    }
+
+    const key = await window.crypto.subtle.importKey(
+        "jwk", // JSON Web Key format
+        jwk, // JSONWebKey object
+        algorithm,
+        true, // extractable
+        [usage] // keyUsages: sign, verify
+    )
+
+    return key
+}
+
+export const strSha256Uint8 = async (str) => {
+    const msg = new TextEncoder().encode(str)
+    const hash = await window.crypto.subtle.digest("SHA-256", msg)
+    return new Uint8Array(hash)
+}
+
+export const concatUint8 = (buff1, buff2) => {
+    const buff = new Uint8Array(buff1.length + buff2.length)
+    buff.set(buff1, 0)
+    buff.set(buff2, buff1.length)
+    return buff
 }
