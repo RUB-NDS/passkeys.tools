@@ -3,6 +3,15 @@
         <img src="FIDO_Passkey_mark_B_black.svg" width="150px">
         <h1 class="small-caps">WebAuthn Debugger</h1>
         <h3>This site allows you to encode, decode, generate, and verify WebAuthn attestations and assertions.</h3>
-        <p>The Ed25519 algorithm is not yet supported <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#browser_compatibility">in Chrome</a>. To use it, you need to enable the <a href="chrome://flags/#enable-experimental-web-platform-features">#enable-experimental-web-platform-features</a> flag.</p>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <p>Current Limitations:</p>
+        <ul>
+            <li>Only the <a href="https://www.w3.org/TR/webauthn-3/#sctn-none-attestation">None</a> and <a href="https://www.w3.org/TR/webauthn-3/#sctn-packed-attestation">Packed</a> attestation statement formats are supported.</li>
+            <li>To use the Ed25519 algorithm <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#browser_compatibility">in Chrome</a>, you need to enable the <a href="chrome://flags/#enable-experimental-web-platform-features">#enable-experimental-web-platform-features</a> flag.</li>
+        </ul>
     </div>
 </div>
