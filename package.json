@@ -1,5 +1,5 @@
 {
-  "name": "webauthn-debugger",
+  "name": "modauthn",
   "private": true,
   "version": "0.0.0",
   "type": "module",
