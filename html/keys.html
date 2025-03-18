@@ -5,6 +5,33 @@
 </div>
 
 <div class="row mb-3">
+    <div class="col">
+        <p>
+            <div class="input-group">
+                <span class="input-group-text">Load Key</span>
+                <select class="form-select" id="loadKeyIdSelect" style="max-width: 200px;"></select>
+                <select class="form-select" id="loadKeyTypeSelect" style="max-width: 200px;">
+                    <option value="publicKey" selected>Public Key</option>
+                    <option value="privateKey">Private Key</option>
+                </select>
+                <button class="btn btn-primary" id="loadKeyBtn">Load</button>
+            </div>
+        </p>
+        <p>
+            <div class="input-group">
+                <span class="input-group-text">Store Key</span>
+                <input type="text" class="form-control" id="storeKeyIdInput" placeholder="Choose an identifier ..." style="max-width: 200px;">
+                <select class="form-select" id="storeKeyTypeSelect" style="max-width: 200px;">
+                    <option value="publicKey" selected>Public Key</option>
+                    <option value="privateKey">Private Key</option>
+                </select>
+                <button class="btn btn-primary" id="storeKeyBtn">Store</button>
+            </div>
+        </p>
+    </div>
+</div>
+
+<div class="row mb-3">
     <div class="col-md-6">
         <div class="d-flex flex-column justify-content-between full-height">
             <div class="card mb-3 one-third-height">
@@ -54,28 +81,6 @@
     <div class="col">
         <p>
             <div class="input-group">
-                <span class="input-group-text">Load Key</span>
-                <input type="text" class="form-control" id="loadKeyIdInput" placeholder="Choose an identifier ..." style="max-width: 200px;">
-                <select class="form-select" id="loadKeyTypeSelect" style="max-width: 200px;">
-                    <option value="publicKey" selected>Public Key</option>
-                    <option value="privateKey">Private Key</option>
-                </select>
-                <button class="btn btn-primary" id="loadKeyBtn">Load</button>
-            </div>
-        </p>
-        <p>
-            <div class="input-group">
-                <span class="input-group-text">Store Key</span>
-                <input type="text" class="form-control" id="storeKeyIdInput" placeholder="Choose an identifier ..." style="max-width: 200px;">
-                <select class="form-select" id="storeKeyTypeSelect" style="max-width: 200px;">
-                    <option value="publicKey" selected>Public Key</option>
-                    <option value="privateKey">Private Key</option>
-                </select>
-                <button class="btn btn-primary" id="storeKeyBtn">Store</button>
-            </div>
-        </p>
-        <p>
-            <div class="input-group">
                 <span class="input-group-text">Generate Key</span>
                 <input type="text" class="form-control" id="generateKeyIdInput" placeholder="Choose an identifier ..." style="max-width: 200px;">
                 <select class="form-select" id="generateKeyAlgSelect" style="max-width: 200px;"></select>
@@ -85,7 +90,7 @@
         <p>
             <div class="input-group">
                 <span class="input-group-text">Delete Key</span>
-                <input type="text" class="form-control" id="deleteKeyIdInput" placeholder="Choose an identifier ..." style="max-width: 200px;">
+                <select class="form-select" id="deleteKeyIdSelect" style="max-width: 200px;"></select>
                 <button class="btn btn-danger" id="deleteKeyBtn">Delete</button>
             </div>
         </p>

@@ -3,7 +3,7 @@ import * as encoders from "./encoders.js"
 import * as decoders from "./decoders.js"
 import { examples } from "./examples.js"
 import { verifyAssertion, signAssertion } from "./signatures.js"
-import { algs, getKey, storeKey, generateKey, deleteKey, renderKeysTable } from "./keys.js"
+import { algs, getKey, getKeys, storeKey, generateKey, deleteKey } from "./keys.js"
 import { b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr, uint8ToHex, strSha256Uint8 } from "./converters.js"
 
 /* attestation -> clientDataJSON */
@@ -141,7 +141,7 @@ verifyAssertionWithStoredKeyBtn.onclick = async () => {
     const clientDataHash = assertionClientDataJSONHashHexTextarea.value
     const authenticatorData = assertionAuthenticatorDataEncHexTextarea.value
     const signature = assertionSignatureEncHexTextarea.value
-    const id = verifyAssertionWithStoredKeyInput.value
+    const id = verifyAssertionWithStoredKeySelect.value
     const jwk = getKey(id).publicKey
     const valid = await verifyAssertion(clientDataHash, authenticatorData, signature, jwk)
     alert(valid)
@@ -150,7 +150,7 @@ verifyAssertionWithStoredKeyBtn.onclick = async () => {
 signAssertionWithStoredKeyBtn.onclick = async () => {
     const clientDataHash = assertionClientDataJSONHashHexTextarea.value
     const authenticatorData = assertionAuthenticatorDataEncHexTextarea.value
-    const id = signAssertionWithStoredKeyInput.value
+    const id = signAssertionWithStoredKeySelect.value
     const jwk = getKey(id).privateKey
     const signature = await signAssertion(clientDataHash, authenticatorData, jwk)
     assertionSignatureEncHexTextarea.value = uint8ToHex(signature)
@@ -185,7 +185,65 @@ editors.keysJwkEditor.on("change", async () => {
     await encodeKeys()
 })
 
-renderKeysTable()
+export const renderKeys = () => {
+    // keys -> assertion -> signature -> verify
+    verifyAssertionWithStoredKeySelect.innerHTML = ""
+    for (const [id, key] of Object.entries(getKeys())) {
+        const option = document.createElement("option")
+        option.value = id
+        option.text = id
+        verifyAssertionWithStoredKeySelect.appendChild(option)
+    }
+
+    // keys -> assertion -> signature -> sign
+    signAssertionWithStoredKeySelect.innerHTML = ""
+    for (const [id, key] of Object.entries(getKeys())) {
+        const option = document.createElement("option")
+        option.value = id
+        option.text = id
+        signAssertionWithStoredKeySelect.appendChild(option)
+    }
+
+    // keys -> key parser -> load key
+    loadKeyIdSelect.innerHTML = ""
+    for (const [id, key] of Object.entries(getKeys())) {
+        const option = document.createElement("option")
+        option.value = id
+        option.text = id
+        loadKeyIdSelect.appendChild(option)
+    }
+
+    // keys -> key storage -> delete key
+    deleteKeyIdSelect.innerHTML = ""
+    for (const [id, key] of Object.entries(getKeys())) {
+        const option = document.createElement("option")
+        option.value = id
+        option.text = id
+        deleteKeyIdSelect.appendChild(option)
+    }
+
+    // keys -> key storage -> table
+    keyTable.innerHTML = ""
+    for (const [id, key] of Object.entries(getKeys())) {
+        const row = document.createElement("tr")
+        const idCell = document.createElement("td")
+        idCell.textContent = id
+        row.appendChild(idCell)
+        const publicKeyCell = document.createElement("td")
+        const publicKeyPre = document.createElement("pre")
+        publicKeyPre.textContent = JSON.stringify(key.publicKey, null, 2)
+        publicKeyCell.appendChild(publicKeyPre)
+        row.appendChild(publicKeyCell)
+        const privateKeyCell = document.createElement("td")
+        const privateKeyPre = document.createElement("pre")
+        privateKeyPre.textContent = JSON.stringify(key.privateKey, null, 2)
+        privateKeyCell.appendChild(privateKeyPre)
+        row.appendChild(privateKeyCell)
+        keyTable.appendChild(row)
+    }
+}
+
+renderKeys()
 
 algs.forEach(alg => {
     const option = document.createElement("option")
@@ -195,7 +253,7 @@ algs.forEach(alg => {
 })
 
 loadKeyBtn.onclick = async () => {
-    const id = loadKeyIdInput.value
+    const id = loadKeyIdSelect.value
     const type = loadKeyTypeSelect.value
     const key = getKey(id)[type] || {}
     editors.keysJwkEditor.setValue(key)
@@ -207,7 +265,7 @@ storeKeyBtn.onclick = () => {
     const type = storeKeyTypeSelect.value
     const key = editors.keysJwkEditor.getValue()
     storeKey(id, { [type]:  key })
-    renderKeysTable()
+    renderKeys()
 }
 
 generateKeyBtn.onclick = async () => {
@@ -215,13 +273,15 @@ generateKeyBtn.onclick = async () => {
     const alg = generateKeyAlgSelect.value
     const { publicKey, privateKey } = await generateKey(alg)
     storeKey(id, { publicKey, privateKey })
-    renderKeysTable()
+    renderKeys()
 }
 
 deleteKeyBtn.onclick = () => {
-    const id = deleteKeyIdInput.value
+    const id = deleteKeyIdSelect.value
+    const check = confirm("Delete key?")
+    if (!check) return
     deleteKey(id)
-    renderKeysTable()
+    renderKeys()
 }
 
 /* converters */

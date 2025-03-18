@@ -29,28 +29,3 @@ export const getKeys = () => {
     const keys = JSON.parse(localStorage.getItem("keys") || "{}")
     return keys
 }
-
-export const renderKeysTable = () => {
-    keyTable.innerHTML = ""
-    for (const [id, key] of Object.entries(getKeys())) {
-        const row = document.createElement("tr")
-
-        const idCell = document.createElement("td")
-        idCell.textContent = id
-        row.appendChild(idCell)
-
-        const publicKeyCell = document.createElement("td")
-        const publicKeyPre = document.createElement("pre")
-        publicKeyPre.textContent = JSON.stringify(key.publicKey, null, 2)
-        publicKeyCell.appendChild(publicKeyPre)
-        row.appendChild(publicKeyCell)
-
-        const privateKeyCell = document.createElement("td")
-        const privateKeyPre = document.createElement("pre")
-        privateKeyPre.textContent = JSON.stringify(key.privateKey, null, 2)
-        privateKeyCell.appendChild(privateKeyPre)
-        row.appendChild(privateKeyCell)
-
-        keyTable.appendChild(row)
-    }
-}
