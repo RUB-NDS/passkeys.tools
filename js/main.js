@@ -60,6 +60,24 @@ editors.attestationAttestationObjectDecEditor.on("change", () => {
     encodeAttestationAttestationObject()
 })
 
+attestationLoadKeyBtn.onclick = async () => {
+    const id = attestationLoadKeyIdSelect.value
+    const type = attestationLoadKeyTypeSelect.value
+    const key = getKey(id)[type] || {}
+    const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+    attestationObject.authData.attestedCredentialData.credentialPublicKey = key
+    editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+}
+
+attestationStoreKeyBtn.onclick = () => {
+    const id = attestationStoreKeyIdInput.value
+    const type = attestationStoreKeyTypeSelect.value
+    const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+    const key = attestationObject.authData.attestedCredentialData.credentialPublicKey
+    storeKey(id, { [type]:  key })
+    renderKeys()
+}
+
 /* assertion -> clientDataJSON */
 
 const encodeAssertionClientDataJSON = async () => {
@@ -186,6 +204,15 @@ editors.keysJwkEditor.on("change", async () => {
 })
 
 export const renderKeys = () => {
+    // attestation -> attestation object
+    attestationLoadKeyIdSelect.innerHTML = ""
+    for (const [id, key] of Object.entries(getKeys())) {
+        const option = document.createElement("option")
+        option.value = id
+        option.text = id
+        attestationLoadKeyIdSelect.appendChild(option)
+    }
+
     // keys -> assertion -> signature -> verify
     verifyAssertionWithStoredKeySelect.innerHTML = ""
     for (const [id, key] of Object.entries(getKeys())) {
