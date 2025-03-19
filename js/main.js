@@ -2,6 +2,7 @@ import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
 import * as decoders from "./decoders.js"
 import { examples } from "./examples.js"
+import { getAaguids } from "./aaguid.js"
 import { verifyAssertion, signAssertion } from "./signatures.js"
 import { algs, getKey, getKeys, storeKey, generateKey, deleteKey } from "./keys.js"
 import { b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr, uint8ToHex, strSha256Uint8 } from "./converters.js"
@@ -90,6 +91,20 @@ attestationRpIdBtn.onclick = async () => {
     const rpIdHash = attestationRpIdHashInput.value
     const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
     attestationObject.authData.rpIdHash = rpIdHash
+    editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+}
+
+for (const [k, v] of Object.entries(getAaguids())) {
+    const option = document.createElement("option")
+    option.value = v
+    option.text = k
+    attestationAaguidSelect.appendChild(option)
+}
+
+attestationAaguidBtn.onclick = async () => {
+    const aaguid = attestationAaguidSelect.value
+    const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+    attestationObject.authData.attestedCredentialData.aaguid = aaguid
     editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
 }
 
