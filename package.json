@@ -1,5 +1,5 @@
 {
-  "name": "modauthn",
+  "name": "passkey-workbench",
   "private": true,
   "version": "0.0.0",
   "type": "module",
