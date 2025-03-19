@@ -93,8 +93,9 @@ export const attestationAuthenticatorDataSchema = {
             }
         },
         "signCount": {
-            "type": "string",
-            "required": true
+            "type": "number",
+            "required": true,
+            "default": 0
         },
         "attestedCredentialData": {
             "type": "object",
@@ -186,8 +187,9 @@ export const assertionAuthenticatorDataSchema = {
             }
         },
         "signCount": {
-            "type": "string",
-            "required": true
+            "type": "number",
+            "required": true,
+            "default": 0
         },
         "extensions": {
             "type": "string",

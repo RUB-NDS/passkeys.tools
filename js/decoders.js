@@ -84,7 +84,7 @@ export const attestationObject = (data, codec) => {
 
     // attestationObject -> authData -> signCount
     const signCount = authData.slice(33, 37)
-    attestationObject["authData"]["signCount"] = uint8ToHex(signCount)
+    attestationObject["authData"]["signCount"] = uint8ToInt(signCount)
 
     // attestationObject -> authData -> attestedCredentialData
     attestationObject["authData"]["attestedCredentialData"] = {}
@@ -157,7 +157,7 @@ export const authenticatorData = (data, codec) => {
 
     // authenticatorData -> signCount
     const signCount = uint8.slice(33, 37)
-    authenticatorData["signCount"] = uint8ToHex(signCount)
+    authenticatorData["signCount"] = uint8ToInt(signCount)
 
     // authenticatorData -> extensions
     const extensions = uint8.slice(37)

@@ -65,7 +65,7 @@ export const attestationObject = (data, codec) => {
 
     // attestationObject -> authData -> signCount
     const signCount = authData["signCount"]
-    attestationObject["authData"] = attestationObject["authData"].concat(signCount)
+    attestationObject["authData"] = attestationObject["authData"].concat(intToHex(signCount, 4))
 
     // attestationObject -> authData -> attestedCredentialData
     const attestedCredentialData = authData["attestedCredentialData"]
@@ -128,7 +128,7 @@ export const authenticatorData = (data, codec) => {
     authenticatorData = authenticatorData.concat(intToHex(flags, 1))
 
     // authenticatorData -> signCount
-    authenticatorData = authenticatorData.concat(data["signCount"])
+    authenticatorData = authenticatorData.concat(intToHex(data["signCount"], 4))
 
     // authenticatorData -> extensions
     authenticatorData = authenticatorData.concat(data["extensions"])
