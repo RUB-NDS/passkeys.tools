@@ -205,25 +205,25 @@ export const renderKeys = () => {
     }
 
     // keys -> key parser -> load key
-    loadKeyIdSelect.innerHTML = ""
+    keysLoadKeyIdSelect.innerHTML = ""
     for (const [id, key] of Object.entries(getKeys())) {
         const option = document.createElement("option")
         option.value = id
         option.text = id
-        loadKeyIdSelect.appendChild(option)
+        keysLoadKeyIdSelect.appendChild(option)
     }
 
     // keys -> key storage -> delete key
-    deleteKeyIdSelect.innerHTML = ""
+    keysDeleteKeyIdSelect.innerHTML = ""
     for (const [id, key] of Object.entries(getKeys())) {
         const option = document.createElement("option")
         option.value = id
         option.text = id
-        deleteKeyIdSelect.appendChild(option)
+        keysDeleteKeyIdSelect.appendChild(option)
     }
 
     // keys -> key storage -> table
-    keyTable.innerHTML = ""
+    keysTable.innerHTML = ""
     for (const [id, key] of Object.entries(getKeys())) {
         const row = document.createElement("tr")
         const idCell = document.createElement("td")
@@ -239,7 +239,7 @@ export const renderKeys = () => {
         privateKeyPre.textContent = JSON.stringify(key.privateKey, null, 2)
         privateKeyCell.appendChild(privateKeyPre)
         row.appendChild(privateKeyCell)
-        keyTable.appendChild(row)
+        keysTable.appendChild(row)
     }
 }
 
@@ -249,35 +249,35 @@ algs.forEach(alg => {
     const option = document.createElement("option")
     option.value = alg
     option.text = alg
-    generateKeyAlgSelect.appendChild(option)
+    keysGenerateKeyAlgSelect.appendChild(option)
 })
 
-loadKeyBtn.onclick = async () => {
-    const id = loadKeyIdSelect.value
-    const type = loadKeyTypeSelect.value
+keysLoadKeyBtn.onclick = async () => {
+    const id = keysLoadKeyIdSelect.value
+    const type = keysLoadKeyTypeSelect.value
     const key = getKey(id)[type] || {}
     editors.keysJwkEditor.setValue(key)
     encodeKeys()
 }
 
-storeKeyBtn.onclick = () => {
-    const id = storeKeyIdInput.value
-    const type = storeKeyTypeSelect.value
+keysStoreKeyBtn.onclick = () => {
+    const id = keysStoreKeyIdInput.value
+    const type = keysStoreKeyTypeSelect.value
     const key = editors.keysJwkEditor.getValue()
     storeKey(id, { [type]:  key })
     renderKeys()
 }
 
-generateKeyBtn.onclick = async () => {
-    const id = generateKeyIdInput.value
-    const alg = generateKeyAlgSelect.value
+keysGenerateKeyBtn.onclick = async () => {
+    const id = keysGenerateKeyIdInput.value
+    const alg = keysGenerateKeyAlgSelect.value
     const { publicKey, privateKey } = await generateKey(alg)
     storeKey(id, { publicKey, privateKey })
     renderKeys()
 }
 
-deleteKeyBtn.onclick = () => {
-    const id = deleteKeyIdSelect.value
+keysDeleteKeyBtn.onclick = () => {
+    const id = keysDeleteKeyIdSelect.value
     const check = confirm("Delete key?")
     if (!check) return
     deleteKey(id)

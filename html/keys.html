@@ -9,23 +9,23 @@
         <p>
             <div class="input-group">
                 <span class="input-group-text">Load Key</span>
-                <select class="form-select" id="loadKeyIdSelect" style="max-width: 200px;"></select>
-                <select class="form-select" id="loadKeyTypeSelect" style="max-width: 200px;">
+                <select class="form-select" id="keysLoadKeyIdSelect" style="max-width: 200px;"></select>
+                <select class="form-select" id="keysLoadKeyTypeSelect" style="max-width: 200px;">
                     <option value="publicKey" selected>Public Key</option>
                     <option value="privateKey">Private Key</option>
                 </select>
-                <button class="btn btn-primary" id="loadKeyBtn">Load</button>
+                <button class="btn btn-primary" id="keysLoadKeyBtn">Load</button>
             </div>
         </p>
         <p>
             <div class="input-group">
                 <span class="input-group-text">Store Key</span>
-                <input type="text" class="form-control" id="storeKeyIdInput" placeholder="Choose an identifier ..." style="max-width: 200px;">
-                <select class="form-select" id="storeKeyTypeSelect" style="max-width: 200px;">
+                <input type="text" class="form-control" id="keysStoreKeyIdInput" placeholder="Choose an identifier ..." style="max-width: 200px;">
+                <select class="form-select" id="keysStoreKeyTypeSelect" style="max-width: 200px;">
                     <option value="publicKey" selected>Public Key</option>
                     <option value="privateKey">Private Key</option>
                 </select>
-                <button class="btn btn-primary" id="storeKeyBtn">Store</button>
+                <button class="btn btn-primary" id="keysStoreKeyBtn">Store</button>
             </div>
         </p>
     </div>
@@ -82,16 +82,16 @@
         <p>
             <div class="input-group">
                 <span class="input-group-text">Generate Key</span>
-                <input type="text" class="form-control" id="generateKeyIdInput" placeholder="Choose an identifier ..." style="max-width: 200px;">
-                <select class="form-select" id="generateKeyAlgSelect" style="max-width: 200px;"></select>
-                <button class="btn btn-primary" id="generateKeyBtn">Generate</button>
+                <input type="text" class="form-control" id="keysGenerateKeyIdInput" placeholder="Choose an identifier ..." style="max-width: 200px;">
+                <select class="form-select" id="keysGenerateKeyAlgSelect" style="max-width: 200px;"></select>
+                <button class="btn btn-primary" id="keysGenerateKeyBtn">Generate</button>
             </div>
         </p>
         <p>
             <div class="input-group">
                 <span class="input-group-text">Delete Key</span>
-                <select class="form-select" id="deleteKeyIdSelect" style="max-width: 200px;"></select>
-                <button class="btn btn-danger" id="deleteKeyBtn">Delete</button>
+                <select class="form-select" id="keysDeleteKeyIdSelect" style="max-width: 200px;"></select>
+                <button class="btn btn-danger" id="keysDeleteKeyBtn">Delete</button>
             </div>
         </p>
     </div>
@@ -107,7 +107,7 @@
                     <th scope="col">Private Key</th>
                 </tr>
             </thead>
-            <tbody id="keyTable"></tbody>
+            <tbody id="keysTable"></tbody>
         </table>
     </div>
 </div>
