@@ -78,6 +78,21 @@ attestationStoreKeyBtn.onclick = () => {
     renderKeys()
 }
 
+for (const e of ["change", "keydown", "paste", "input"]) {
+    attestationRpIdInput.addEventListener(e, async () => {
+        const rpId = attestationRpIdInput.value
+        const rpIdHash = await strSha256Uint8(rpId)
+        attestationRpIdHashInput.value = uint8ToHex(rpIdHash)
+    })
+}
+
+attestationRpIdBtn.onclick = async () => {
+    const rpIdHash = attestationRpIdHashInput.value
+    const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+    attestationObject.authData.rpIdHash = rpIdHash
+    editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+}
+
 /* assertion -> clientDataJSON */
 
 const encodeAssertionClientDataJSON = async () => {
@@ -131,6 +146,21 @@ assertionAuthenticatorDataEncHexTextarea.oninput = () => {
 editors.assertionAuthenticatorDataDecEditor.on("change", () => {
     encodeAssertionAuthenticatorData()
 })
+
+for (const e of ["change", "keydown", "paste", "input"]) {
+    assertionRpIdInput.addEventListener(e, async () => {
+        const rpId = assertionRpIdInput.value
+        const rpIdHash = await strSha256Uint8(rpId)
+        assertionRpIdHashInput.value = uint8ToHex(rpIdHash)
+    })
+}
+
+assertionRpIdBtn.onclick = async () => {
+    const rpIdHash = assertionRpIdHashInput.value
+    const authenticatorData = editors.assertionAuthenticatorDataDecEditor.getValue()
+    authenticatorData.rpIdHash = rpIdHash
+    editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
+}
 
 /* assertion -> signature */
 
