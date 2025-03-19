@@ -375,15 +375,7 @@ convertersHexTextarea.oninput = () => {
 
 /* examples */
 
-for (const key of Object.keys(examples)) {
-    const option = document.createElement("option")
-    option.value = key
-    option.text = key
-    examplesSelect.appendChild(option)
-}
-
-examplesLoadBtn.onclick = () => {
-    const example = examples[examplesSelect.value]
+const loadExample = (example) => {
     attestationClientDataJSONEncHexTextarea.value = example.attestation.clientDataJSON
     attestationClientDataJSONEncHexTextarea.dispatchEvent(new Event("input"))
     attestationAttestationObjectEncHexTextarea.value = example.attestation.attestationObject
@@ -395,3 +387,17 @@ examplesLoadBtn.onclick = () => {
     assertionSignatureEncHexTextarea.value = example.assertion.signature
     assertionSignatureEncHexTextarea.dispatchEvent(new Event("input"))
 }
+
+for (const key of Object.keys(examples)) {
+    const option = document.createElement("option")
+    option.value = key
+    option.text = key
+    examplesSelect.appendChild(option)
+}
+
+examplesLoadBtn.onclick = () => {
+    const example = examples[examplesSelect.value]
+    loadExample(example)
+}
+
+window.addEventListener("load", () => { loadExample(examples["ES256 Credential with No Attestation"]) })
