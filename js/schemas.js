@@ -36,7 +36,7 @@ export const clientDataJSONSchema = {
 }
 
 // https://w3c.github.io/webauthn/#authenticator-data
-export const authenticatorDataSchema = {
+export const attestationAuthenticatorDataSchema = {
     "type": "object",
     "required": true,
     "additionalProperties": false,
@@ -50,42 +50,42 @@ export const authenticatorDataSchema = {
             "required": true,
             "additionalProperties": false,
             "properties": {
-                "up": {
+                "up": { // User Present
+                    "type": "boolean",
+                    "required": true,
+                    "default": true
+                },
+                "rfu1": { // Reserved for Future Use
                     "type": "boolean",
                     "required": true,
                     "default": false
                 },
-                "rfu1": {
+                "uv": { // User Verified
+                    "type": "boolean",
+                    "required": true,
+                    "default": true
+                },
+                "be": { // Backup Eligibility
+                    "type": "boolean",
+                    "required": true,
+                    "default": true
+                },
+                "bs": { // Backup State
+                    "type": "boolean",
+                    "required": true,
+                    "default": true
+                },
+                "rfu2": { // Reserved for Future Use
                     "type": "boolean",
                     "required": true,
                     "default": false
                 },
-                "uv": {
+                "at": { // Attested Credential Data Included
                     "type": "boolean",
                     "required": true,
-                    "default": false
+                    "default": true
                 },
-                "be": {
-                    "type": "boolean",
-                    "required": true,
-                    "default": false
-                },
-                "bs": {
-                    "type": "boolean",
-                    "required": true,
-                    "default": false
-                },
-                "rfu2": {
-                    "type": "boolean",
-                    "required": true,
-                    "default": false
-                },
-                "at": {
-                    "type": "boolean",
-                    "required": true,
-                    "default": false
-                },
-                "ed": {
+                "ed": { // Extension Data Included
                     "type": "boolean",
                     "required": true,
                     "default": false
@@ -98,7 +98,7 @@ export const authenticatorDataSchema = {
         },
         "attestedCredentialData": {
             "type": "object",
-            "required": false,
+            "required": true,
             "additionalProperties": false,
             "properties": {
                 "aaguid": {
@@ -120,6 +120,74 @@ export const authenticatorDataSchema = {
                     "properties": {},
                 }
             }
+        },
+        "extensions": {
+            "type": "string",
+            "required": false
+        }
+    }
+}
+
+// https://w3c.github.io/webauthn/#authenticator-data
+export const assertionAuthenticatorDataSchema = {
+    "type": "object",
+    "required": true,
+    "additionalProperties": false,
+    "properties": {
+        "rpIdHash": {
+            "type": "string",
+            "required": true
+        },
+        "flags": {
+            "type": "object",
+            "required": true,
+            "additionalProperties": false,
+            "properties": {
+                "up": { // User Present
+                    "type": "boolean",
+                    "required": true,
+                    "default": true
+                },
+                "rfu1": { // Reserved for Future Use
+                    "type": "boolean",
+                    "required": true,
+                    "default": false
+                },
+                "uv": { // User Verified
+                    "type": "boolean",
+                    "required": true,
+                    "default": true
+                },
+                "be": { // Backup Eligibility
+                    "type": "boolean",
+                    "required": true,
+                    "default": true
+                },
+                "bs": { // Backup State
+                    "type": "boolean",
+                    "required": true,
+                    "default": true
+                },
+                "rfu2": { // Reserved for Future Use
+                    "type": "boolean",
+                    "required": true,
+                    "default": false
+                },
+                "at": { // Attested Credential Data Included
+                    "type": "boolean",
+                    "required": true,
+                    "default": false
+                },
+                "ed": { // Extension Data Included
+                    "type": "boolean",
+                    "required": true,
+                    "default": false
+                }
+            }
+        },
+        "signCount": {
+            "type": "string",
+            "required": true
         },
         "extensions": {
             "type": "string",
@@ -179,7 +247,7 @@ export const attestationObjectSchema = {
                     "enum": ["none"]
                 },
                 "attStmt": attestationStatementNoneSchema,
-                "authData": authenticatorDataSchema
+                "authData": attestationAuthenticatorDataSchema
             }
         },
         // fmt: packed
@@ -195,7 +263,7 @@ export const attestationObjectSchema = {
                     "enum": ["packed"]
                 },
                 "attStmt": attestationStatementPackedSchema,
-                "authData": authenticatorDataSchema
+                "authData": attestationAuthenticatorDataSchema
             }
         }
     ]
