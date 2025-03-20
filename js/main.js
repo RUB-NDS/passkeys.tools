@@ -62,20 +62,24 @@ editors.attestationAttestationObjectDecEditor.on("change", () => {
 })
 
 attestationLoadKeyBtn.onclick = async () => {
-    const id = attestationLoadKeyIdSelect.value
+    const name = attestationLoadKeyNameSelect.value
     const type = attestationLoadKeyTypeSelect.value
-    const key = getKey(id)[type] || {}
+    const key = getKey(name)[type] || {}
+    const credentialId = getKey(name).credentialId || ""
     const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
     attestationObject.authData.attestedCredentialData.credentialPublicKey = key
+    attestationObject.authData.attestedCredentialData.credentialId = credentialId
+    attestationObject.authData.attestedCredentialData.credentialIdLength = credentialId.length / 2
     editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
 }
 
 attestationStoreKeyBtn.onclick = () => {
-    const id = attestationStoreKeyIdInput.value
+    const name = attestationStoreKeyNameInput.value
     const type = attestationStoreKeyTypeSelect.value
     const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
     const key = attestationObject.authData.attestedCredentialData.credentialPublicKey
-    storeKey(id, { [type]:  key })
+    const credentialId = attestationObject.authData.attestedCredentialData.credentialId
+    storeKey(name, { credentialId, [type]:  key })
     renderKeys()
 }
 
@@ -204,8 +208,8 @@ verifyAssertionWithStoredKeyBtn.onclick = async () => {
     const clientDataHash = assertionClientDataJSONHashHexTextarea.value
     const authenticatorData = assertionAuthenticatorDataEncHexTextarea.value
     const signature = assertionSignatureEncHexTextarea.value
-    const id = verifyAssertionWithStoredKeySelect.value
-    const jwk = getKey(id).publicKey
+    const name = verifyAssertionWithStoredKeySelect.value
+    const jwk = getKey(name).publicKey
     const valid = await verifyAssertion(clientDataHash, authenticatorData, signature, jwk)
     alert(valid)
 }
@@ -213,8 +217,8 @@ verifyAssertionWithStoredKeyBtn.onclick = async () => {
 signAssertionWithStoredKeyBtn.onclick = async () => {
     const clientDataHash = assertionClientDataJSONHashHexTextarea.value
     const authenticatorData = assertionAuthenticatorDataEncHexTextarea.value
-    const id = signAssertionWithStoredKeySelect.value
-    const jwk = getKey(id).privateKey
+    const name = signAssertionWithStoredKeySelect.value
+    const jwk = getKey(name).privateKey
     const signature = await signAssertion(clientDataHash, authenticatorData, jwk)
     assertionSignatureEncHexTextarea.value = uint8ToHex(signature)
     assertionSignatureEncHexTextarea.dispatchEvent(new Event("input"))
@@ -250,57 +254,69 @@ editors.keysJwkEditor.on("change", async () => {
 
 export const renderKeys = () => {
     // attestation -> attestation object
-    attestationLoadKeyIdSelect.innerHTML = ""
-    for (const [id, key] of Object.entries(getKeys())) {
+    attestationLoadKeyNameSelect.innerHTML = ""
+    for (const [name, key] of Object.entries(getKeys())) {
         const option = document.createElement("option")
-        option.value = id
-        option.text = id
-        attestationLoadKeyIdSelect.appendChild(option)
+        option.value = name
+        option.text = name
+        attestationLoadKeyNameSelect.appendChild(option)
     }
 
-    // keys -> assertion -> signature -> verify
+    // assertion -> signature -> verify
     verifyAssertionWithStoredKeySelect.innerHTML = ""
-    for (const [id, key] of Object.entries(getKeys())) {
+    for (const [name, key] of Object.entries(getKeys())) {
         const option = document.createElement("option")
-        option.value = id
-        option.text = id
+        option.value = name
+        option.text = name
         verifyAssertionWithStoredKeySelect.appendChild(option)
     }
 
-    // keys -> assertion -> signature -> sign
+    // assertion -> signature -> sign
     signAssertionWithStoredKeySelect.innerHTML = ""
-    for (const [id, key] of Object.entries(getKeys())) {
+    for (const [name, key] of Object.entries(getKeys())) {
         const option = document.createElement("option")
-        option.value = id
-        option.text = id
+        option.value = name
+        option.text = name
         signAssertionWithStoredKeySelect.appendChild(option)
     }
 
     // keys -> key parser -> load key
-    keysLoadKeyIdSelect.innerHTML = ""
-    for (const [id, key] of Object.entries(getKeys())) {
+    keysLoadKeyNameSelect.innerHTML = ""
+    for (const [name, key] of Object.entries(getKeys())) {
         const option = document.createElement("option")
-        option.value = id
-        option.text = id
-        keysLoadKeyIdSelect.appendChild(option)
+        option.value = name
+        option.text = name
+        keysLoadKeyNameSelect.appendChild(option)
+    }
+
+    // keys -> key storage -> update credential id
+    keysUpdateCredentialIdSelect.innerHTML = ""
+    for (const [name, key] of Object.entries(getKeys())) {
+        const option = document.createElement("option")
+        option.value = name
+        option.text = name
+        keysUpdateCredentialIdSelect.appendChild(option)
     }
 
     // keys -> key storage -> delete key
-    keysDeleteKeyIdSelect.innerHTML = ""
-    for (const [id, key] of Object.entries(getKeys())) {
+    keysDeleteKeyNameSelect.innerHTML = ""
+    for (const [name, key] of Object.entries(getKeys())) {
         const option = document.createElement("option")
-        option.value = id
-        option.text = id
-        keysDeleteKeyIdSelect.appendChild(option)
+        option.value = name
+        option.text = name
+        keysDeleteKeyNameSelect.appendChild(option)
     }
 
     // keys -> key storage -> table
     keysTable.innerHTML = ""
-    for (const [id, key] of Object.entries(getKeys())) {
+    for (const [name, key] of Object.entries(getKeys())) {
         const row = document.createElement("tr")
-        const idCell = document.createElement("td")
-        idCell.textContent = id
-        row.appendChild(idCell)
+        const nameCell = document.createElement("td")
+        nameCell.textContent = name
+        row.appendChild(nameCell)
+        const credentialIdCell = document.createElement("td")
+        credentialIdCell.textContent = key.credentialId
+        row.appendChild(credentialIdCell)
         const publicKeyCell = document.createElement("td")
         const publicKeyPre = document.createElement("pre")
         publicKeyPre.textContent = JSON.stringify(key.publicKey, null, 2)
@@ -325,34 +341,41 @@ algs.forEach(alg => {
 })
 
 keysLoadKeyBtn.onclick = async () => {
-    const id = keysLoadKeyIdSelect.value
+    const name = keysLoadKeyNameSelect.value
     const type = keysLoadKeyTypeSelect.value
-    const key = getKey(id)[type] || {}
+    const key = getKey(name)[type] || {}
     editors.keysJwkEditor.setValue(key)
     encodeKeys()
 }
 
 keysStoreKeyBtn.onclick = () => {
-    const id = keysStoreKeyIdInput.value
+    const name = keysStoreKeyNameInput.value
     const type = keysStoreKeyTypeSelect.value
     const key = editors.keysJwkEditor.getValue()
-    storeKey(id, { [type]:  key })
+    storeKey(name, { [type]:  key })
     renderKeys()
 }
 
 keysGenerateKeyBtn.onclick = async () => {
-    const id = keysGenerateKeyIdInput.value
+    const name = keysGenerateKeyNameInput.value
     const alg = keysGenerateKeyAlgSelect.value
-    const { publicKey, privateKey } = await generateKey(alg)
-    storeKey(id, { publicKey, privateKey })
+    const key = await generateKey(alg)
+    storeKey(name, key)
+    renderKeys()
+}
+
+keysUpdateCredentialIdBtn.onclick = () => {
+    const name = keysUpdateCredentialIdSelect.value
+    const credentialId = keysUpdateCredentialIdInput.value
+    storeKey(name, { credentialId })
     renderKeys()
 }
 
 keysDeleteKeyBtn.onclick = () => {
-    const id = keysDeleteKeyIdSelect.value
+    const name = keysDeleteKeyNameSelect.value
     const check = confirm("Delete key?")
     if (!check) return
-    deleteKey(id)
+    deleteKey(name)
     renderKeys()
 }
 
@@ -400,4 +423,6 @@ examplesLoadBtn.onclick = () => {
     loadExample(example)
 }
 
-window.addEventListener("load", () => { loadExample(examples["ES256 Credential with No Attestation"]) })
+window.addEventListener("load", () => {
+    loadExample(examples["ES256 Credential with No Attestation"])
+})

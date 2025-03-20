@@ -9,7 +9,7 @@
         <p>
             <div class="input-group">
                 <span class="input-group-text">Load Key</span>
-                <select class="form-select" id="keysLoadKeyIdSelect" style="max-width: 200px;"></select>
+                <select class="form-select" id="keysLoadKeyNameSelect" style="max-width: 200px;"></select>
                 <select class="form-select" id="keysLoadKeyTypeSelect" style="max-width: 200px;">
                     <option value="publicKey" selected>Public Key</option>
                     <option value="privateKey">Private Key</option>
@@ -20,7 +20,7 @@
         <p>
             <div class="input-group">
                 <span class="input-group-text">Store Key</span>
-                <input type="text" class="form-control" id="keysStoreKeyIdInput" placeholder="Choose an identifier ..." style="max-width: 200px;">
+                <input type="text" class="form-control" id="keysStoreKeyNameInput" placeholder="Choose a name ..." style="max-width: 200px;">
                 <select class="form-select" id="keysStoreKeyTypeSelect" style="max-width: 200px;">
                     <option value="publicKey" selected>Public Key</option>
                     <option value="privateKey">Private Key</option>
@@ -82,15 +82,23 @@
         <p>
             <div class="input-group">
                 <span class="input-group-text">Generate Key</span>
-                <input type="text" class="form-control" id="keysGenerateKeyIdInput" placeholder="Choose an identifier ..." style="max-width: 200px;">
+                <input type="text" class="form-control" id="keysGenerateKeyNameInput" placeholder="Choose a name ..." style="max-width: 200px;">
                 <select class="form-select" id="keysGenerateKeyAlgSelect" style="max-width: 200px;"></select>
                 <button class="btn btn-primary" id="keysGenerateKeyBtn">Generate</button>
             </div>
         </p>
         <p>
             <div class="input-group">
+                <span class="input-group-text">Update Credential ID</span>
+                <input type="text" class="form-control" id="keysUpdateCredentialIdInput" placeholder="Choose a credential id ..." style="max-width: 200px;">
+                <select class="form-select" id="keysUpdateCredentialIdSelect" style="max-width: 200px;"></select>
+                <button class="btn btn-primary" id="keysUpdateCredentialIdBtn">Update</button>
+            </div>
+        </p>
+        <p>
+            <div class="input-group">
                 <span class="input-group-text">Delete Key</span>
-                <select class="form-select" id="keysDeleteKeyIdSelect" style="max-width: 200px;"></select>
+                <select class="form-select" id="keysDeleteKeyNameSelect" style="max-width: 200px;"></select>
                 <button class="btn btn-danger" id="keysDeleteKeyBtn">Delete</button>
             </div>
         </p>
@@ -102,7 +110,8 @@
         <table class="table table-striped keys-table">
             <thead>
                 <tr>
-                    <th scope="col">Identifier</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Credential ID</th>
                     <th scope="col">Public Key</th>
                     <th scope="col">Private Key</th>
                 </tr>
