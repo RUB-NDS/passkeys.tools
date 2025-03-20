@@ -76,7 +76,7 @@ export const attestationObject = (data, codec) => {
 
     // attestationObject -> authData -> attestedCredentialData -> credentialIdLength
     const credentialIdLength = attestedCredentialData["credentialIdLength"]
-    attestationObject["authData"] = attestationObject["authData"].concat(credentialIdLength)
+    attestationObject["authData"] = attestationObject["authData"].concat(intToHex(credentialIdLength, 2))
 
     // attestationObject -> authData -> attestedCredentialData -> credentialId
     const credentialId = attestedCredentialData["credentialId"]

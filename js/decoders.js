@@ -95,7 +95,7 @@ export const attestationObject = (data, codec) => {
 
     // attestationObject -> authData -> attestedCredentialData -> credentialIdLength
     const credentialIdLength = authData.slice(53, 55)
-    attestationObject["authData"]["attestedCredentialData"]["credentialIdLength"] = uint8ToHex(credentialIdLength)
+    attestationObject["authData"]["attestedCredentialData"]["credentialIdLength"] = uint8ToInt(credentialIdLength)
 
     // attestationObject -> authData -> attestedCredentialData -> credentialId
     const credentialId = authData.slice(55, 55 + uint8ToInt(credentialIdLength))

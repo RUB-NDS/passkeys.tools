@@ -107,7 +107,7 @@ export const attestationAuthenticatorDataSchema = {
                     "required": true
                 },
                 "credentialIdLength": {
-                    "type": "string",
+                    "type": "number",
                     "required": true
                 },
                 "credentialId": {
