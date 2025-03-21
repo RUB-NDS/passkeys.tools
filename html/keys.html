@@ -98,7 +98,8 @@
         <p>
             <div class="input-group">
                 <span class="input-group-text">Update Credential ID</span>
-                <input type="text" class="form-control" id="keysUpdateCredentialIdInput" placeholder="Choose a credential id ..." style="max-width: 200px;">
+                <input type="text" class="form-control" id="keysUpdateCredentialIdHexInput" placeholder="Choose a hex cid ..." style="max-width: 200px;">
+                <input type="text" class="form-control" id="keysUpdateCredentialIdB64urlInput" placeholder="Choose a b64url cid ..." style="max-width: 200px;">
                 <select class="form-select" id="keysUpdateCredentialIdSelect" style="max-width: 200px;"></select>
                 <button class="btn btn-primary" id="keysUpdateCredentialIdBtn">Update</button>
             </div>
@@ -119,7 +120,8 @@
             <thead>
                 <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Credential ID</th>
+                    <th scope="col">CID (hex)</th>
+                    <th scope="col">CID (b64url)</th>
                     <th scope="col">Public Key</th>
                     <th scope="col">Private Key</th>
                 </tr>

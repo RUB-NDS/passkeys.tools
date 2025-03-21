@@ -387,9 +387,12 @@ export const renderKeys = () => {
         const nameCell = document.createElement("td")
         nameCell.textContent = name
         row.appendChild(nameCell)
-        const credentialIdCell = document.createElement("td")
-        credentialIdCell.textContent = key.credentialId
-        row.appendChild(credentialIdCell)
+        const credentialIdHexCell = document.createElement("td")
+        credentialIdHexCell.textContent = key.credentialId ? key.credentialId : "N/A"
+        row.appendChild(credentialIdHexCell)
+        const credentialIdB64urlCell = document.createElement("td")
+        credentialIdB64urlCell.textContent = key.credentialId ? hexToB64url(key.credentialId) : "N/A"
+        row.appendChild(credentialIdB64urlCell)
         const publicKeyCell = document.createElement("td")
         const publicKeyPre = document.createElement("pre")
         publicKeyPre.textContent = JSON.stringify(key.publicKey, null, 2)
@@ -439,8 +442,11 @@ keysGenerateKeyBtn.onclick = async () => {
 
 keysUpdateCredentialIdBtn.onclick = () => {
     const name = keysUpdateCredentialIdSelect.value
-    const credentialId = keysUpdateCredentialIdInput.value
-    storeKey(name, { credentialId })
+    const credentialIdHex = keysUpdateCredentialIdHexInput.value
+    const credentialIdB64url = keysUpdateCredentialIdB64urlInput.value
+    if (credentialIdHex) storeKey(name, { credentialId: credentialIdHex })
+    else if (credentialIdB64url) storeKey(name, { credentialId: b64urlToHex(credentialIdB64url) })
+    else storeKey(name, { credentialId: "" })
     renderKeys()
 }
 

@@ -40,17 +40,19 @@ textarea {
 .keys-table th:nth-child(1),
 .keys-table td:nth-child(1),
 .keys-table th:nth-child(2),
-.keys-table td:nth-child(2) {
+.keys-table td:nth-child(2),
+.keys-table th:nth-child(3),
+.keys-table td:nth-child(3) {
     width: 10%;
     white-space: nowrap;
     overflow: auto;
 }
 
-.keys-table th:nth-child(3),
-.keys-table td:nth-child(3),
 .keys-table th:nth-child(4),
-.keys-table td:nth-child(4) {
-    width: 40%;
+.keys-table td:nth-child(4),
+.keys-table th:nth-child(5),
+.keys-table td:nth-child(5) {
+    width: 30%;
     white-space: nowrap;
     overflow: auto;
 }
