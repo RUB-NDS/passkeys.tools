@@ -164,3 +164,22 @@ export const concatUint8 = (buff1, buff2) => {
     buff.set(buff2, buff1.length)
     return buff
 }
+
+export const parsePublicKeyCredentialCreationOptions = (obj) => {
+    const publicKeyCredentialCreationOptions = structuredClone(obj)
+    publicKeyCredentialCreationOptions.user.id = hexToUint8(publicKeyCredentialCreationOptions.user.id)
+    publicKeyCredentialCreationOptions.challenge = hexToUint8(publicKeyCredentialCreationOptions.challenge)
+    for (const excludeCredential of publicKeyCredentialCreationOptions.excludeCredentials) {
+        excludeCredential.id = hexToUint8(excludeCredential.id)
+    }
+    return publicKeyCredentialCreationOptions
+}
+
+export const parsePublicKeyCredentialRequestOptions = (obj) => {
+    const publicKeyCredentialRequestOptions = structuredClone(obj)
+    publicKeyCredentialRequestOptions.challenge = hexToUint8(publicKeyCredentialRequestOptions.challenge)
+    for (const allowCredential of publicKeyCredentialRequestOptions.allowCredentials) {
+        allowCredential.id = hexToUint8(allowCredential.id)
+    }
+    return publicKeyCredentialRequestOptions
+}

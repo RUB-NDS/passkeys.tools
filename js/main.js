@@ -5,7 +5,54 @@ import { examples } from "./examples.js"
 import { getAaguids } from "./aaguid.js"
 import { verifyAssertion, signAssertion } from "./signatures.js"
 import { algs, getKey, getKeys, storeKey, generateKey, deleteKey } from "./keys.js"
-import { b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr, uint8ToHex, strSha256Uint8 } from "./converters.js"
+import { navigatorCredentialsCreate, navigatorCredentialsGet } from "./webapi.js"
+import {
+    b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr,
+    uint8ToHex, strSha256Uint8, parsePublicKeyCredentialCreationOptions,
+    parsePublicKeyCredentialRequestOptions
+} from "./converters.js"
+
+/* create */
+
+createWebApiBtn.onclick = () => {
+    createWebApiResult.innerHTML = ""
+    const publicKeyCredentialCreationOptions = parsePublicKeyCredentialCreationOptions(editors.createEditor.getValue())
+    navigatorCredentialsCreate(publicKeyCredentialCreationOptions).then(publicKeyCredential => {
+        const publicKeyCredentialJson = publicKeyCredential.toJSON()
+        const div = document.createElement("div")
+        div.classList = "alert alert-success"
+        const pre = document.createElement("pre")
+        pre.textContent = JSON.stringify(publicKeyCredentialJson, null, 2)
+        div.appendChild(pre)
+        createWebApiResult.appendChild(div)
+    }).catch(error => {
+        const div = document.createElement("div")
+        div.classList = "alert alert-danger"
+        div.textContent = error
+        createWebApiResult.appendChild(div)
+    })
+}
+
+/* get */
+
+getWebApiBtn.onclick = () => {
+    getWebApiResult.innerHTML = ""
+    const publicKeyCredentialRequestOptions = parsePublicKeyCredentialRequestOptions(editors.getEditor.getValue())
+    navigatorCredentialsGet(publicKeyCredentialRequestOptions).then(publicKeyCredential => {
+        const publicKeyCredentialJson = publicKeyCredential.toJSON()
+        const div = document.createElement("div")
+        div.classList = "alert alert-success"
+        const pre = document.createElement("pre")
+        pre.textContent = JSON.stringify(publicKeyCredentialJson, null, 2)
+        div.appendChild(pre)
+        getWebApiResult.appendChild(div)
+    }).catch(error => {
+        const div = document.createElement("div")
+        div.classList = "alert alert-danger"
+        div.textContent = error
+        getWebApiResult.appendChild(div)
+    })
+}
 
 /* attestation -> clientDataJSON */
 
