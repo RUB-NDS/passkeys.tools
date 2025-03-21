@@ -90,6 +90,10 @@ const encodeAttestationAttestationObject = () => {
     attestationAttestationObjectEncB64urlTextarea.value = b64url
     const hex = encoders.attestationObject(data, "hex")
     attestationAttestationObjectEncHexTextarea.value = hex
+    const b64urlAuthData = encoders.attestationObject(data, "b64url", true)
+    attestationAuthenticatorDataEncB64urlTextarea.value = b64urlAuthData
+    const hexAuthData = encoders.attestationObject(data, "hex", true)
+    attestationAuthenticatorDataEncHexTextarea.value = hexAuthData
 }
 
 attestationAttestationObjectEncB64urlTextarea.oninput = () => {

@@ -11,7 +11,7 @@ export const clientDataJSON = (data, codec) => {
     }
 }
 
-export const attestationObject = (data, codec) => {
+export const attestationObject = (data, codec, authDataOnly=false) => {
     // attestationObject
     const attestationObject = {}
 
@@ -100,9 +100,17 @@ export const attestationObject = (data, codec) => {
     console.log("attestationObject", attestationObject)
 
     if (codec == "b64url") {
-        return uint8ToB64url(attestationObjectCbor)
+        if (authDataOnly) {
+            return uint8ToB64url(attestationObject["authData"])
+        } else {
+            return uint8ToB64url(attestationObjectCbor)
+        }
     } else if (codec == "hex") {
-        return uint8ToHex(attestationObjectCbor)
+        if (authDataOnly) {
+            return uint8ToHex(attestationObject["authData"])
+        } else {
+            return uint8ToHex(attestationObjectCbor)
+        }
     } else {
         throw new Error(`Unsupported codec: ${codec}`)
     }
