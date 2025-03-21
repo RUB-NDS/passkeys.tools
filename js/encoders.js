@@ -1,5 +1,8 @@
 import { encode as encodeCbor } from "cborg"
-import { strToB64url, strToHex, intToHex, hexToB64url, hexToUint8, jwkToCose, uint8ToHex, uint8ToB64url, jwkToPem, b64ToB64url } from "./converters.js"
+import {
+    strToB64url, strToHex, intToHex, hexToB64url, hexToUint8, jwkToCose,
+    uint8ToHex, uint8ToB64url, jwkToPem, b64ToB64url, b64urlToHex
+} from "./converters.js"
 
 export const clientDataJSON = (data, codec) => {
     if (codec == "b64url") {
@@ -11,7 +14,7 @@ export const clientDataJSON = (data, codec) => {
     }
 }
 
-export const attestationObject = (data, codec, authDataOnly=false) => {
+export const attestationObject = (data, codec, limit="") => {
     // attestationObject
     const attestationObject = {}
 
@@ -100,13 +103,13 @@ export const attestationObject = (data, codec, authDataOnly=false) => {
     console.log("attestationObject", attestationObject)
 
     if (codec == "b64url") {
-        if (authDataOnly) {
+        if (limit == "authData") {
             return uint8ToB64url(attestationObject["authData"])
         } else {
             return uint8ToB64url(attestationObjectCbor)
         }
     } else if (codec == "hex") {
-        if (authDataOnly) {
+        if (limit == "authData") {
             return uint8ToHex(attestationObject["authData"])
         } else {
             return uint8ToHex(attestationObjectCbor)
@@ -166,6 +169,11 @@ export const keys = async (data, format, codec) => {
         const pem = await jwkToPem(data)
         const der = b64ToB64url(pem.replace(/-----BEGIN .*-----|-----END .*-----|[\r\n]/g, ""))
         return der
+    } else if (format == "der" && codec == "hex") {
+        const pem = await jwkToPem(data)
+        const derB64url = b64ToB64url(pem.replace(/-----BEGIN .*-----|-----END .*-----|[\r\n]/g, ""))
+        const derHex = b64urlToHex(derB64url)
+        return derHex
     } else {
         throw new Error(`Unsupported format and codec: ${format}, ${codec}`)
     }

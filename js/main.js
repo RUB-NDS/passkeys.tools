@@ -91,32 +91,37 @@ editors.attestationClientDataJSONDecEditor.on("change", async () => {
 
 /* attestation -> attestationObject */
 
-const encodeAttestationAttestationObject = () => {
+const encodeAttestationAttestationObject = async () => {
     const data = editors.attestationAttestationObjectDecEditor.getValue()
     const b64url = encoders.attestationObject(data, "b64url")
     attestationAttestationObjectEncB64urlTextarea.value = b64url
     const hex = encoders.attestationObject(data, "hex")
     attestationAttestationObjectEncHexTextarea.value = hex
-    const b64urlAuthData = encoders.attestationObject(data, "b64url", true)
+    const b64urlAuthData = encoders.attestationObject(data, "b64url", "authData")
     attestationAuthenticatorDataEncB64urlTextarea.value = b64urlAuthData
-    const hexAuthData = encoders.attestationObject(data, "hex", true)
+    const hexAuthData = encoders.attestationObject(data, "hex", "authData")
     attestationAuthenticatorDataEncHexTextarea.value = hexAuthData
+    const jwk = data.authData.attestedCredentialData.credentialPublicKey
+    const derB64url = await encoders.keys(jwk, "der", "b64url")
+    attestationPublicKeyDerB64urlTextarea.value = derB64url
+    const derHex = await encoders.keys(jwk, "der", "hex")
+    attestationPublicKeyDerHexTextarea.value = derHex
 }
 
-attestationAttestationObjectEncB64urlTextarea.oninput = () => {
+attestationAttestationObjectEncB64urlTextarea.oninput = async () => {
     const data = decoders.attestationObject(attestationAttestationObjectEncB64urlTextarea.value, "b64url")
     editors.attestationAttestationObjectDecEditor.setValue(data)
-    encodeAttestationAttestationObject()
+    await encodeAttestationAttestationObject()
 }
 
-attestationAttestationObjectEncHexTextarea.oninput = () => {
+attestationAttestationObjectEncHexTextarea.oninput = async () => {
     const data = decoders.attestationObject(attestationAttestationObjectEncHexTextarea.value, "hex")
     editors.attestationAttestationObjectDecEditor.setValue(data)
-    encodeAttestationAttestationObject()
+    await encodeAttestationAttestationObject()
 }
 
-editors.attestationAttestationObjectDecEditor.on("change", () => {
-    encodeAttestationAttestationObject()
+editors.attestationAttestationObjectDecEditor.on("change", async () => {
+    await encodeAttestationAttestationObject()
 })
 
 attestationSendKeyToParserBtn.onclick = () => {
