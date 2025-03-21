@@ -1,5 +1,5 @@
 import { encode as encodeCbor } from "cborg"
-import { strToB64url, strToHex, intToHex, hexToB64url, hexToUint8, jwkToCose, uint8ToHex, uint8ToB64url, jwkToPem } from "./converters.js"
+import { strToB64url, strToHex, intToHex, hexToB64url, hexToUint8, jwkToCose, uint8ToHex, uint8ToB64url, jwkToPem, b64ToB64url } from "./converters.js"
 
 export const clientDataJSON = (data, codec) => {
     if (codec == "b64url") {
@@ -159,9 +159,13 @@ export const keys = async (data, format, codec) => {
         const cose = jwkToCose(data)
         const cbor = encodeCbor(cose)
         return uint8ToHex(cbor)
-    } else if (format == "pem" && codec == "str") {
+    } else if (format == "pem" && codec == "b64") {
         const pem = await jwkToPem(data)
         return pem
+    } else if (format == "der" && codec == "b64url") {
+        const pem = await jwkToPem(data)
+        const der = b64ToB64url(pem.replace(/-----BEGIN .*-----|-----END .*-----|[\r\n]/g, ""))
+        return der
     } else {
         throw new Error(`Unsupported format and codec: ${format}, ${codec}`)
     }

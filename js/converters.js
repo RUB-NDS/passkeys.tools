@@ -78,6 +78,11 @@ export const intToHex = (int, octets) => {
     return hex
 }
 
+export const b64ToB64url = (b64) => {
+    const b64url = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
+    return b64url
+}
+
 export const uint8MapToBufferMap = (uint8Map) => {
     const bufferMap = new Map()
     for (const [k, v] of uint8Map.entries()) {

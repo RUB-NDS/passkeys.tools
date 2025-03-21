@@ -34,7 +34,7 @@
 <div class="row mb-3">
     <div class="col-md-6">
         <div class="d-flex flex-column justify-content-between full-height">
-            <div class="card mb-3 one-third-height">
+            <div class="card mb-3 quarter-height">
                 <div class="card-header">
                     <i class="bi bi-code-square"></i> COSE <span class="ms-1 small-gray">B64URL</span>
                 </div>
@@ -42,7 +42,7 @@
                     <textarea class="form-control border-0" id="keysCoseB64urlTextarea"></textarea>
                 </div>
             </div>
-            <div class="card mb-3 one-third-height">
+            <div class="card mb-3 quarter-height">
                 <div class="card-header">
                     <i class="bi bi-code-square"></i> COSE <span class="ms-1 small-gray">HEX</span>
                 </div>
@@ -50,12 +50,20 @@
                     <textarea class="form-control border-0" id="keysCoseHexTextarea"></textarea>
                 </div>
             </div>
-            <div class="card one-third-height">
+            <div class="card mb-3 quarter-height">
                 <div class="card-header">
-                    <i class="bi bi-code-square"></i> PEM <span class="ms-1 small-gray">STR</span>
+                    <i class="bi bi-code-square"></i> PEM <span class="ms-1 small-gray">B64</span>
                 </div>
                 <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="keysPemStrTextarea" disabled></textarea>
+                    <textarea class="form-control border-0" id="keysPemB64Textarea" disabled></textarea>
+                </div>
+            </div>
+            <div class="card quarter-height">
+                <div class="card-header">
+                    <i class="bi bi-code-square"></i> DER <span class="ms-1 small-gray">B64URL</span>
+                </div>
+                <div class="card-body p-0">
+                    <textarea class="form-control border-0" id="keysDerB64urlTextarea" disabled></textarea>
                 </div>
             </div>
         </div>

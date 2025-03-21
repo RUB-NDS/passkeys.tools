@@ -298,8 +298,10 @@ const encodeKeys = async () => {
     keysCoseB64urlTextarea.value = b64url
     const hex = await encoders.keys(data, "cose", "hex")
     keysCoseHexTextarea.value = hex
-    const pem = await encoders.keys(data, "pem", "str")
-    keysPemStrTextarea.value = pem
+    const pem = await encoders.keys(data, "pem", "b64")
+    keysPemB64Textarea.value = pem
+    const der = await encoders.keys(data, "der", "b64url")
+    keysDerB64urlTextarea.value = der
 }
 
 keysCoseB64urlTextarea.oninput = async () => {
