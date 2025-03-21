@@ -12,6 +12,13 @@ import {
     parsePublicKeyCredentialRequestOptions
 } from "./converters.js"
 
+const showTab = (tab) => {
+    const tabBtn = document.querySelector(`[data-bs-target="#${tab}-tab-pane"]`)
+    const bsTab = new bootstrap.Tab(tabBtn)
+    bsTab.show()
+    window.scrollTo(0, 0)
+}
+
 /* create */
 
 createWebApiBtn.onclick = () => {
@@ -111,6 +118,14 @@ attestationAttestationObjectEncHexTextarea.oninput = () => {
 editors.attestationAttestationObjectDecEditor.on("change", () => {
     encodeAttestationAttestationObject()
 })
+
+attestationSendKeyToParserBtn.onclick = () => {
+    const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+    const key = attestationObject.authData.attestedCredentialData.credentialPublicKey
+    editors.keysJwkEditor.setValue(key)
+    encodeKeys()
+    showTab("keys")
+}
 
 attestationLoadKeyBtn.onclick = async () => {
     const name = attestationLoadKeyNameSelect.value
