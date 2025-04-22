@@ -8,6 +8,7 @@ import { algs, getKey, getKeys, storeKey, generateKey, deleteKey } from "./keys.
 import { navigatorCredentialsCreate, navigatorCredentialsGet } from "./webapi.js"
 import {
     b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr,
+    strToB64, b64urlToB64, hexToB64, b64ToStr, b64ToB64url, b64ToHex,
     uint8ToHex, strSha256Uint8, parsePublicKeyCredentialCreationOptions,
     parsePublicKeyCredentialRequestOptions
 } from "./converters.js"
@@ -463,16 +464,25 @@ keysDeleteKeyBtn.onclick = () => {
 convertersStrTextarea.oninput = () => {
     convertersHexTextarea.value = strToHex(convertersStrTextarea.value)
     convertersB64urlTextarea.value = strToB64url(convertersStrTextarea.value)
+    convertersB64Textarea.value = strToB64(convertersStrTextarea.value)
 }
 
 convertersB64urlTextarea.oninput = () => {
     convertersStrTextarea.value = b64urlToStr(convertersB64urlTextarea.value)
     convertersHexTextarea.value = b64urlToHex(convertersB64urlTextarea.value)
+    convertersB64Textarea.value = b64urlToB64(convertersB64urlTextarea.value)
 }
 
 convertersHexTextarea.oninput = () => {
     convertersStrTextarea.value = hexToStr(convertersHexTextarea.value)
     convertersB64urlTextarea.value = hexToB64url(convertersHexTextarea.value)
+    convertersB64Textarea.value = hexToB64(convertersHexTextarea.value)
+}
+
+convertersB64Textarea.oninput = () => {
+    convertersStrTextarea.value = b64ToStr(convertersB64Textarea.value)
+    convertersB64urlTextarea.value = b64ToB64url(convertersB64Textarea.value)
+    convertersHexTextarea.value = b64ToHex(convertersB64Textarea.value)
 }
 
 /* examples */

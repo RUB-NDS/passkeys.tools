@@ -21,6 +21,13 @@ export const b64urlToStr = (b64url) => {
     return str
 }
 
+export const b64urlToB64 = (b64url) => {
+    const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/")
+    const padding = "=".repeat((4 - b64.length % 4) % 4)
+    const b64WithPadding = b64 + padding
+    return b64WithPadding
+}
+
 export const hexToStr = (hex) => {
     const bin = hex.match(/.{2}/g).map(c => String.fromCharCode(parseInt(c, 16))).join("")
     return bin
@@ -36,6 +43,12 @@ export const hexToB64url = (hex) => {
     const b64 = btoa(bin)
     const b64url = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
     return b64url
+}
+
+export const hexToB64 = (hex) => {
+    const bin = hex.match(/.{2}/g).map(c => String.fromCharCode(parseInt(c, 16))).join("")
+    const b64 = btoa(bin)
+    return b64
 }
 
 export const hexToUint8 = (hex) => {
@@ -68,6 +81,11 @@ export const strToB64url = (str) => {
     return b64url
 }
 
+export const strToB64 = (str) => {
+    const b64 = btoa(str)
+    return b64
+}
+
 export const intToHex = (int, octets) => {
     let hex = int.toString(16)
     if (hex.length < octets * 2) {
@@ -81,6 +99,18 @@ export const intToHex = (int, octets) => {
 export const b64ToB64url = (b64) => {
     const b64url = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
     return b64url
+}
+
+export const b64ToStr = (b64) => {
+    const bin = atob(b64)
+    const str = Array.from(bin).map(c => String.fromCharCode(c.charCodeAt(0))).join("")
+    return str
+}
+
+export const b64ToHex = (b64) => {
+    const bin = atob(b64)
+    const hex = Array.from(bin).map(c => c.charCodeAt(0).toString(16).padStart(2, "0")).join("")
+    return hex
 }
 
 export const uint8MapToBufferMap = (uint8Map) => {
