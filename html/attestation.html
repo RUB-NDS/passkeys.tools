@@ -6,39 +6,37 @@
 
 <div class="row mb-3">
     <div class="col-md-6">
-        <div class="d-flex flex-column justify-content-between full-height">
-            <div class="card mb-3 one-third-height">
-                <div class="card-header">
-                    <i class="bi bi-code-square"></i> Encoded <span class="ms-1 small-gray">B64URL</span>
-                </div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="attestationClientDataJSONEncB64urlTextarea"></textarea>
-                </div>
-            </div>
-            <div class="card mb-3 one-third-height">
-                <div class="card-header">
-                    <i class="bi bi-code-square"></i> Encoded <span class="ms-1 small-gray">HEX</span>
-                </div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="attestationClientDataJSONEncHexTextarea"></textarea>
-                </div>
-            </div>
-            <div class="card one-third-height">
-                <div class="card-header">
-                    <i class="bi bi-code-square"></i> SHA256 <span class="ms-1 small-gray">HEX</span>
-                </div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="attestationClientDataJSONHashHexTextarea" disabled></textarea>
-                </div>
+        <div class="card full-height">
+            <div class="card-header">Decoded</div>
+            <div class="card-body" id="attestationClientDataJSONDecCard">
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="card full-height">
-            <div class="card-header">
-                <i class="bi bi-pencil-square"></i> Decoded <span class="ms-1 small-gray">EDIT TOKEN HERE</span>
+        <div class="d-flex flex-column justify-content-between full-height">
+            <div class="card mb-3 quarter-height">
+                <div class="card-header">B64URL</div>
+                <div class="card-body p-0">
+                    <textarea class="form-control border-0" id="attestationClientDataJSONEncB64urlTextarea"></textarea>
+                </div>
             </div>
-            <div class="card-body" id="attestationClientDataJSONDecCard">
+            <div class="card mb-3 quarter-height">
+                <div class="card-header">B64</div>
+                <div class="card-body p-0">
+                    <textarea class="form-control border-0" id="attestationClientDataJSONEncB64Textarea"></textarea>
+                </div>
+            </div>
+            <div class="card mb-3 quarter-height">
+                <div class="card-header">HEX</div>
+                <div class="card-body p-0">
+                    <textarea class="form-control border-0" id="attestationClientDataJSONEncHexTextarea"></textarea>
+                </div>
+            </div>
+            <div class="card quarter-height">
+                <div class="card-header">SHA256</div>
+                <div class="card-body p-0">
+                    <textarea class="form-control border-0" id="attestationClientDataJSONHashHexTextarea" disabled></textarea>
+                </div>
             </div>
         </div>
     </div>
@@ -97,31 +95,31 @@
 
 <div class="row mb-3">
     <div class="col-md-6">
-        <div class="d-flex flex-column justify-content-between full-height">
-            <div class="card mb-3 half-height">
-                <div class="card-header">
-                    <i class="bi bi-code-square"></i> Encoded <span class="ms-1 small-gray">B64URL</span>
-                </div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="attestationAttestationObjectEncB64urlTextarea"></textarea>
-                </div>
-            </div>
-            <div class="card half-height">
-                <div class="card-header">
-                    <i class="bi bi-code-square"></i> Encoded <span class="ms-1 small-gray">HEX</span>
-                </div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="attestationAttestationObjectEncHexTextarea"></textarea>
-                </div>
+        <div class="card full-height">
+            <div class="card-header">Decoded</div>
+            <div class="card-body" id="attestationAttestationObjectDecCard">
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="card full-height">
-            <div class="card-header">
-                <i class="bi bi-pencil-square"></i> Decoded <span class="ms-1 small-gray">EDIT TOKEN HERE</span>
+        <div class="d-flex flex-column justify-content-between full-height">
+            <div class="card mb-3 one-third-height">
+                <div class="card-header">B64URL</div>
+                <div class="card-body p-0">
+                    <textarea class="form-control border-0" id="attestationAttestationObjectEncB64urlTextarea"></textarea>
+                </div>
             </div>
-            <div class="card-body" id="attestationAttestationObjectDecCard">
+            <div class="card mb-3 one-third-height">
+                <div class="card-header">B64</div>
+                <div class="card-body p-0">
+                    <textarea class="form-control border-0" id="attestationAttestationObjectEncB64Textarea"></textarea>
+                </div>
+            </div>
+            <div class="card one-third-height">
+                <div class="card-header">HEX</div>
+                <div class="card-body p-0">
+                    <textarea class="form-control border-0" id="attestationAttestationObjectEncHexTextarea"></textarea>
+                </div>
             </div>
         </div>
     </div>
@@ -134,21 +132,25 @@
 </div>
 
 <div class="row mb-3">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="card one-third-height">
-            <div class="card-header">
-                <i class="bi bi-code-square"></i> Encoded <span class="ms-1 small-gray">B64URL</span>
-            </div>
+            <div class="card-header">B64URL</div>
             <div class="card-body p-0">
                 <textarea class="form-control border-0" id="attestationAuthenticatorDataEncB64urlTextarea" disabled></textarea>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="card one-third-height">
-            <div class="card-header">
-                <i class="bi bi-code-square"></i> Encoded <span class="ms-1 small-gray">HEX</span>
+            <div class="card-header">B64</div>
+            <div class="card-body p-0">
+                <textarea class="form-control border-0" id="attestationAuthenticatorDataEncB64Textarea" disabled></textarea>
             </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card one-third-height">
+            <div class="card-header">HEX</div>
             <div class="card-body p-0">
                 <textarea class="form-control border-0" id="attestationAuthenticatorDataEncHexTextarea" disabled></textarea>
             </div>
@@ -163,20 +165,30 @@
 </div>
 
 <div class="row mb-3">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="card quarter-height">
             <div class="card-header">
-                <i class="bi bi-code-square"></i> DER <span class="ms-1 small-gray">B64URL</span>
+                B64URL <span class="ms-1 small-gray">DER</span>
             </div>
             <div class="card-body p-0">
                 <textarea class="form-control border-0" id="attestationPublicKeyDerB64urlTextarea" disabled></textarea>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="card quarter-height">
             <div class="card-header">
-                <i class="bi bi-code-square"></i> DER <span class="ms-1 small-gray">HEX</span>
+                B64 <span class="ms-1 small-gray">DER</span>
+            </div>
+            <div class="card-body p-0">
+                <textarea class="form-control border-0" id="attestationPublicKeyDerB64Textarea" disabled></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card quarter-height">
+            <div class="card-header">
+                HEX <span class="ms-1 small-gray">DER</span>
             </div>
             <div class="card-body p-0">
                 <textarea class="form-control border-0" id="attestationPublicKeyDerHexTextarea" disabled></textarea>

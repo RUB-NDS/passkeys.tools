@@ -68,6 +68,8 @@ const encodeAttestationClientDataJSON = async () => {
     const data = editors.attestationClientDataJSONDecEditor.getValue()
     const b64url = encoders.clientDataJSON(data, "b64url")
     attestationClientDataJSONEncB64urlTextarea.value = b64url
+    const b64 = encoders.clientDataJSON(data, "b64")
+    attestationClientDataJSONEncB64Textarea.value = b64
     const hex = encoders.clientDataJSON(data, "hex")
     attestationClientDataJSONEncHexTextarea.value = hex
     const hash = uint8ToHex(await strSha256Uint8(JSON.stringify(data)))
@@ -76,6 +78,12 @@ const encodeAttestationClientDataJSON = async () => {
 
 attestationClientDataJSONEncB64urlTextarea.oninput = async () => {
     const data = decoders.clientDataJSON(attestationClientDataJSONEncB64urlTextarea.value, "b64url")
+    editors.attestationClientDataJSONDecEditor.setValue(data)
+    await encodeAttestationClientDataJSON()
+}
+
+attestationClientDataJSONEncB64Textarea.oninput = async () => {
+    const data = decoders.clientDataJSON(attestationClientDataJSONEncB64Textarea.value, "b64")
     editors.attestationClientDataJSONDecEditor.setValue(data)
     await encodeAttestationClientDataJSON()
 }
@@ -96,21 +104,33 @@ const encodeAttestationAttestationObject = async () => {
     const data = editors.attestationAttestationObjectDecEditor.getValue()
     const b64url = encoders.attestationObject(data, "b64url")
     attestationAttestationObjectEncB64urlTextarea.value = b64url
+    const b64 = encoders.attestationObject(data, "b64")
+    attestationAttestationObjectEncB64Textarea.value = b64
     const hex = encoders.attestationObject(data, "hex")
     attestationAttestationObjectEncHexTextarea.value = hex
     const b64urlAuthData = encoders.attestationObject(data, "b64url", "authData")
     attestationAuthenticatorDataEncB64urlTextarea.value = b64urlAuthData
+    const b64AuthData = encoders.attestationObject(data, "b64", "authData")
+    attestationAuthenticatorDataEncB64Textarea.value = b64AuthData
     const hexAuthData = encoders.attestationObject(data, "hex", "authData")
     attestationAuthenticatorDataEncHexTextarea.value = hexAuthData
     const jwk = data.authData.attestedCredentialData.credentialPublicKey
     const derB64url = await encoders.keys(jwk, "der", "b64url")
     attestationPublicKeyDerB64urlTextarea.value = derB64url
+    const derB64 = await encoders.keys(jwk, "der", "b64")
+    attestationPublicKeyDerB64Textarea.value = derB64
     const derHex = await encoders.keys(jwk, "der", "hex")
     attestationPublicKeyDerHexTextarea.value = derHex
 }
 
 attestationAttestationObjectEncB64urlTextarea.oninput = async () => {
     const data = decoders.attestationObject(attestationAttestationObjectEncB64urlTextarea.value, "b64url")
+    editors.attestationAttestationObjectDecEditor.setValue(data)
+    await encodeAttestationAttestationObject()
+}
+
+attestationAttestationObjectEncB64Textarea.oninput = async () => {
+    const data = decoders.attestationObject(attestationAttestationObjectEncB64Textarea.value, "b64")
     editors.attestationAttestationObjectDecEditor.setValue(data)
     await encodeAttestationAttestationObject()
 }

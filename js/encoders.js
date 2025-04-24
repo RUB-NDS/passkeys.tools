@@ -184,6 +184,10 @@ export const keys = async (data, format, codec) => {
         const pem = await jwkToPem(data)
         const der = b64ToB64url(pem.replace(/-----BEGIN .*-----|-----END .*-----|[\r\n]/g, ""))
         return der
+    } else if (format == "der" && codec == "b64") {
+        const pem = await jwkToPem(data)
+        const der = pem.replace(/-----BEGIN .*-----|-----END .*-----|[\r\n]/g, "")
+        return der
     } else if (format == "der" && codec == "hex") {
         const pem = await jwkToPem(data)
         const derB64url = b64ToB64url(pem.replace(/-----BEGIN .*-----|-----END .*-----|[\r\n]/g, ""))
