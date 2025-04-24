@@ -330,6 +330,8 @@ const encodeKeys = async () => {
     const data = editors.keysJwkEditor.getValue()
     const b64url = await encoders.keys(data, "cose", "b64url")
     keysCoseB64urlTextarea.value = b64url
+    const b64 = await encoders.keys(data, "cose", "b64")
+    keysCoseB64Textarea.value = b64
     const hex = await encoders.keys(data, "cose", "hex")
     keysCoseHexTextarea.value = hex
     const pem = await encoders.keys(data, "pem", "b64")
@@ -340,6 +342,12 @@ const encodeKeys = async () => {
 
 keysCoseB64urlTextarea.oninput = async () => {
     const data = await decoders.keys(keysCoseB64urlTextarea.value, "cose", "b64url")
+    editors.keysJwkEditor.setValue(data)
+    encodeKeys()
+}
+
+keysCoseB64Textarea.oninput = async () => {
+    const data = await decoders.keys(keysCoseB64Textarea.value, "cose", "b64")
     editors.keysJwkEditor.setValue(data)
     encodeKeys()
 }
@@ -422,6 +430,9 @@ export const renderKeys = () => {
         const credentialIdB64urlCell = document.createElement("td")
         credentialIdB64urlCell.textContent = key.credentialId ? hexToB64url(key.credentialId) : "N/A"
         row.appendChild(credentialIdB64urlCell)
+        const credentialIdB64Cell = document.createElement("td")
+        credentialIdB64Cell.textContent = key.credentialId ? hexToB64(key.credentialId) : "N/A"
+        row.appendChild(credentialIdB64Cell)
         const publicKeyCell = document.createElement("td")
         const publicKeyPre = document.createElement("pre")
         publicKeyPre.textContent = JSON.stringify(key.publicKey, null, 2)
@@ -473,8 +484,10 @@ keysUpdateCredentialIdBtn.onclick = () => {
     const name = keysUpdateCredentialIdSelect.value
     const credentialIdHex = keysUpdateCredentialIdHexInput.value
     const credentialIdB64url = keysUpdateCredentialIdB64urlInput.value
+    const credentialIdB64 = keysUpdateCredentialIdB64Input.value
     if (credentialIdHex) storeKey(name, { credentialId: credentialIdHex })
     else if (credentialIdB64url) storeKey(name, { credentialId: b64urlToHex(credentialIdB64url) })
+    else if (credentialIdB64) storeKey(name, { credentialId: b64ToHex(credentialIdB64) })
     else storeKey(name, { credentialId: "" })
     renderKeys()
 }

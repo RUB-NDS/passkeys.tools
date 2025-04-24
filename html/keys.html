@@ -33,47 +33,55 @@
 
 <div class="row mb-3">
     <div class="col-md-6">
+        <div class="card full-height">
+            <div class="card-header">
+                JWK <span class="ms-1 small-gray">JSON</span>
+            </div>
+            <div class="card-body" id="keysJwkCard">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
         <div class="d-flex flex-column justify-content-between full-height">
-            <div class="card mb-3 quarter-height">
+            <div class="card mb-3 fifth-height">
                 <div class="card-header">
-                    <i class="bi bi-code-square"></i> COSE <span class="ms-1 small-gray">B64URL</span>
+                    COSE <span class="ms-1 small-gray">B64URL</span>
                 </div>
                 <div class="card-body p-0">
                     <textarea class="form-control border-0" id="keysCoseB64urlTextarea"></textarea>
                 </div>
             </div>
-            <div class="card mb-3 quarter-height">
+            <div class="card mb-3 fifth-height">
                 <div class="card-header">
-                    <i class="bi bi-code-square"></i> COSE <span class="ms-1 small-gray">HEX</span>
+                    COSE <span class="ms-1 small-gray">B64</span>
+                </div>
+                <div class="card-body p-0">
+                    <textarea class="form-control border-0" id="keysCoseB64Textarea"></textarea>
+                </div>
+            </div>
+            <div class="card mb-3 fifth-height">
+                <div class="card-header">
+                    COSE <span class="ms-1 small-gray">HEX</span>
                 </div>
                 <div class="card-body p-0">
                     <textarea class="form-control border-0" id="keysCoseHexTextarea"></textarea>
                 </div>
             </div>
-            <div class="card mb-3 quarter-height">
+            <div class="card mb-3 fifth-height">
                 <div class="card-header">
-                    <i class="bi bi-code-square"></i> PEM <span class="ms-1 small-gray">B64</span>
+                    PEM <span class="ms-1 small-gray">B64</span>
                 </div>
                 <div class="card-body p-0">
                     <textarea class="form-control border-0" id="keysPemB64Textarea" disabled></textarea>
                 </div>
             </div>
-            <div class="card quarter-height">
+            <div class="card fifth-height">
                 <div class="card-header">
-                    <i class="bi bi-code-square"></i> DER <span class="ms-1 small-gray">B64URL</span>
+                    DER <span class="ms-1 small-gray">B64URL</span>
                 </div>
                 <div class="card-body p-0">
                     <textarea class="form-control border-0" id="keysDerB64urlTextarea" disabled></textarea>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card full-height">
-            <div class="card-header">
-                <i class="bi bi-pencil-square"></i> JWK <span class="ms-1 small-gray">JSON</span>
-            </div>
-            <div class="card-body" id="keysJwkCard">
             </div>
         </div>
     </div>
@@ -100,6 +108,7 @@
                 <span class="input-group-text">Update Credential ID</span>
                 <input type="text" class="form-control" id="keysUpdateCredentialIdHexInput" placeholder="Choose a hex cid ..." style="max-width: 200px;">
                 <input type="text" class="form-control" id="keysUpdateCredentialIdB64urlInput" placeholder="Choose a b64url cid ..." style="max-width: 200px;">
+                <input type="text" class="form-control" id="keysUpdateCredentialIdB64Input" placeholder="Choose a b64 cid ..." style="max-width: 200px;">
                 <select class="form-select" id="keysUpdateCredentialIdSelect" style="max-width: 200px;"></select>
                 <button class="btn btn-primary" id="keysUpdateCredentialIdBtn">Update</button>
             </div>
@@ -122,6 +131,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">CID (hex)</th>
                     <th scope="col">CID (b64url)</th>
+                    <th scope="col">CID (b64)</th>
                     <th scope="col">Public Key</th>
                     <th scope="col">Private Key</th>
                 </tr>

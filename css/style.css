@@ -32,26 +32,37 @@ textarea {
     height: 225px;
 }
 
+.fifth-height {
+    height: 180px;
+}
+
 .keys-table {
     table-layout: fixed;
     width: 100%;
 }
 
 .keys-table th:nth-child(1),
-.keys-table td:nth-child(1),
-.keys-table th:nth-child(2),
-.keys-table td:nth-child(2),
-.keys-table th:nth-child(3),
-.keys-table td:nth-child(3) {
+.keys-table td:nth-child(1) {
     width: 10%;
     white-space: nowrap;
     overflow: auto;
 }
 
+.keys-table th:nth-child(2),
+.keys-table td:nth-child(2),
+.keys-table th:nth-child(3),
+.keys-table td:nth-child(3),
 .keys-table th:nth-child(4),
-.keys-table td:nth-child(4),
+.keys-table td:nth-child(4) {
+    width: 10%;
+    white-space: nowrap;
+    overflow: auto;
+}
+
 .keys-table th:nth-child(5),
-.keys-table td:nth-child(5) {
+.keys-table td:nth-child(5),
+.keys-table th:nth-child(6),
+.keys-table td:nth-child(6) {
     width: 30%;
     white-space: nowrap;
     overflow: auto;
