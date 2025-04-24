@@ -1,12 +1,15 @@
 import { encode as encodeCbor } from "cborg"
 import {
     strToB64url, strToHex, intToHex, hexToB64url, hexToUint8, jwkToCose,
-    uint8ToHex, uint8ToB64url, jwkToPem, b64ToB64url, b64urlToHex
+    uint8ToHex, uint8ToB64url, jwkToPem, b64ToB64url, b64urlToHex,
+    hexToB64, strToB64, uint8ToB64,
 } from "./converters.js"
 
 export const clientDataJSON = (data, codec) => {
     if (codec == "b64url") {
         return strToB64url(JSON.stringify(data))
+    } else if (codec == "b64") {
+        return strToB64(JSON.stringify(data))
     } else if (codec == "hex") {
         return strToHex(JSON.stringify(data))
     } else {
@@ -108,6 +111,12 @@ export const attestationObject = (data, codec, limit="") => {
         } else {
             return uint8ToB64url(attestationObjectCbor)
         }
+    } else if (codec == "b64") {
+        if (limit == "authData") {
+            return uint8ToB64(attestationObject["authData"])
+        } else {
+            return uint8ToB64(attestationObjectCbor)
+        }
     } else if (codec == "hex") {
         if (limit == "authData") {
             return uint8ToHex(attestationObject["authData"])
@@ -146,6 +155,8 @@ export const authenticatorData = (data, codec) => {
 
     if (codec == "b64url") {
         return hexToB64url(authenticatorData)
+    } else if (codec == "b64") {
+        return hexToB64(authenticatorData)
     } else if (codec == "hex") {
         return authenticatorData
     } else {
@@ -158,6 +169,10 @@ export const keys = async (data, format, codec) => {
         const cose = jwkToCose(data)
         const cbor = encodeCbor(cose)
         return uint8ToB64url(cbor)
+    } else if (format == "cose" && codec == "b64") {
+        const cose = jwkToCose(data)
+        const cbor = encodeCbor(cose)
+        return uint8ToB64(cbor)
     } else if (format == "cose" && codec == "hex") {
         const cose = jwkToCose(data)
         const cbor = encodeCbor(cose)

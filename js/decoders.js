@@ -1,9 +1,14 @@
 import { decode as decodeCbor, decodeFirst } from "cborg"
-import { b64urlToStr, hexToStr, b64urlToUint8, uint8ToHex, uint8ToInt, hexToUint8, coseToJwk, pemToJwk } from "./converters.js"
+import {
+    b64urlToStr, hexToStr, b64urlToUint8, uint8ToHex, uint8ToInt,
+    hexToUint8, coseToJwk, pemToJwk, b64ToStr, b64ToUint8
+} from "./converters.js"
 
 export const clientDataJSON = (data, codec) => {
     if (codec == "b64url") {
         return JSON.parse(b64urlToStr(data))
+    } else if (codec == "b64") {
+        return JSON.parse(b64ToStr(data))
     } else if (codec == "hex") {
         return JSON.parse(hexToStr(data))
     } else {
@@ -15,6 +20,8 @@ export const attestationObject = (data, codec) => {
     let uint8 = undefined
     if (codec == "b64url") {
         uint8 = b64urlToUint8(data)
+    } else if (codec == "b64") {
+        uint8 = b64ToUint8(data)
     } else if (codec == "hex") {
         uint8 = hexToUint8(data)
     } else {
@@ -121,6 +128,8 @@ export const authenticatorData = (data, codec) => {
     let uint8 = undefined
     if (codec == "b64url") {
         uint8 = b64urlToUint8(data)
+    } else if (codec == "b64") {
+        uint8 = b64ToUint8(data)
     } else if (codec == "hex") {
         uint8 = hexToUint8(data)
     } else {
@@ -170,6 +179,11 @@ export const authenticatorData = (data, codec) => {
 export const keys = async (data, format, codec) => {
     if (format == "cose" && codec == "b64url") {
         const uint8 = b64urlToUint8(data)
+        const cbor = decodeCbor(uint8, {useMaps: true})
+        const jwk = coseToJwk(cbor)
+        return jwk
+    } else if (format == "cose" && codec == "b64") {
+        const uint8 = b64ToUint8(data)
         const cbor = decodeCbor(uint8, {useMaps: true})
         const jwk = coseToJwk(cbor)
         return jwk

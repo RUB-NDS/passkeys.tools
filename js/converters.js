@@ -7,6 +7,12 @@ export const b64urlToUint8 = (b64url) => {
     return uint8
 }
 
+export const b64ToUint8 = (b64) => {
+    const bin = atob(b64)
+    const uint8 = new Uint8Array(bin.split("").map(c => c.charCodeAt(0)))
+    return uint8
+}
+
 export const b64urlToHex = (b64url) => {
     const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/")
     const bin = atob(b64)
@@ -65,6 +71,12 @@ export const uint8ToB64url = (uint8) => {
     const b64 = btoa(bin)
     const b64url = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
     return b64url
+}
+
+export const uint8ToB64 = (uint8) => {
+    const bin = Array.from(uint8).map(c => String.fromCharCode(c)).join("")
+    const b64 = btoa(bin)
+    return b64
 }
 
 export const uint8ToInt = (uint8) => {

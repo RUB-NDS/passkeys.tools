@@ -190,6 +190,8 @@ const encodeAssertionClientDataJSON = async () => {
     const data = editors.assertionClientDataJSONDecEditor.getValue()
     const b64url = encoders.clientDataJSON(data, "b64url")
     assertionClientDataJSONEncB64urlTextarea.value = b64url
+    const b64 = encoders.clientDataJSON(data, "b64")
+    assertionClientDataJSONEncB64Textarea.value = b64
     const hex = encoders.clientDataJSON(data, "hex")
     assertionClientDataJSONEncHexTextarea.value = hex
     const hash = uint8ToHex(await strSha256Uint8(JSON.stringify(data)))
@@ -198,6 +200,12 @@ const encodeAssertionClientDataJSON = async () => {
 
 assertionClientDataJSONEncB64urlTextarea.oninput = async () => {
     const data = decoders.clientDataJSON(assertionClientDataJSONEncB64urlTextarea.value, "b64url")
+    editors.assertionClientDataJSONDecEditor.setValue(data)
+    await encodeAssertionClientDataJSON()
+}
+
+assertionClientDataJSONEncB64Textarea.oninput = async () => {
+    const data = decoders.clientDataJSON(assertionClientDataJSONEncB64Textarea.value, "b64")
     editors.assertionClientDataJSONDecEditor.setValue(data)
     await encodeAssertionClientDataJSON()
 }
@@ -218,12 +226,20 @@ const encodeAssertionAuthenticatorData = () => {
     const data = editors.assertionAuthenticatorDataDecEditor.getValue()
     const b64url = encoders.authenticatorData(data, "b64url")
     assertionAuthenticatorDataEncB64urlTextarea.value = b64url
+    const b64 = encoders.authenticatorData(data, "b64")
+    assertionAuthenticatorDataEncB64Textarea.value = b64
     const hex = encoders.authenticatorData(data, "hex")
     assertionAuthenticatorDataEncHexTextarea.value = hex
 }
 
 assertionAuthenticatorDataEncB64urlTextarea.oninput = () => {
     const data = decoders.authenticatorData(assertionAuthenticatorDataEncB64urlTextarea.value, "b64url")
+    editors.assertionAuthenticatorDataDecEditor.setValue(data)
+    encodeAssertionAuthenticatorData()
+}
+
+assertionAuthenticatorDataEncB64Textarea.oninput = () => {
+    const data = decoders.authenticatorData(assertionAuthenticatorDataEncB64Textarea.value, "b64")
     editors.assertionAuthenticatorDataDecEditor.setValue(data)
     encodeAssertionAuthenticatorData()
 }
@@ -258,13 +274,25 @@ assertionRpIdBtn.onclick = async () => {
 assertionSignatureEncB64urlTextarea.oninput = () => {
     const b64url = assertionSignatureEncB64urlTextarea.value
     const hex = b64urlToHex(b64url)
+    const b64 = b64urlToB64(b64url)
     assertionSignatureEncHexTextarea.value = hex
+    assertionSignatureEncB64Textarea.value = b64
+}
+
+assertionSignatureEncB64Textarea.oninput = () => {
+    const b64 = assertionSignatureEncB64Textarea.value
+    const hex = b64ToHex(b64)
+    const b64url = b64ToB64url(b64)
+    assertionSignatureEncHexTextarea.value = hex
+    assertionSignatureEncB64urlTextarea.value = b64url
 }
 
 assertionSignatureEncHexTextarea.oninput = () => {
     const hex = assertionSignatureEncHexTextarea.value
     const b64url = hexToB64url(hex)
+    const b64 = hexToB64(hex)
     assertionSignatureEncB64urlTextarea.value = b64url
+    assertionSignatureEncB64Textarea.value = b64
 }
 
 verifyAssertionWithAttestationKeyBtn.onclick = async () => {
