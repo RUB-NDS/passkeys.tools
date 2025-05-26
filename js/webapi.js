@@ -1,9 +1,10 @@
 
-export const navigatorCredentialsCreate = (publicKeyCredentialCreationOptions) => {
+export const navigatorCredentialsCreate = (publicKeyCredentialCreationOptions, mediation="") => {
     return new Promise((resolve, reject) => {
-        navigator.credentials.create({
-            publicKey: publicKeyCredentialCreationOptions
-        }).then(publicKeyCredential => {
+        const options = { publicKey: publicKeyCredentialCreationOptions }
+        if (mediation) options.mediation = mediation
+        navigator.credentials.create(options)
+        .then(publicKeyCredential => {
             console.log(publicKeyCredential)
             resolve(publicKeyCredential)
         }).catch(error => {
@@ -13,11 +14,12 @@ export const navigatorCredentialsCreate = (publicKeyCredentialCreationOptions) =
     })
 }
 
-export const navigatorCredentialsGet = (publicKeyCredentialRequestOptions) => {
+export const navigatorCredentialsGet = (publicKeyCredentialRequestOptions, mediation="") => {
     return new Promise((resolve, reject) => {
-        navigator.credentials.get({
-            publicKey: publicKeyCredentialRequestOptions
-        }).then(publicKeyCredential => {
+        const options = { publicKey: publicKeyCredentialRequestOptions }
+        if (mediation) options.mediation = mediation
+        navigator.credentials.get(options)
+        .then(publicKeyCredential => {
             console.log(publicKeyCredential)
             resolve(publicKeyCredential)
         }).catch(error => {

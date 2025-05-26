@@ -9,6 +9,10 @@
         <p>
             <button class="btn btn-primary" id="getWebApiBtn">Call Web API</button>
         </p>
+        <div class="input-group">
+            <span class="input-group-text">Conditional Mediation</span>
+            <input type="text" class="form-control" placeholder="Username" name="username" autocomplete="username webauthn" style="max-width: 300px;">
+        </div>
     </div>
 </div>
 
@@ -17,7 +21,9 @@
         <div class="card full-height">
             <div class="card-header">navigator.credentials.get({publicKey: {</div>
             <div class="card-body" id="getCard"></div>
-            <div class="card-footer">}})</div>
+            <div class="card-footer">}, mediation:</div>
+            <div class="card-body" id="mediationGetCard"></div>
+            <div class="card-footer">})</div>
         </div>
     </div>
 </div>

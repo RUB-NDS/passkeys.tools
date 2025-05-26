@@ -46,7 +46,8 @@ createWebApiBtn.onclick = () => {
 getWebApiBtn.onclick = () => {
     getWebApiResult.innerHTML = ""
     const publicKeyCredentialRequestOptions = parsePublicKeyCredentialRequestOptions(editors.getEditor.getValue())
-    navigatorCredentialsGet(publicKeyCredentialRequestOptions).then(publicKeyCredential => {
+    const mediation = editors.mediationGetEditor.getValue()
+    navigatorCredentialsGet(publicKeyCredentialRequestOptions, mediation).then(publicKeyCredential => {
         const publicKeyCredentialJson = publicKeyCredential.toJSON()
         const div = document.createElement("div")
         div.classList = "alert alert-success"

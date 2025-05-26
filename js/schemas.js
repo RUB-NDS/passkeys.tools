@@ -525,3 +525,11 @@ export const getSchema = {
         }
     }
 }
+
+// https://www.w3.org/TR/credential-management-1/#mediation-requirements
+export const mediationSchema = {
+    "type": "string",
+    "required": false,
+    "default": "",
+    "enum": ["", "silent", "optional", "conditional", "required"]
+}

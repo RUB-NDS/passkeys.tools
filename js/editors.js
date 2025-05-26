@@ -1,6 +1,6 @@
 import {
     attestationObjectSchema, assertionAuthenticatorDataSchema, clientDataJSONSchema,
-    jwkSchema, createSchema, getSchema
+    jwkSchema, createSchema, getSchema, mediationSchema
 } from "./schemas.js"
 
 const config = {
@@ -46,4 +46,9 @@ export const createEditor = new JSONEditor(createCard, {
 export const getEditor = new JSONEditor(getCard, {
     ...config,
     schema: getSchema,
+})
+
+export const mediationGetEditor = new JSONEditor(mediationGetCard, {
+    ...config,
+    schema: mediationSchema,
 })
