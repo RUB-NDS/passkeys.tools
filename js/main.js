@@ -580,3 +580,29 @@ examplesLoadBtn.onclick = () => {
 window.addEventListener("load", () => {
     loadExample(examples["ES256 Credential with No Attestation"])
 })
+
+/* pkcco and pkcro */
+
+const loadPkcco = (pkcco) => {
+    console.log("Load PKCCO:", pkcco)
+    editors.createEditor.setValue(pkcco)
+}
+
+const loadPkcro = (pkcro) => {
+    console.log("Load PKCRO:", pkcro)
+    editors.getEditor.setValue(pkcro)
+}
+
+window.addEventListener("load", () => {
+    const hash = window.location.hash.substring(1)
+    const hparams = new URLSearchParams(hash)
+    if (hparams.has("pkcco")) {
+        const pkcco = JSON.parse(hparams.get("pkcco"))
+        loadPkcco(pkcco)
+        showTab("create")
+    } else if (hparams.has("pkcro")) {
+        const pkcro = JSON.parse(hparams.get("pkcro"))
+        loadPkcro(pkcro)
+        showTab("get")
+    }
+})
