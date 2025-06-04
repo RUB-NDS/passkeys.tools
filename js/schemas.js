@@ -319,16 +319,16 @@ export const createSchema = {
                     "default": "Alice Allison"
                 },
                 "id": {
-                    "type": "string", // hex, max 64 bytes
+                    "type": "string", // base64url, max 64 bytes
                     "required": true,
-                    "default": "01020304"
+                    "default": "AQIDBA"
                 }
             }
         },
         "challenge": {
-            "type": "string", // hex
+            "type": "string", // base64url
             "required": true,
-            "default": "AABBCCDD"
+            "default": "qrvM3Q"
         },
         "pubKeyCredParams": {
             "type": "array",
@@ -372,7 +372,7 @@ export const createSchema = {
                         "default": "public-key"
                     },
                     "id": {
-                        "type": "string", // hex
+                        "type": "string", // base64url
                         "required": true
                     },
                     "transports": {
@@ -457,9 +457,9 @@ export const getSchema = {
     "additionalProperties": false,
     "properties": {
         "challenge": {
-            "type": "string", // hex
+            "type": "string", // base64url
             "required": true,
-            "default": "AABBCCDD"
+            "default": "qrvM3Q"
         },
         "timeout": {
             "type": "number",
@@ -486,7 +486,7 @@ export const getSchema = {
                         "default": "public-key"
                     },
                     "id": {
-                        "type": "string", // hex
+                        "type": "string", // base64url
                         "required": true
                     },
                     "transports": {
