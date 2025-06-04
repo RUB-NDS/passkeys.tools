@@ -3,6 +3,7 @@ import * as encoders from "./encoders.js"
 import * as decoders from "./decoders.js"
 import { examples } from "./examples.js"
 import { getAaguids } from "./aaguid.js"
+import { renderCapabilities } from "./capabilities.js"
 import { verifyAssertion, signAssertion } from "./signatures.js"
 import { algs, getKey, getKeys, storeKey, generateKey, deleteKey } from "./keys.js"
 import { navigatorCredentialsCreate, navigatorCredentialsGet } from "./webapi.js"
@@ -19,6 +20,8 @@ const showTab = (tab) => {
     bsTab.show()
     window.scrollTo(0, 0)
 }
+
+renderCapabilities()
 
 /* create */
 

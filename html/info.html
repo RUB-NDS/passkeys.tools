@@ -8,7 +8,14 @@
 
 <div class="row mb-3">
     <div class="col">
-        <p>Current Limitations:</p>
+        <h5>Client Capabilities</h5>
+        <div id="capabilities"></div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <h5>Current Limitations</h5>
         <ul>
             <li>Only the <a href="https://www.w3.org/TR/webauthn-3/#sctn-none-attestation">None</a> and <a href="https://www.w3.org/TR/webauthn-3/#sctn-packed-attestation">Packed</a> attestation statement formats are supported.</li>
             <li>To use the Ed25519 algorithm <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#browser_compatibility">in Chrome</a>, you need to enable the <a href="chrome://flags/#enable-experimental-web-platform-features">#enable-experimental-web-platform-features</a> flag.</li>
