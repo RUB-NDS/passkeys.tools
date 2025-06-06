@@ -647,14 +647,14 @@ const parseHashParams = () => {
     if (hparams.has("pkcco") && hparams.has("origin")) {
         const pkcco = JSON.parse(hparams.get("pkcco"))
         const origin = hparams.get("origin")
-        const crossOrigin = hparams.get("crossOrigin") in ["true", "false"] ?
+        const crossOrigin = ["true", "false"].includes(hparams.get("crossOrigin")) ?
             (hparams.get("crossOrigin") == "true" ? true : false) : undefined
         const topOrigin = hparams.get("topOrigin") || undefined
         applyPkcco(pkcco, origin, crossOrigin, topOrigin)
     } else if (hparams.has("pkcro") && hparams.has("origin")) {
         const pkcro = JSON.parse(hparams.get("pkcro"))
         const origin = hparams.get("origin")
-        const crossOrigin = hparams.get("crossOrigin") in ["true", "false"] ?
+        const crossOrigin = ["true", "false"].includes(hparams.get("crossOrigin")) ?
             (hparams.get("crossOrigin") == "true" ? true : false) : undefined
         const topOrigin = hparams.get("topOrigin") || undefined
         applyPkcro(pkcro, origin, crossOrigin, topOrigin)
