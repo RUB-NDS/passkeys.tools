@@ -23,8 +23,7 @@ export const clientDataJSONSchema = {
         },
         "crossOrigin": {
             "type": "boolean",
-            "required": true,
-            "default": false,
+            "required": false,
             "propertyOrder": 4
         },
         "topOrigin": {

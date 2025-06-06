@@ -593,16 +593,75 @@ const loadPkcro = (pkcro) => {
     editors.getEditor.setValue(pkcro)
 }
 
-window.addEventListener("load", () => {
+const applyPkcco = (pkcco, origin, crossOrigin=undefined, topOrigin=undefined) => {
+    console.log("Apply PKCCO:", pkcco, origin, crossOrigin, topOrigin)
+
+    // clientDataJSON
+    const clientDataJSON = {}
+    clientDataJSON.type = "webauthn.create"
+    clientDataJSON.challenge = pkcco.challenge
+    clientDataJSON.origin = origin
+    if (crossOrigin != undefined) clientDataJSON.crossOrigin = crossOrigin
+    if (topOrigin != undefined) clientDataJSON.topOrigin = topOrigin
+    editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+
+    // attestationObject
+    // todo
+}
+
+const applyPkcro = (pkcro, origin, crossOrigin=undefined, topOrigin=undefined) => {
+    console.log("Apply PKCRO:", pkcro, origin, crossOrigin, topOrigin)
+
+    // clientDataJSON
+    const clientDataJSON = {}
+    clientDataJSON.type = "webauthn.get"
+    clientDataJSON.challenge = pkcro.challenge
+    clientDataJSON.origin = origin
+    if (crossOrigin != undefined) clientDataJSON.crossOrigin = crossOrigin
+    if (topOrigin != undefined) clientDataJSON.topOrigin = topOrigin
+    editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
+
+    // authenticatorData
+    // todo
+
+    // signature
+    // todo
+}
+
+/* parse hash params */
+
+const parseHashParams = () => {
     const hash = window.location.hash.substring(1)
     const hparams = new URLSearchParams(hash)
+
+    // create + get
     if (hparams.has("pkcco")) {
         const pkcco = JSON.parse(hparams.get("pkcco"))
         loadPkcco(pkcco)
-        showTab("create")
     } else if (hparams.has("pkcro")) {
         const pkcro = JSON.parse(hparams.get("pkcro"))
         loadPkcro(pkcro)
-        showTab("get")
     }
+
+    // attestation + assertion
+    if (hparams.has("pkcco") && hparams.has("origin")) {
+        const pkcco = JSON.parse(hparams.get("pkcco"))
+        const origin = hparams.get("origin")
+        const crossOrigin = hparams.get("crossOrigin") in ["true", "false"] ?
+            (hparams.get("crossOrigin") == "true" ? true : false) : undefined
+        const topOrigin = hparams.get("topOrigin") || undefined
+        applyPkcco(pkcco, origin, crossOrigin, topOrigin)
+    } else if (hparams.has("pkcro") && hparams.has("origin")) {
+        const pkcro = JSON.parse(hparams.get("pkcro"))
+        const origin = hparams.get("origin")
+        const crossOrigin = hparams.get("crossOrigin") in ["true", "false"] ?
+            (hparams.get("crossOrigin") == "true" ? true : false) : undefined
+        const topOrigin = hparams.get("topOrigin") || undefined
+        applyPkcro(pkcro, origin, crossOrigin, topOrigin)
+    }
+}
+
+window.addEventListener("load", () => {
+    parseHashParams()
+    window.addEventListener("hashchange", parseHashParams)
 })
