@@ -3,6 +3,7 @@ import * as encoders from "./encoders.js"
 import * as decoders from "./decoders.js"
 import { examples } from "./examples.js"
 import { getAaguids } from "./aaguid.js"
+import { parseInterceptParams } from "./intercept.js"
 import { renderCapabilities } from "./capabilities.js"
 import { verifyAssertion, signAssertion } from "./signatures.js"
 import { algs, getKey, getKeys, storeKey, generateKey, deleteKey } from "./keys.js"
@@ -581,87 +582,12 @@ window.addEventListener("load", () => {
     loadExample(examples["ES256 Credential with No Attestation"])
 })
 
-/* pkcco and pkcro */
+/* parse intercept params */
 
-const loadPkcco = (pkcco) => {
-    console.log("Load PKCCO:", pkcco)
-    editors.createEditor.setValue(pkcco)
-}
+window.addEventListener("load", async () => {
+    await parseInterceptParams()
+})
 
-const loadPkcro = (pkcro) => {
-    console.log("Load PKCRO:", pkcro)
-    editors.getEditor.setValue(pkcro)
-}
-
-const applyPkcco = (pkcco, origin, crossOrigin=undefined, topOrigin=undefined) => {
-    console.log("Apply PKCCO:", pkcco, origin, crossOrigin, topOrigin)
-
-    // clientDataJSON
-    const clientDataJSON = {}
-    clientDataJSON.type = "webauthn.create"
-    clientDataJSON.challenge = pkcco.challenge
-    clientDataJSON.origin = origin
-    if (crossOrigin != undefined) clientDataJSON.crossOrigin = crossOrigin
-    if (topOrigin != undefined) clientDataJSON.topOrigin = topOrigin
-    editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
-
-    // attestationObject
-    // todo
-}
-
-const applyPkcro = (pkcro, origin, crossOrigin=undefined, topOrigin=undefined) => {
-    console.log("Apply PKCRO:", pkcro, origin, crossOrigin, topOrigin)
-
-    // clientDataJSON
-    const clientDataJSON = {}
-    clientDataJSON.type = "webauthn.get"
-    clientDataJSON.challenge = pkcro.challenge
-    clientDataJSON.origin = origin
-    if (crossOrigin != undefined) clientDataJSON.crossOrigin = crossOrigin
-    if (topOrigin != undefined) clientDataJSON.topOrigin = topOrigin
-    editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
-
-    // authenticatorData
-    // todo
-
-    // signature
-    // todo
-}
-
-/* parse hash params */
-
-const parseHashParams = () => {
-    const hash = window.location.hash.substring(1)
-    const hparams = new URLSearchParams(hash)
-
-    // create + get
-    if (hparams.has("pkcco")) {
-        const pkcco = JSON.parse(hparams.get("pkcco"))
-        loadPkcco(pkcco)
-    } else if (hparams.has("pkcro")) {
-        const pkcro = JSON.parse(hparams.get("pkcro"))
-        loadPkcro(pkcro)
-    }
-
-    // attestation + assertion
-    if (hparams.has("pkcco") && hparams.has("origin")) {
-        const pkcco = JSON.parse(hparams.get("pkcco"))
-        const origin = hparams.get("origin")
-        const crossOrigin = ["true", "false"].includes(hparams.get("crossOrigin")) ?
-            (hparams.get("crossOrigin") == "true" ? true : false) : undefined
-        const topOrigin = hparams.get("topOrigin") || undefined
-        applyPkcco(pkcco, origin, crossOrigin, topOrigin)
-    } else if (hparams.has("pkcro") && hparams.has("origin")) {
-        const pkcro = JSON.parse(hparams.get("pkcro"))
-        const origin = hparams.get("origin")
-        const crossOrigin = ["true", "false"].includes(hparams.get("crossOrigin")) ?
-            (hparams.get("crossOrigin") == "true" ? true : false) : undefined
-        const topOrigin = hparams.get("topOrigin") || undefined
-        applyPkcro(pkcro, origin, crossOrigin, topOrigin)
-    }
-}
-
-window.addEventListener("load", () => {
-    parseHashParams()
-    window.addEventListener("hashchange", parseHashParams)
+window.addEventListener("hashchange", async () => {
+    await parseInterceptParams()
 })
