@@ -15,7 +15,7 @@ import {
     parsePublicKeyCredentialRequestOptions
 } from "./converters.js"
 
-const showTab = (tab) => {
+export const showTab = (tab) => {
     const tabBtn = document.querySelector(`[data-bs-target="#${tab}-tab-pane"]`)
     const bsTab = new bootstrap.Tab(tabBtn)
     bsTab.show()

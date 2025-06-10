@@ -1,15 +1,22 @@
 import * as editors from "./editors.js"
+import { showTab } from "./main.js"
 import { pkccoToAttestation } from "./pkcco.js"
 import { pkcroToAssertion } from "./pkcro.js"
 import { uint8ToHex } from "./converters.js"
 
 const loadPkcco = (pkcco) => {
     console.log("Load PKCCO:", pkcco)
+    editors.createEditor.on("change", async () => {
+        interceptorRequestTextarea.value = JSON.stringify(editors.createEditor.getValue(), null, 2)
+    })
     editors.createEditor.setValue(pkcco)
 }
 
 const loadPkcro = (pkcro) => {
     console.log("Load PKCRO:", pkcro)
+    editors.getEditor.on("change", async () => {
+        interceptorRequestTextarea.value = JSON.stringify(editors.getEditor.getValue(), null, 2)
+    })
     editors.getEditor.setValue(pkcro)
 }
 
@@ -33,29 +40,31 @@ export const parseInterceptParams = async () => {
     const hash = window.location.hash.substring(1)
     const hparams = new URLSearchParams(hash)
 
-    // create + get forms
-    if (hparams.has("pkcco")) {
-        const pkcco = JSON.parse(hparams.get("pkcco"))
-        loadPkcco(pkcco)
-    } else if (hparams.has("pkcro")) {
-        const pkcro = JSON.parse(hparams.get("pkcro"))
-        loadPkcro(pkcro)
-    }
-
-    // attestation + assertion forms
+    // pkcco
     if (hparams.has("pkcco") && hparams.has("origin")) {
         const pkcco = JSON.parse(hparams.get("pkcco"))
         const origin = hparams.get("origin")
         const crossOrigin = ["true", "false"].includes(hparams.get("crossOrigin")) ?
             (hparams.get("crossOrigin") == "true" ? true : false) : undefined
         const topOrigin = hparams.get("topOrigin") || undefined
+
+        loadPkcco(pkcco)
         await applyPkcco(pkcco, origin, crossOrigin, topOrigin)
-    } else if (hparams.has("pkcro") && hparams.has("origin")) {
+
+        showTab("interceptor")
+    }
+
+    // pkcro
+    if (hparams.has("pkcro") && hparams.has("origin")) {
         const pkcro = JSON.parse(hparams.get("pkcro"))
         const origin = hparams.get("origin")
         const crossOrigin = ["true", "false"].includes(hparams.get("crossOrigin")) ?
             (hparams.get("crossOrigin") == "true" ? true : false) : undefined
         const topOrigin = hparams.get("topOrigin") || undefined
+
+        loadPkcro(pkcro)
         await applyPkcro(pkcro, origin, crossOrigin, topOrigin)
+
+        showTab("interceptor")
     }
 }

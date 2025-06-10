@@ -16,7 +16,7 @@ export const pkcroToAssertion = async (pkcro, origin, crossOrigin=undefined, top
     const authenticatorData = {}
 
     // authenticatorData.rpIdHash
-    authenticatorData.rpIdHash = uint8ToHex(await strSha256Uint8(pkcro.rp.id))
+    authenticatorData.rpIdHash = uint8ToHex(await strSha256Uint8(pkcro.rpId))
 
     // authenticatorData.flags
     authenticatorData.flags = {}
@@ -34,7 +34,7 @@ export const pkcroToAssertion = async (pkcro, origin, crossOrigin=undefined, top
     // todo
 
     // signature
-    const signature = new Uint8Array()
+    const signature = new Uint8Array([0x00, 0x01, 0x02, 0x03])
     // todo
 
     return { clientDataJSON, authenticatorData, signature }
