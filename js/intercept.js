@@ -4,12 +4,44 @@ import { showTab } from "./main.js"
 import { algs } from "./keys.js"
 import { pkccoToAttestation } from "./pkcco.js"
 import { pkcroToAssertion } from "./pkcro.js"
-import { uint8ToHex } from "./converters.js"
+import { uint8ToB64url } from "./converters.js"
 
 const updateInterceptorResponseTextarea = (dict) => {
     let response = JSON.parse(interceptorResponseTextarea.value || "{}")
     response = {...response, ...dict}
     interceptorResponseTextarea.value = JSON.stringify(response, null, 2)
+}
+
+const addSendButton = (operation) => {
+    const sendButton = document.createElement("button")
+    sendButton.className = "btn btn-primary mt-3"
+    sendButton.textContent = "Send Response to Extension"
+
+    sendButton.addEventListener("click", () => {
+        const response = JSON.parse(interceptorResponseTextarea.value || "{}")
+
+        // Send message to opener window
+        if (window.opener) {
+            window.opener.postMessage({
+                type: "passkey-interceptor-response",
+                operation: operation,
+                response: response
+            }, "*")
+
+            // Update button to show success
+            sendButton.textContent = "Response Sent!"
+            sendButton.className = "btn btn-success"
+            sendButton.disabled = true
+
+            // Close window after a short delay
+            setTimeout(() => { window.close() }, 1000)
+        } else {
+            sendButton.textContent = "Error: No opener window"
+            sendButton.className = "btn btn-danger mt-3"
+        }
+    })
+
+    interceptorActions.appendChild(sendButton)
 }
 
 const loadPkcco = (pkcco) => {
@@ -56,15 +88,47 @@ const applyPkcco = async (pkcco, origin, crossOrigin=undefined, topOrigin=undefi
 
     editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
     editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+
+    addSendButton("create")
 }
 
 const applyPkcro = async (pkcro, origin, crossOrigin=undefined, topOrigin=undefined) => {
     console.log("Apply PKCRO:", pkcro, origin, crossOrigin, topOrigin)
     const { clientDataJSON, authenticatorData, signature } = await pkcroToAssertion(pkcro, origin, crossOrigin, topOrigin)
+
+    // todo: select credential and user handle from ui
+    updateInterceptorResponseTextarea({
+        id: pkcro.allowCredentials?.[0]?.id || "TODO",
+        userHandle: "TODO"
+    })
+
+    const updateSignatureFromTextarea = () => {
+        const signatureB64url = assertionSignatureEncB64urlTextarea.value
+        updateInterceptorResponseTextarea({signature: signatureB64url})
+    }
+
+    editors.assertionClientDataJSONDecEditor.on("change", async () => {
+        const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
+        updateInterceptorResponseTextarea({clientDataJSON: encoders.clientDataJSON(clientDataJSON, "b64url")})
+        updateSignatureFromTextarea()
+    })
+
+    editors.assertionAuthenticatorDataDecEditor.on("change", async () => {
+        const authenticatorData = editors.assertionAuthenticatorDataDecEditor.getValue()
+        updateInterceptorResponseTextarea({authenticatorData: encoders.authenticatorData(authenticatorData, "b64url")})
+        updateSignatureFromTextarea()
+    })
+
+    assertionSignatureEncB64urlTextarea.addEventListener("input", () => {
+        updateSignatureFromTextarea()
+    })
+
     editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
     editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
-    assertionSignatureEncHexTextarea.value = uint8ToHex(signature)
-    assertionSignatureEncHexTextarea.dispatchEvent(new Event("input"))
+    assertionSignatureEncB64urlTextarea.value = uint8ToB64url(signature)
+    assertionSignatureEncB64urlTextarea.dispatchEvent(new Event("input"))
+
+    addSendButton("get")
 }
 
 export const parseInterceptParams = async () => {
