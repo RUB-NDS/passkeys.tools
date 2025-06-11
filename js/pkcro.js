@@ -30,6 +30,9 @@ export const pkcroToAssertion = async (pkcro, origin, crossOrigin=undefined, top
     // authenticatorData.signCount
     authenticatorData.signCount = 0
 
+    // authenticatorData.extensions
+    authenticatorData.extensions = ""
+
     // key for current user and RP
     // todo
 
