@@ -56,5 +56,8 @@ export const pkccoToAttestation = async (pkcco, origin, crossOrigin=undefined, t
     attestationObject.authData.attestedCredentialData.credentialId = key.credentialId // hex
     attestationObject.authData.attestedCredentialData.credentialPublicKey = key.publicKey // JWK
 
+    // attestationObject.authData.extensions
+    attestationObject.authData.extensions = ""
+
     return { clientDataJSON, attestationObject }
 }
