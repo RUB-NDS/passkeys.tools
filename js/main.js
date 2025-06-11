@@ -476,7 +476,7 @@ export const renderKeys = () => {
 
 renderKeys()
 
-algs.forEach(alg => {
+Object.keys(algs).forEach(alg => {
     const option = document.createElement("option")
     option.value = alg
     option.text = alg

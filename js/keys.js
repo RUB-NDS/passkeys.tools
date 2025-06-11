@@ -1,7 +1,7 @@
 import * as jose from "jose"
 import { uint8ToHex } from "./converters.js"
 
-export const algs = ["ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "RS256", "RS384", "RS512", "EdDSA"]
+export const algs = {"ES256": -7, "ES384": -35, "ES512": -36, "PS256": -37, "PS384": -38, "PS512": -39, "RS256": -257, "RS384": -258, "RS512": -259, "EdDSA": -8}
 
 export const generateKey = async (alg) => {
     const credentialId = new Uint8Array(32)
