@@ -23,6 +23,17 @@ export const showTab = (tab) => {
     window.scrollTo(0, 0)
 }
 
+export const highlightTabs = (tabs) => {
+    document.querySelectorAll(".badge-navbar").forEach(e => e.remove())
+    tabs.forEach(tab => {
+        const button = document.querySelector(`button[data-bs-target="#${tab}-tab-pane"]`)
+        const badge = document.createElement("span")
+        badge.className = "badge text-bg-secondary badge-navbar"
+        badge.textContent = "EDIT"
+        button.appendChild(badge)
+    })
+}
+
 renderCapabilities()
 renderActions()
 

@@ -1,6 +1,6 @@
 import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
-import { showTab } from "./main.js"
+import { showTab, highlightTabs } from "./main.js"
 import { algs } from "./keys.js"
 import { pkccoToAttestation } from "./pkcco.js"
 import { pkcroToAssertion } from "./pkcro.js"
@@ -146,6 +146,7 @@ export const parseInterceptParams = async () => {
         loadPkcco(pkcco)
         await applyPkcco(pkcco, origin, crossOrigin, topOrigin)
 
+        highlightTabs(["create", "attestation"])
         showTab("interceptor")
     }
 
@@ -160,6 +161,7 @@ export const parseInterceptParams = async () => {
         loadPkcro(pkcro)
         await applyPkcro(pkcro, origin, crossOrigin, topOrigin)
 
+        highlightTabs(["get", "assertion"])
         showTab("interceptor")
     }
 }
