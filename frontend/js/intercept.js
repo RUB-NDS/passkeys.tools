@@ -161,7 +161,7 @@ export const parseInterceptParams = async () => {
         await loadUserFromPkcco(pkcco, origin, hparams.get("mode") || "")
         await applyPkcco(pkcco, origin, crossOrigin, topOrigin)
 
-        highlightTabs(["create", "attestation"])
+        highlightTabs(["create", "attestation", "interceptor"])
         showTab("interceptor")
 
         interceptorControlsMode.innerText = mode
@@ -183,7 +183,7 @@ export const parseInterceptParams = async () => {
         loadPkcro(pkcro)
         await applyPkcro(pkcro, origin, crossOrigin, topOrigin)
 
-        highlightTabs(["get", "assertion"])
+        highlightTabs(["get", "assertion", "interceptor"])
         showTab("interceptor")
 
         interceptorControlsMode.innerText = mode
