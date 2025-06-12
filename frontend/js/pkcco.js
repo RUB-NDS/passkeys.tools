@@ -42,11 +42,11 @@ export const pkccoToAttestation = async (pkcco, origin, crossOrigin=undefined, t
     // key for current user and RP
     const keyHandle = `${pkcco.user.name} | ${pkcco.rp.id}`
     let key = undefined
-    if (!getKey(keyHandle)) {
+    if (!(await getKey(keyHandle))) {
         key = await generateKey("ES256")
-        storeKey(keyHandle, key)
+        await storeKey(keyHandle, key)
     } else {
-        key = getKey(keyHandle)
+        key = await getKey(keyHandle)
     }
 
     // attestationObject.authData.attestedCredentialData

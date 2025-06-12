@@ -1,0 +1,63 @@
+<div class="row">
+    <div class="col text-center">
+        <h1>Settings</h1>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">Storage Configuration</div>
+            <div class="card-body">
+                <p class="text-muted mb-4">Choose how to store your keys and users data.</p>
+
+                <div class="mb-4">
+                    <h5>Storage Mode</h5>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="storageMode" id="localStorageMode" value="local" checked>
+                        <label class="form-check-label" for="localStorageMode">
+                            <strong>Local Storage</strong>
+                            <br>
+                            <small class="text-muted">Store data in browser's local storage (default)</small>
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="storageMode" id="remoteStorageMode" value="remote">
+                        <label class="form-check-label" for="remoteStorageMode">
+                            <strong>Remote Storage</strong>
+                            <br>
+                            <small class="text-muted">Store data on a remote server</small>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="remoteStorageConfig" class="border rounded p-3" style="display: none;">
+                    <h5 class="mb-3">Remote Storage Settings</h5>
+
+                    <div class="mb-3">
+                        <label for="remoteUrl" class="form-label">Remote Server URL</label>
+                        <input type="url" class="form-control" id="remoteUrl" placeholder="https://example.com">
+                        <div class="form-text">The URL of your remote storage server</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="secretKey" class="form-label">Secret Key</label>
+                        <input type="text" class="form-control" id="secretKey" placeholder="Enter your secret key">
+                        <div class="form-text">Your unique secret key to access your data. Keep this private!</div>
+                    </div>
+
+                    <button class="btn btn-secondary" id="testConnection">Test Connection</button>
+                    <div id="connectionStatus" class="mt-2"></div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-primary" id="saveSettings">Save Settings</button>
+                    <span id="saveStatus" class="ms-3"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+services:
+
+  traefik:
+    image: traefik:v3.2
+    restart: unless-stopped
+    networks:
+      - workbench-network
+    expose:
+      - 80
+      - 443
+    ports:
+      - 0.0.0.0:80:80
+      - 0.0.0.0:443:443
+    healthcheck:
+      test: traefik healthcheck
+      interval: 10s
+      timeout: 10s
+      retries: 15
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - traefik-logs:/mnt/logs
+      - traefik-acme:/mnt/acme
+    environment:
+      - TRAEFIK_PROVIDERS_DOCKER=true
+      - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false
+      - TRAEFIK_PING=true
+      # logs
+      - TRAEFIK_LOG=true
+      - TRAEFIK_LOG_FILEPATH=/mnt/logs/traefik.log
+      - TRAEFIK_ACCESSLOG=true
+      - TRAEFIK_ACCESSLOG_FILEPATH=/mnt/logs/access.log
+      - TRAEFIK_ACCESSLOG_BUFFERINGSIZE=100
+      # entrypoints
+      - TRAEFIK_ENTRYPOINTS_WEB=true
+      - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
+      - TRAEFIK_ENTRYPOINTS_WEBSECURE=true
+      - TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS=:443
+      # certificates
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_TLSCHALLENGE=true
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL=louis.jannett@rub.de
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_STORAGE=/mnt/acme/acme.json
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - workbench-network
+    expose:
+      - 4173
+    ports:
+      - 127.0.0.1:4173:4173
+    healthcheck:
+      test: curl -f http://localhost:4173 || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 15
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    networks:
+      - workbench-network
+    expose:
+      - 3000
+    ports:
+      - 127.0.0.1:3000:3000
+    healthcheck:
+      test: wget --spider -q http://localhost:3000/api/health || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 15
+    volumes:
+      - workbench-data:/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATA_FILE=/data/database.json
+
+networks:
+  workbench-network:
+    name: workbench-network
+
+volumes:
+  traefik-logs:
+  traefik-acme:
+  workbench-data:

@@ -10,6 +10,7 @@ import { verifyAssertion, signAssertion } from "./signatures.js"
 import { getUsers, storeUser, deleteUser } from "./users.js"
 import { algs, getKey, getKeys, storeKey, generateKey, deleteKey } from "./keys.js"
 import { navigatorCredentialsCreate, navigatorCredentialsGet } from "./webapi.js"
+import { renderStorageSettings } from "./storage.js"
 import {
     b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr,
     strToB64, b64urlToB64, hexToB64, b64ToStr, b64ToB64url, b64ToHex,
@@ -175,8 +176,9 @@ attestationSendKeyToParserBtn.onclick = () => {
 attestationLoadKeyBtn.onclick = async () => {
     const name = attestationLoadKeyNameSelect.value
     const type = attestationLoadKeyTypeSelect.value
-    const key = getKey(name)[type] || {}
-    const credentialId = getKey(name).credentialId || ""
+    const keyData = await getKey(name)
+    const key = keyData?.[type] || {}
+    const credentialId = keyData?.credentialId || ""
     const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
     attestationObject.authData.attestedCredentialData.credentialPublicKey = key
     attestationObject.authData.attestedCredentialData.credentialId = credentialId
@@ -184,14 +186,14 @@ attestationLoadKeyBtn.onclick = async () => {
     editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
 }
 
-attestationStoreKeyBtn.onclick = () => {
+attestationStoreKeyBtn.onclick = async () => {
     const name = attestationStoreKeyNameInput.value
     const type = attestationStoreKeyTypeSelect.value
     const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
     const key = attestationObject.authData.attestedCredentialData.credentialPublicKey
     const credentialId = attestationObject.authData.attestedCredentialData.credentialId
-    storeKey(name, { credentialId, [type]:  key })
-    renderKeys()
+    await storeKey(name, { credentialId, [type]:  key })
+    await renderKeys()
 }
 
 for (const e of ["change", "keydown", "paste", "input"]) {
@@ -348,7 +350,7 @@ verifyAssertionWithStoredKeyBtn.onclick = async () => {
     const authenticatorData = assertionAuthenticatorDataEncHexTextarea.value
     const signature = assertionSignatureEncHexTextarea.value
     const name = verifyAssertionWithStoredKeySelect.value
-    const jwk = getKey(name).publicKey
+    const jwk = (await getKey(name))?.publicKey
     const valid = await verifyAssertion(clientDataHash, authenticatorData, signature, jwk)
     alert(valid)
 }
@@ -357,7 +359,7 @@ signAssertionWithStoredKeyBtn.onclick = async () => {
     const clientDataHash = assertionClientDataJSONHashHexTextarea.value
     const authenticatorData = assertionAuthenticatorDataEncHexTextarea.value
     const name = signAssertionWithStoredKeySelect.value
-    const jwk = getKey(name).privateKey
+    const jwk = (await getKey(name))?.privateKey
     const signature = await signAssertion(clientDataHash, authenticatorData, jwk)
     assertionSignatureEncHexTextarea.value = uint8ToHex(signature)
     assertionSignatureEncHexTextarea.dispatchEvent(new Event("input"))
@@ -401,10 +403,12 @@ editors.keysJwkEditor.on("change", async () => {
     await encodeKeys()
 })
 
-export const renderKeys = () => {
+export const renderKeys = async () => {
+    const keys = await getKeys()
+
     // attestation -> attestation object
     attestationLoadKeyNameSelect.innerHTML = ""
-    for (const [name, key] of Object.entries(getKeys())) {
+    for (const [name, key] of Object.entries(keys)) {
         const option = document.createElement("option")
         option.value = name
         option.text = name
@@ -413,7 +417,7 @@ export const renderKeys = () => {
 
     // assertion -> signature -> verify
     verifyAssertionWithStoredKeySelect.innerHTML = ""
-    for (const [name, key] of Object.entries(getKeys())) {
+    for (const [name, key] of Object.entries(keys)) {
         const option = document.createElement("option")
         option.value = name
         option.text = name
@@ -422,7 +426,7 @@ export const renderKeys = () => {
 
     // assertion -> signature -> sign
     signAssertionWithStoredKeySelect.innerHTML = ""
-    for (const [name, key] of Object.entries(getKeys())) {
+    for (const [name, key] of Object.entries(keys)) {
         const option = document.createElement("option")
         option.value = name
         option.text = name
@@ -431,7 +435,7 @@ export const renderKeys = () => {
 
     // keys -> key parser -> load key
     keysLoadKeyNameSelect.innerHTML = ""
-    for (const [name, key] of Object.entries(getKeys())) {
+    for (const [name, key] of Object.entries(keys)) {
         const option = document.createElement("option")
         option.value = name
         option.text = name
@@ -440,7 +444,7 @@ export const renderKeys = () => {
 
     // keys -> key storage -> update credential id
     keysUpdateCredentialIdSelect.innerHTML = ""
-    for (const [name, key] of Object.entries(getKeys())) {
+    for (const [name, key] of Object.entries(keys)) {
         const option = document.createElement("option")
         option.value = name
         option.text = name
@@ -449,7 +453,7 @@ export const renderKeys = () => {
 
     // keys -> key storage -> delete key
     keysDeleteKeyNameSelect.innerHTML = ""
-    for (const [name, key] of Object.entries(getKeys())) {
+    for (const [name, key] of Object.entries(keys)) {
         const option = document.createElement("option")
         option.value = name
         option.text = name
@@ -458,7 +462,7 @@ export const renderKeys = () => {
 
     // keys -> key storage -> table
     keysTable.innerHTML = ""
-    for (const [name, key] of Object.entries(getKeys())) {
+    for (const [name, key] of Object.entries(keys)) {
         const row = document.createElement("tr")
         const nameCell = document.createElement("td")
         nameCell.textContent = name
@@ -486,7 +490,7 @@ export const renderKeys = () => {
     }
 }
 
-renderKeys()
+(async () => await renderKeys())()
 
 Object.keys(algs).forEach(alg => {
     const option = document.createElement("option")
@@ -498,50 +502,51 @@ Object.keys(algs).forEach(alg => {
 keysLoadKeyBtn.onclick = async () => {
     const name = keysLoadKeyNameSelect.value
     const type = keysLoadKeyTypeSelect.value
-    const key = getKey(name)[type] || {}
+    const keyData = await getKey(name)
+    const key = keyData?.[type] || {}
     editors.keysJwkEditor.setValue(key)
     encodeKeys()
 }
 
-keysStoreKeyBtn.onclick = () => {
+keysStoreKeyBtn.onclick = async () => {
     const name = keysStoreKeyNameInput.value
     const type = keysStoreKeyTypeSelect.value
     const key = editors.keysJwkEditor.getValue()
-    storeKey(name, { [type]:  key })
-    renderKeys()
+    await storeKey(name, { [type]:  key })
+    await renderKeys()
 }
 
 keysGenerateKeyBtn.onclick = async () => {
     const name = keysGenerateKeyNameInput.value
     const alg = keysGenerateKeyAlgSelect.value
     const key = await generateKey(alg)
-    storeKey(name, key)
-    renderKeys()
+    await storeKey(name, key)
+    await renderKeys()
 }
 
-keysUpdateCredentialIdBtn.onclick = () => {
+keysUpdateCredentialIdBtn.onclick = async () => {
     const name = keysUpdateCredentialIdSelect.value
     const credentialIdHex = keysUpdateCredentialIdHexInput.value
     const credentialIdB64url = keysUpdateCredentialIdB64urlInput.value
     const credentialIdB64 = keysUpdateCredentialIdB64Input.value
-    if (credentialIdHex) storeKey(name, { credentialId: credentialIdHex })
-    else if (credentialIdB64url) storeKey(name, { credentialId: b64urlToHex(credentialIdB64url) })
-    else if (credentialIdB64) storeKey(name, { credentialId: b64ToHex(credentialIdB64) })
-    else storeKey(name, { credentialId: "" })
-    renderKeys()
+    if (credentialIdHex) await storeKey(name, { credentialId: credentialIdHex })
+    else if (credentialIdB64url) await storeKey(name, { credentialId: b64urlToHex(credentialIdB64url) })
+    else if (credentialIdB64) await storeKey(name, { credentialId: b64ToHex(credentialIdB64) })
+    else await storeKey(name, { credentialId: "" })
+    await renderKeys()
 }
 
-keysDeleteKeyBtn.onclick = () => {
+keysDeleteKeyBtn.onclick = async () => {
     const name = keysDeleteKeyNameSelect.value
     const check = confirm("Delete key?")
     if (!check) return
-    deleteKey(name)
-    renderKeys()
+    await deleteKey(name)
+    await renderKeys()
 }
 
 /* users */
 
-usersAddUserBtn.onclick = () => {
+usersAddUserBtn.onclick = async () => {
     const rpId = usersAddUserRpIdInput.value
     const name = usersAddUserNameInput.value
     const displayName = usersAddUserDisplayNameInput.value
@@ -561,23 +566,25 @@ usersAddUserBtn.onclick = () => {
         mode: mode || ""
     }
     if (user.rpId && user.userId) {
-        storeUser(userId, user)
-        renderUsers()
+        await storeUser(userId, user)
+        await renderUsers()
     } else {
         alert("Please fill in all required fields (rpId, userId).")
     }
 }
 
-usersDeleteUserBtn.onclick = () => {
+usersDeleteUserBtn.onclick = async () => {
     const userId = usersDeleteUserSelect.value
-    deleteUser(userId)
-    renderUsers()
+    await deleteUser(userId)
+    await renderUsers()
 }
 
-export const renderUsers = () => {
+export const renderUsers = async () => {
+    const users = await getUsers()
+
     // users -> user storage -> delete user
     usersDeleteUserSelect.innerHTML = ""
-    for (const [userId, user] of Object.entries(getUsers())) {
+    for (const [userId, user] of Object.entries(users)) {
         const option = document.createElement("option")
         option.value = userId
         option.text = `${user.rpId} | ${user.name || user.displayName || user.userId}`
@@ -586,7 +593,7 @@ export const renderUsers = () => {
 
     // users -> user storage -> table
     usersTable.innerHTML = ""
-    for (const [userId, user] of Object.entries(getUsers())) {
+    for (const [userId, user] of Object.entries(users)) {
         const row = document.createElement("tr")
         const rpIdCell = document.createElement("td")
         rpIdCell.textContent = user.rpId || "N/A"
@@ -613,7 +620,7 @@ export const renderUsers = () => {
     }
 }
 
-renderUsers()
+(async () => await renderUsers())()
 
 /* converters */
 
@@ -676,6 +683,7 @@ window.addEventListener("load", () => {
 
 window.addEventListener("load", async () => {
     await parseInterceptParams()
+    renderSettings()
 })
 
 window.addEventListener("hashchange", async () => {

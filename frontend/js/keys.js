@@ -1,5 +1,6 @@
 import * as jose from "jose"
 import { uint8ToHex } from "./converters.js"
+import { storage } from "./storage.js"
 
 export const algs = {"ES256": -7, "ES384": -35, "ES512": -36, "PS256": -37, "PS384": -38, "PS512": -39, "RS256": -257, "RS384": -258, "RS512": -259, "EdDSA": -8}
 
@@ -18,23 +19,24 @@ export const generateKey = async (alg) => {
     }
 }
 
-export const storeKey = (name, key) => {
-    const keys = JSON.parse(localStorage.getItem("keys") || "{}")
+export const storeKey = async (name, key) => {
+    const keys = await storage.get("keys")
     keys[name] = { ...keys[name], ...key }
-    localStorage.setItem("keys", JSON.stringify(keys))
+    await storage.set("keys", keys)
 }
 
-export const deleteKey = (name) => {
-    const keys = JSON.parse(localStorage.getItem("keys") || "{}")
+export const deleteKey = async (name) => {
+    const keys = await storage.get("keys")
     delete keys[name]
-    localStorage.setItem("keys", JSON.stringify(keys))
+    await storage.set("keys", keys)
 }
 
-export const getKey = (name) => {
-    return getKeys()[name]
+export const getKey = async (name) => {
+    const keys = await getKeys()
+    return keys[name]
 }
 
-export const getKeys = () => {
-    const keys = JSON.parse(localStorage.getItem("keys") || "{}")
+export const getKeys = async () => {
+    const keys = await storage.get("keys")
     return keys
 }
