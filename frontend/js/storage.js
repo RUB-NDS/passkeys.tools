@@ -1,4 +1,5 @@
-// Storage abstraction layer to support both localStorage and remote storage
+import { renderKeys } from "./main.js"
+import { renderUsers } from "./main.js"
 
 const STORAGE_CONFIG_KEY = "storageConfig"
 
@@ -169,7 +170,7 @@ export const renderStorageSettings = () => {
     })
 
     // Save settings
-    saveButton?.addEventListener("click", () => {
+    saveButton?.addEventListener("click", async () => {
         const config = {
             mode: localMode.checked ? "local" : "remote"
         }
@@ -189,6 +190,9 @@ export const renderStorageSettings = () => {
 
         setStorageConfig(config)
         saveStatus.innerHTML = "<span class='text-success'>Settings saved successfully!</span>"
+
+        await renderKeys()
+        await renderUsers()
 
         // Clear status after 3 seconds
         setTimeout(() => {
