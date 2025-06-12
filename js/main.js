@@ -574,7 +574,7 @@ usersDeleteUserBtn.onclick = () => {
     renderUsers()
 }
 
-const renderUsers = () => {
+export const renderUsers = () => {
     // users -> user storage -> delete user
     usersDeleteUserSelect.innerHTML = ""
     for (const [userId, user] of Object.entries(getUsers())) {

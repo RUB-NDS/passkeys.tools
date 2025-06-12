@@ -4,7 +4,9 @@ import { showTab, highlightTabs } from "./main.js"
 import { algs } from "./keys.js"
 import { pkccoToAttestation } from "./pkcco.js"
 import { pkcroToAssertion } from "./pkcro.js"
-import { uint8ToB64url } from "./converters.js"
+import { uint8ToB64url, b64urlToHex } from "./converters.js"
+import { storeUser } from "./users.js"
+import { renderUsers } from "./main.js"
 
 const updateInterceptorResponseTextarea = (dict) => {
     let response = JSON.parse(interceptorResponseTextarea.value || "{}")
@@ -50,6 +52,17 @@ const loadPkcco = (pkcco) => {
         interceptorRequestTextarea.value = JSON.stringify(editors.createEditor.getValue(), null, 2)
     })
     editors.createEditor.setValue(pkcco)
+}
+
+const loadUserFromPkcco = (pkcco, origin, associate) => {
+    console.log("Load User from PKCCO:", pkcco, origin, associate)
+    const rpId = pkcco.rp.id || (new URL(origin)).hostname
+    const userId = b64urlToHex(pkcco.user.id) || ""
+    const userName = pkcco.user.name || ""
+    const userDisplayName = pkcco.user.displayName || ""
+    const user = { rpId, userId, name: userName, displayName: userDisplayName, associate }
+    storeUser(userId, user)
+    renderUsers()
 }
 
 const loadPkcro = (pkcro) => {
@@ -144,6 +157,7 @@ export const parseInterceptParams = async () => {
         const topOrigin = hparams.get("topOrigin") || undefined
 
         loadPkcco(pkcco)
+        loadUserFromPkcco(pkcco, origin, hparams.get("associate") || "")
         await applyPkcco(pkcco, origin, crossOrigin, topOrigin)
 
         highlightTabs(["create", "attestation"])
