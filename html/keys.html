@@ -125,18 +125,20 @@
 
 <div class="row mb-3">
     <div class="col">
-        <table class="table table-striped keys-table">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">CID (hex)</th>
-                    <th scope="col">CID (b64url)</th>
-                    <th scope="col">CID (b64)</th>
-                    <th scope="col">Public Key</th>
-                    <th scope="col">Private Key</th>
-                </tr>
-            </thead>
-            <tbody id="keysTable"></tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead style="white-space: nowrap;">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">CID (hex)</th>
+                        <th scope="col">CID (b64url)</th>
+                        <th scope="col">CID (b64)</th>
+                        <th scope="col">Public Key</th>
+                        <th scope="col">Private Key</th>
+                    </tr>
+                </thead>
+                <tbody id="keysTable" style="white-space: nowrap;"></tbody>
+            </table>
+        </div>
     </div>
 </div>
