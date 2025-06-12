@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col text-center">
+        <h1>User Storage</h1>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <p>
+            <div class="input-group">
+                <span class="input-group-text">Add User</span>
+                <input type="text" class="form-control" id="usersAddUserRpIdInput" placeholder="RP ID" style="max-width: 150px;">
+                <input type="text" class="form-control" id="usersAddUserNameInput" placeholder="Name" style="max-width: 150px;">
+                <input type="text" class="form-control" id="usersAddUserDisplayNameInput" placeholder="Display Name" style="max-width: 150px;">
+                <input type="text" class="form-control" id="usersAddUserIdHexInput" placeholder="User ID (hex)" style="max-width: 150px;">
+                <input type="text" class="form-control" id="usersAddUserIdB64urlInput" placeholder="User ID (b64url)" style="max-width: 150px;">
+                <input type="text" class="form-control" id="usersAddUserIdB64Input" placeholder="User ID (b64)" style="max-width: 150px;">
+                <input type="text" class="form-control" id="usersAddUserAssociateInput" placeholder="Associate" style="max-width: 150px;">
+                <button class="btn btn-primary" id="usersAddUserBtn">Add</button>
+            </div>
+        </p>
+        <p>
+            <div class="input-group">
+                <span class="input-group-text">Delete User</span>
+                <select class="form-select" id="usersDeleteUserSelect" style="max-width: 200px;"></select>
+                <button class="btn btn-danger" id="usersDeleteUserBtn">Delete</button>
+            </div>
+        </p>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">RP ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Display Name</th>
+                        <th scope="col">User ID (hex)</th>
+                        <th scope="col">User ID (b64url)</th>
+                        <th scope="col">User ID (b64)</th>
+                        <th scope="col">Associate</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -7,6 +7,7 @@ import { parseInterceptParams } from "./intercept.js"
 import { renderCapabilities } from "./capabilities.js"
 import { renderActions } from "./actions.js"
 import { verifyAssertion, signAssertion } from "./signatures.js"
+import { getUsers, storeUser, deleteUser } from "./users.js"
 import { algs, getKey, getKeys, storeKey, generateKey, deleteKey } from "./keys.js"
 import { navigatorCredentialsCreate, navigatorCredentialsGet } from "./webapi.js"
 import {
@@ -537,6 +538,82 @@ keysDeleteKeyBtn.onclick = () => {
     deleteKey(name)
     renderKeys()
 }
+
+/* users */
+
+usersAddUserBtn.onclick = () => {
+    const rpId = usersAddUserRpIdInput.value
+    const name = usersAddUserNameInput.value
+    const displayName = usersAddUserDisplayNameInput.value
+    const userIdHex = usersAddUserIdHexInput.value
+    const userIdB64url = usersAddUserIdB64urlInput.value
+    const userIdB64 = usersAddUserIdB64Input.value
+    const associate = usersAddUserAssociateInput.value
+    let userId = ""
+    if (userIdHex) userId = userIdHex
+    else if (userIdB64url) userId = b64urlToHex(userIdB64url)
+    else if (userIdB64) userId = b64ToHex(userIdB64)
+    const user = {
+        rpId: rpId || "",
+        name: name || "",
+        displayName: displayName || "",
+        userId: userId || "",
+        associate: associate || ""
+    }
+    if (user.rpId && user.userId) {
+        storeUser(userId, user)
+        renderUsers()
+    } else {
+        alert("Please fill in all required fields (rpId, userId).")
+    }
+}
+
+usersDeleteUserBtn.onclick = () => {
+    const userId = usersDeleteUserSelect.value
+    deleteUser(userId)
+    renderUsers()
+}
+
+const renderUsers = () => {
+    // users -> user storage -> delete user
+    usersDeleteUserSelect.innerHTML = ""
+    for (const [userId, user] of Object.entries(getUsers())) {
+        const option = document.createElement("option")
+        option.value = userId
+        option.text = `${user.rpId} | ${user.name || user.displayName || user.userId}`
+        usersDeleteUserSelect.appendChild(option)
+    }
+
+    // users -> user storage -> table
+    usersTable.innerHTML = ""
+    for (const [userId, user] of Object.entries(getUsers())) {
+        const row = document.createElement("tr")
+        const rpIdCell = document.createElement("td")
+        rpIdCell.textContent = user.rpId || "N/A"
+        row.appendChild(rpIdCell)
+        const nameCell = document.createElement("td")
+        nameCell.textContent = user.name || "N/A"
+        row.appendChild(nameCell)
+        const displayNameCell = document.createElement("td")
+        displayNameCell.textContent = user.displayName || "N/A"
+        row.appendChild(displayNameCell)
+        const idHexCell = document.createElement("td")
+        idHexCell.textContent = user.userId || "N/A"
+        row.appendChild(idHexCell)
+        const idB64urlCell = document.createElement("td")
+        idB64urlCell.textContent = hexToB64url(user.userId) || "N/A"
+        row.appendChild(idB64urlCell)
+        const idB64Cell = document.createElement("td")
+        idB64Cell.textContent = hexToB64(user.userId) || "N/A"
+        row.appendChild(idB64Cell)
+        const associateCell = document.createElement("td")
+        associateCell.textContent = user.associate || "N/A"
+        row.appendChild(associateCell)
+        usersTable.appendChild(row)
+    }
+}
+
+renderUsers()
 
 /* converters */
 
