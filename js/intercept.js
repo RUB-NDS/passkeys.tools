@@ -16,7 +16,7 @@ const updateInterceptorResponseTextarea = (dict) => {
 
 const addSendButton = (operation) => {
     const sendButton = document.createElement("button")
-    sendButton.className = "btn btn-primary mt-3"
+    sendButton.className = "btn btn-primary"
     sendButton.textContent = "Send Response to Extension"
 
     sendButton.addEventListener("click", () => {
@@ -39,11 +39,11 @@ const addSendButton = (operation) => {
             setTimeout(() => { window.close() }, 1000)
         } else {
             sendButton.textContent = "Error: No opener window"
-            sendButton.className = "btn btn-danger mt-3"
+            sendButton.className = "btn btn-danger"
         }
     })
 
-    interceptorActions.appendChild(sendButton)
+    interceptorControlsActions.appendChild(sendButton)
 }
 
 const loadPkcco = (pkcco) => {
@@ -149,9 +149,10 @@ export const parseInterceptParams = async () => {
     const hparams = new URLSearchParams(hash)
 
     // pkcco
-    if (hparams.has("pkcco") && hparams.has("origin")) {
+    if (hparams.has("pkcco") && hparams.has("origin") && hparams.has("mode")) {
         const pkcco = JSON.parse(hparams.get("pkcco"))
         const origin = hparams.get("origin")
+        const mode = hparams.get("mode")
         const crossOrigin = ["true", "false"].includes(hparams.get("crossOrigin")) ?
             (hparams.get("crossOrigin") == "true" ? true : false) : undefined
         const topOrigin = hparams.get("topOrigin") || undefined
@@ -162,12 +163,19 @@ export const parseInterceptParams = async () => {
 
         highlightTabs(["create", "attestation"])
         showTab("interceptor")
+
+        interceptorControlsMode.innerText = mode
+        interceptorControlsType.innerText = "Attestation / Create"
+        interceptorControlsOrigin.innerText = origin
+        interceptorControlsCrossOrigin.innerText = crossOrigin || "N/A"
+        interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
     }
 
     // pkcro
-    if (hparams.has("pkcro") && hparams.has("origin")) {
+    if (hparams.has("pkcro") && hparams.has("origin") && hparams.has("mode")) {
         const pkcro = JSON.parse(hparams.get("pkcro"))
         const origin = hparams.get("origin")
+        const mode = hparams.get("mode")
         const crossOrigin = ["true", "false"].includes(hparams.get("crossOrigin")) ?
             (hparams.get("crossOrigin") == "true" ? true : false) : undefined
         const topOrigin = hparams.get("topOrigin") || undefined
@@ -177,5 +185,7 @@ export const parseInterceptParams = async () => {
 
         highlightTabs(["get", "assertion"])
         showTab("interceptor")
+
+        interceptorControlsMode.innerText = mode
     }
 }
