@@ -15,7 +15,7 @@
                 <input type="text" class="form-control" id="usersAddUserIdHexInput" placeholder="User ID (hex)" style="max-width: 150px;">
                 <input type="text" class="form-control" id="usersAddUserIdB64urlInput" placeholder="User ID (b64url)" style="max-width: 150px;">
                 <input type="text" class="form-control" id="usersAddUserIdB64Input" placeholder="User ID (b64)" style="max-width: 150px;">
-                <input type="text" class="form-control" id="usersAddUserAssociateInput" placeholder="Associate" style="max-width: 150px;">
+                <input type="text" class="form-control" id="usersAddUserModeInput" placeholder="Mode" style="max-width: 150px;">
                 <button class="btn btn-primary" id="usersAddUserBtn">Add</button>
             </div>
         </p>
@@ -33,7 +33,7 @@
     <div class="col">
         <div class="table-responsive">
             <table class="table table-striped">
-                <thead>
+                <thead style="white-space: nowrap;">
                     <tr>
                         <th scope="col">RP ID</th>
                         <th scope="col">Name</th>
@@ -41,7 +41,7 @@
                         <th scope="col">User ID (hex)</th>
                         <th scope="col">User ID (b64url)</th>
                         <th scope="col">User ID (b64)</th>
-                        <th scope="col">Associate</th>
+                        <th scope="col">Mode</th>
                     </tr>
                 </thead>
                 <tbody id="usersTable" style="white-space: nowrap;"></tbody>

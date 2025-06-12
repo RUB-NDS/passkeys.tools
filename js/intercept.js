@@ -54,13 +54,13 @@ const loadPkcco = (pkcco) => {
     editors.createEditor.setValue(pkcco)
 }
 
-const loadUserFromPkcco = (pkcco, origin, associate) => {
-    console.log("Load User from PKCCO:", pkcco, origin, associate)
+const loadUserFromPkcco = (pkcco, origin, mode) => {
+    console.log("Load User from PKCCO:", pkcco, origin, mode)
     const rpId = pkcco.rp.id || (new URL(origin)).hostname
     const userId = b64urlToHex(pkcco.user.id) || ""
     const userName = pkcco.user.name || ""
     const userDisplayName = pkcco.user.displayName || ""
-    const user = { rpId, userId, name: userName, displayName: userDisplayName, associate }
+    const user = { rpId, userId, name: userName, displayName: userDisplayName, mode }
     storeUser(userId, user)
     renderUsers()
 }
@@ -157,7 +157,7 @@ export const parseInterceptParams = async () => {
         const topOrigin = hparams.get("topOrigin") || undefined
 
         loadPkcco(pkcco)
-        loadUserFromPkcco(pkcco, origin, hparams.get("associate") || "")
+        loadUserFromPkcco(pkcco, origin, hparams.get("mode") || "")
         await applyPkcco(pkcco, origin, crossOrigin, topOrigin)
 
         highlightTabs(["create", "attestation"])

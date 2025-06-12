@@ -548,7 +548,7 @@ usersAddUserBtn.onclick = () => {
     const userIdHex = usersAddUserIdHexInput.value
     const userIdB64url = usersAddUserIdB64urlInput.value
     const userIdB64 = usersAddUserIdB64Input.value
-    const associate = usersAddUserAssociateInput.value
+    const mode = usersAddUserModeInput.value
     let userId = ""
     if (userIdHex) userId = userIdHex
     else if (userIdB64url) userId = b64urlToHex(userIdB64url)
@@ -558,7 +558,7 @@ usersAddUserBtn.onclick = () => {
         name: name || "",
         displayName: displayName || "",
         userId: userId || "",
-        associate: associate || ""
+        mode: mode || ""
     }
     if (user.rpId && user.userId) {
         storeUser(userId, user)
@@ -606,9 +606,9 @@ export const renderUsers = () => {
         const idB64Cell = document.createElement("td")
         idB64Cell.textContent = hexToB64(user.userId) || "N/A"
         row.appendChild(idB64Cell)
-        const associateCell = document.createElement("td")
-        associateCell.textContent = user.associate || "N/A"
-        row.appendChild(associateCell)
+        const modeCell = document.createElement("td")
+        modeCell.textContent = user.mode || "N/A"
+        row.appendChild(modeCell)
         usersTable.appendChild(row)
     }
 }
