@@ -683,7 +683,7 @@ window.addEventListener("load", () => {
 
 window.addEventListener("load", async () => {
     await parseInterceptParams()
-    renderSettings()
+    renderStorageSettings()
 })
 
 window.addEventListener("hashchange", async () => {
