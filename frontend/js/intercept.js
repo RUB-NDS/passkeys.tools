@@ -187,5 +187,9 @@ export const parseInterceptParams = async () => {
         showTab("interceptor")
 
         interceptorControlsMode.innerText = mode
+        interceptorControlsType.innerText = "Assertion / Get"
+        interceptorControlsOrigin.innerText = origin
+        interceptorControlsCrossOrigin.innerText = crossOrigin || "N/A"
+        interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
     }
 }
