@@ -73,9 +73,9 @@ const loadPkcro = (pkcro) => {
     editors.getEditor.setValue(pkcro)
 }
 
-const applyPkcco = async (pkcco, origin, crossOrigin=undefined, topOrigin=undefined) => {
-    console.log("Apply PKCCO:", pkcco, origin, crossOrigin, topOrigin)
-    const { clientDataJSON, attestationObject } = await pkccoToAttestation(pkcco, origin, crossOrigin, topOrigin)
+const applyPkcco = async (pkcco, origin, mode, crossOrigin=undefined, topOrigin=undefined) => {
+    console.log("Apply PKCCO:", pkcco, origin, mode, crossOrigin, topOrigin)
+    const { clientDataJSON, attestationObject } = await pkccoToAttestation(pkcco, origin, mode, crossOrigin, topOrigin)
 
     updateInterceptorResponseTextarea({id: pkcco.user.id})
 
@@ -158,8 +158,8 @@ export const parseInterceptParams = async () => {
         const topOrigin = hparams.get("topOrigin") || undefined
 
         loadPkcco(pkcco)
-        await loadUserFromPkcco(pkcco, origin, hparams.get("mode") || "")
-        await applyPkcco(pkcco, origin, crossOrigin, topOrigin)
+        await loadUserFromPkcco(pkcco, origin, mode)
+        await applyPkcco(pkcco, origin, mode, crossOrigin, topOrigin)
 
         highlightTabs(["create", "attestation", "interceptor"])
         showTab("interceptor")

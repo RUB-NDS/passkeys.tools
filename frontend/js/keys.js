@@ -40,3 +40,12 @@ export const getKeys = async () => {
     const keys = await storage.get("keys")
     return keys
 }
+
+export const getSupportedAlgorithm = (pubKeyCredParams) => {
+    if (!pubKeyCredParams?.length) return "ES256"
+    for (const param of pubKeyCredParams) {
+        const algName = Object.keys(algs).find(key => algs[key] === param.alg)
+        if (algName) return algName
+    }
+    return "ES256"
+}

@@ -212,19 +212,19 @@ const attestationStatementPackedSchema = {
     "additionalProperties": false,
     "properties": {
         "alg": {
-            "type": "str",
+            "type": "number",
             "required": true,
             "description": "RS256 (-257), RS384 (-258), RS512 (-259), ES256 (-7), ES384 (-35), ES512 (-36), PS256 (-37), PS384 (-38), PS512 (-39), EdDSA (-8)"
         },
         "sig": {
-            "type": "str",
+            "type": "string",
             "required": true
         },
         "x5c": {
             "type": "array",
             "required": false,
             "items": {
-                "type": "str",
+                "type": "string",
                 "required": true
             }
         }
@@ -343,10 +343,10 @@ export const createSchema = {
                         "default": "public-key"
                     },
                     "alg": {
-                        "type": "string",
+                        "type": "number",
                         "required": true,
                         "description": "RS256 (-257), RS384 (-258), RS512 (-259), ES256 (-7), ES384 (-35), ES512 (-36), PS256 (-37), PS384 (-38), PS512 (-39), EdDSA (-8)",
-                        "default": "-7"
+                        "default": -7
                     }
                 }
             },

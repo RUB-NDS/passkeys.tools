@@ -1,8 +1,10 @@
+import { renderKeys } from "./main.js"
+import { getSupportedAlgorithm } from "./keys.js"
 import { uint8ToHex, strSha256Uint8 } from "./converters.js"
 import { generateKey, storeKey, getKey } from "./keys.js"
 
-export const pkccoToAttestation = async (pkcco, origin, crossOrigin=undefined, topOrigin=undefined) => {
-    console.log("PKCCO to Attestation:", pkcco, origin, crossOrigin, topOrigin)
+export const pkccoToAttestation = async (pkcco, origin, mode, crossOrigin=undefined, topOrigin=undefined) => {
+    console.log("PKCCO to Attestation:", pkcco, origin, mode, crossOrigin, topOrigin)
 
     // clientDataJSON
     const clientDataJSON = {}
@@ -39,12 +41,23 @@ export const pkccoToAttestation = async (pkcco, origin, crossOrigin=undefined, t
     // attestationObject.authData.signCount
     attestationObject.authData.signCount = 0
 
-    // key for current user and RP
-    const keyHandle = `${pkcco.user.name} | ${pkcco.rp.id}`
+    // key handle
+    let keyHandle = undefined
+    const alg = getSupportedAlgorithm(pkcco.pubKeyCredParams)
+    if (mode === "attacker" || mode === "victim") {
+        // attacker or victim mode
+        keyHandle = `${mode} | ${alg}`
+    } else {
+        // default mode
+        keyHandle = `${pkcco.rp.id} | ${pkcco.user.name} | ${alg}`
+    }
+
+    // key
     let key = undefined
     if (!(await getKey(keyHandle))) {
-        key = await generateKey("ES256")
+        key = await generateKey(alg)
         await storeKey(keyHandle, key)
+        await renderKeys()
     } else {
         key = await getKey(keyHandle)
     }
