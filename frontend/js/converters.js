@@ -1,65 +1,57 @@
 import cosekey from "./parse-cosekey"
 
+const b64urlToB64NoPadding = (b64url) => b64url.replace(/-/g, "+").replace(/_/g, "/")
+const b64ToB64urlNoPadding = (b64) => b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
+const binToUint8 = (bin) => new Uint8Array(bin.split("").map(c => c.charCodeAt(0)))
+const binToHex = (bin) => Array.from(bin).map(c => c.charCodeAt(0).toString(16).padStart(2, "0")).join("")
+const uint8ToBin = (uint8) => Array.from(uint8).map(c => String.fromCharCode(c)).join("")
+const hexToBin = (hex) => hex.match(/.{2}/g).map(c => String.fromCharCode(parseInt(c, 16))).join("")
+
 export const b64urlToUint8 = (b64url) => {
-    const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/")
+    const b64 = b64urlToB64NoPadding(b64url)
     const bin = atob(b64)
-    const uint8 = new Uint8Array(bin.split("").map(c => c.charCodeAt(0)))
-    return uint8
+    return binToUint8(bin)
 }
 
 export const b64ToUint8 = (b64) => {
     const bin = atob(b64)
-    const uint8 = new Uint8Array(bin.split("").map(c => c.charCodeAt(0)))
-    return uint8
+    return binToUint8(bin)
 }
 
 export const b64urlToHex = (b64url) => {
-    const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/")
+    const b64 = b64urlToB64NoPadding(b64url)
     const bin = atob(b64)
-    const hex = Array.from(bin).map(c => c.charCodeAt(0).toString(16).padStart(2, "0")).join("")
-    return hex
+    return binToHex(bin)
 }
 
 export const b64urlToStr = (b64url) => {
-    const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/")
-    const bin = atob(b64)
-    const str = Array.from(bin).map(c => String.fromCharCode(c.charCodeAt(0))).join("")
-    return str
+    const b64 = b64urlToB64NoPadding(b64url)
+    return atob(b64)
 }
 
 export const b64urlToB64 = (b64url) => {
-    const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/")
+    const b64 = b64urlToB64NoPadding(b64url)
     const padding = "=".repeat((4 - b64.length % 4) % 4)
-    const b64WithPadding = b64 + padding
-    return b64WithPadding
+    return b64 + padding
 }
 
-export const hexToStr = (hex) => {
-    const bin = hex.match(/.{2}/g).map(c => String.fromCharCode(parseInt(c, 16))).join("")
-    return bin
-}
+export const hexToStr = (hex) => hexToBin(hex)
 
-export const strToHex = (str) => {
-    const hex = Array.from(str).map(c => c.charCodeAt(0).toString(16).padStart(2, "0")).join("")
-    return hex
-}
+export const strToHex = (str) => binToHex(str)
 
 export const hexToB64url = (hex) => {
-    const bin = hex.match(/.{2}/g).map(c => String.fromCharCode(parseInt(c, 16))).join("")
+    const bin = hexToBin(hex)
     const b64 = btoa(bin)
-    const b64url = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
-    return b64url
+    return b64ToB64urlNoPadding(b64)
 }
 
 export const hexToB64 = (hex) => {
-    const bin = hex.match(/.{2}/g).map(c => String.fromCharCode(parseInt(c, 16))).join("")
-    const b64 = btoa(bin)
-    return b64
+    const bin = hexToBin(hex)
+    return btoa(bin)
 }
 
 export const hexToUint8 = (hex) => {
-    const uint8 = new Uint8Array(hex.match(/.{2}/g).map(c => parseInt(c, 16)))
-    return uint8
+    return new Uint8Array(hex.match(/.{2}/g).map(c => parseInt(c, 16)))
 }
 
 export const uint8ToHex = (uint8) => {
@@ -67,16 +59,14 @@ export const uint8ToHex = (uint8) => {
 }
 
 export const uint8ToB64url = (uint8) => {
-    const bin = Array.from(uint8).map(c => String.fromCharCode(c)).join("")
+    const bin = uint8ToBin(uint8)
     const b64 = btoa(bin)
-    const b64url = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
-    return b64url
+    return b64ToB64urlNoPadding(b64)
 }
 
 export const uint8ToB64 = (uint8) => {
-    const bin = Array.from(uint8).map(c => String.fromCharCode(c)).join("")
-    const b64 = btoa(bin)
-    return b64
+    const bin = uint8ToBin(uint8)
+    return btoa(bin)
 }
 
 export const uint8ToInt = (uint8) => {
@@ -89,14 +79,10 @@ export const uint8ToInt = (uint8) => {
 
 export const strToB64url = (str) => {
     const b64 = btoa(str)
-    const b64url = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
-    return b64url
+    return b64ToB64urlNoPadding(b64)
 }
 
-export const strToB64 = (str) => {
-    const b64 = btoa(str)
-    return b64
-}
+export const strToB64 = (str) => btoa(str)
 
 export const intToHex = (int, octets) => {
     let hex = int.toString(16)
@@ -108,21 +94,13 @@ export const intToHex = (int, octets) => {
     return hex
 }
 
-export const b64ToB64url = (b64) => {
-    const b64url = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
-    return b64url
-}
+export const b64ToB64url = (b64) => b64ToB64urlNoPadding(b64)
 
-export const b64ToStr = (b64) => {
-    const bin = atob(b64)
-    const str = Array.from(bin).map(c => String.fromCharCode(c.charCodeAt(0))).join("")
-    return str
-}
+export const b64ToStr = (b64) => atob(b64)
 
 export const b64ToHex = (b64) => {
     const bin = atob(b64)
-    const hex = Array.from(bin).map(c => c.charCodeAt(0).toString(16).padStart(2, "0")).join("")
-    return hex
+    return binToHex(bin)
 }
 
 export const uint8MapToBufferMap = (uint8Map) => {
@@ -213,20 +191,40 @@ export const concatUint8 = (buff1, buff2) => {
 }
 
 export const parsePublicKeyCredentialCreationOptions = (obj) => {
+    if (!obj || typeof obj !== "object") {
+        throw new Error("Invalid PublicKeyCredentialCreationOptions")
+    }
     const publicKeyCredentialCreationOptions = structuredClone(obj)
-    publicKeyCredentialCreationOptions.user.id = b64urlToUint8(publicKeyCredentialCreationOptions.user.id)
-    publicKeyCredentialCreationOptions.challenge = b64urlToUint8(publicKeyCredentialCreationOptions.challenge)
-    for (const excludeCredential of publicKeyCredentialCreationOptions.excludeCredentials) {
-        excludeCredential.id = b64urlToUint8(excludeCredential.id)
+    if (publicKeyCredentialCreationOptions.user?.id) {
+        publicKeyCredentialCreationOptions.user.id = b64urlToUint8(publicKeyCredentialCreationOptions.user.id)
+    }
+    if (publicKeyCredentialCreationOptions.challenge) {
+        publicKeyCredentialCreationOptions.challenge = b64urlToUint8(publicKeyCredentialCreationOptions.challenge)
+    }
+    if (Array.isArray(publicKeyCredentialCreationOptions.excludeCredentials)) {
+        for (const excludeCredential of publicKeyCredentialCreationOptions.excludeCredentials) {
+            if (excludeCredential?.id) {
+                excludeCredential.id = b64urlToUint8(excludeCredential.id)
+            }
+        }
     }
     return publicKeyCredentialCreationOptions
 }
 
 export const parsePublicKeyCredentialRequestOptions = (obj) => {
+    if (!obj || typeof obj !== "object") {
+        throw new Error("Invalid PublicKeyCredentialRequestOptions")
+    }
     const publicKeyCredentialRequestOptions = structuredClone(obj)
-    publicKeyCredentialRequestOptions.challenge = b64urlToUint8(publicKeyCredentialRequestOptions.challenge)
-    for (const allowCredential of publicKeyCredentialRequestOptions.allowCredentials) {
-        allowCredential.id = b64urlToUint8(allowCredential.id)
+    if (publicKeyCredentialRequestOptions.challenge) {
+        publicKeyCredentialRequestOptions.challenge = b64urlToUint8(publicKeyCredentialRequestOptions.challenge)
+    }
+    if (Array.isArray(publicKeyCredentialRequestOptions.allowCredentials)) {
+        for (const allowCredential of publicKeyCredentialRequestOptions.allowCredentials) {
+            if (allowCredential?.id) {
+                allowCredential.id = b64urlToUint8(allowCredential.id)
+            }
+        }
     }
     return publicKeyCredentialRequestOptions
 }

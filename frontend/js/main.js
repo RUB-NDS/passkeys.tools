@@ -18,6 +18,58 @@ import {
     parsePublicKeyCredentialRequestOptions
 } from "./converters.js"
 
+/* Helper functions */
+
+const setupEncodingHandlers = (elements, decoder, editor, encoder) => {
+    const { b64urlTextarea, b64Textarea, hexTextarea } = elements
+
+    b64urlTextarea.oninput = async () => {
+        const data = decoder(b64urlTextarea.value, "b64url")
+        editor.setValue(data)
+        await encoder()
+    }
+
+    b64Textarea.oninput = async () => {
+        const data = decoder(b64Textarea.value, "b64")
+        editor.setValue(data)
+        await encoder()
+    }
+
+    hexTextarea.oninput = async () => {
+        const data = decoder(hexTextarea.value, "hex")
+        editor.setValue(data)
+        await encoder()
+    }
+
+    editor.on("change", async () => {
+        await encoder()
+    })
+}
+
+const populateSelectOptions = (selectElement, options, valueKey = "value", textKey = "text") => {
+    selectElement.innerHTML = ""
+    for (const [key, value] of Object.entries(options)) {
+        const option = document.createElement("option")
+        option.value = typeof value === "object" ? key : value
+        option.text = typeof value === "object" ? (value[textKey] || key) : key
+        selectElement.appendChild(option)
+    }
+}
+
+const createResultAlert = (container, content, isSuccess = true) => {
+    container.innerHTML = ""
+    const div = document.createElement("div")
+    div.classList = isSuccess ? "alert alert-success" : "alert alert-danger"
+    if (typeof content === "object") {
+        const pre = document.createElement("pre")
+        pre.textContent = JSON.stringify(content, null, 2)
+        div.appendChild(pre)
+    } else {
+        div.textContent = content
+    }
+    container.appendChild(div)
+}
+
 export const showTab = (tab) => {
     const tabBtn = document.querySelector(`[data-bs-target="#${tab}-tab-pane"]`)
     const bsTab = new bootstrap.Tab(tabBtn)
@@ -42,43 +94,23 @@ renderActions()
 /* create */
 
 createWebApiBtn.onclick = () => {
-    createWebApiResult.innerHTML = ""
     const publicKeyCredentialCreationOptions = parsePublicKeyCredentialCreationOptions(editors.createEditor.getValue())
     navigatorCredentialsCreate(publicKeyCredentialCreationOptions).then(publicKeyCredential => {
-        const publicKeyCredentialJson = publicKeyCredential.toJSON()
-        const div = document.createElement("div")
-        div.classList = "alert alert-success"
-        const pre = document.createElement("pre")
-        pre.textContent = JSON.stringify(publicKeyCredentialJson, null, 2)
-        div.appendChild(pre)
-        createWebApiResult.appendChild(div)
+        createResultAlert(createWebApiResult, publicKeyCredential.toJSON())
     }).catch(error => {
-        const div = document.createElement("div")
-        div.classList = "alert alert-danger"
-        div.textContent = error
-        createWebApiResult.appendChild(div)
+        createResultAlert(createWebApiResult, error, false)
     })
 }
 
 /* get */
 
 getWebApiBtn.onclick = () => {
-    getWebApiResult.innerHTML = ""
     const publicKeyCredentialRequestOptions = parsePublicKeyCredentialRequestOptions(editors.getEditor.getValue())
     const mediation = editors.mediationGetEditor.getValue()
     navigatorCredentialsGet(publicKeyCredentialRequestOptions, mediation).then(publicKeyCredential => {
-        const publicKeyCredentialJson = publicKeyCredential.toJSON()
-        const div = document.createElement("div")
-        div.classList = "alert alert-success"
-        const pre = document.createElement("pre")
-        pre.textContent = JSON.stringify(publicKeyCredentialJson, null, 2)
-        div.appendChild(pre)
-        getWebApiResult.appendChild(div)
+        createResultAlert(getWebApiResult, publicKeyCredential.toJSON())
     }).catch(error => {
-        const div = document.createElement("div")
-        div.classList = "alert alert-danger"
-        div.textContent = error
-        getWebApiResult.appendChild(div)
+        createResultAlert(getWebApiResult, error, false)
     })
 }
 
@@ -96,27 +128,11 @@ const encodeAttestationClientDataJSON = async () => {
     attestationClientDataJSONHashHexTextarea.value = hash
 }
 
-attestationClientDataJSONEncB64urlTextarea.oninput = async () => {
-    const data = decoders.clientDataJSON(attestationClientDataJSONEncB64urlTextarea.value, "b64url")
-    editors.attestationClientDataJSONDecEditor.setValue(data)
-    await encodeAttestationClientDataJSON()
-}
-
-attestationClientDataJSONEncB64Textarea.oninput = async () => {
-    const data = decoders.clientDataJSON(attestationClientDataJSONEncB64Textarea.value, "b64")
-    editors.attestationClientDataJSONDecEditor.setValue(data)
-    await encodeAttestationClientDataJSON()
-}
-
-attestationClientDataJSONEncHexTextarea.oninput = async () => {
-    const data = decoders.clientDataJSON(attestationClientDataJSONEncHexTextarea.value, "hex")
-    editors.attestationClientDataJSONDecEditor.setValue(data)
-    await encodeAttestationClientDataJSON()
-}
-
-editors.attestationClientDataJSONDecEditor.on("change", async () => {
-    await encodeAttestationClientDataJSON()
-})
+setupEncodingHandlers({
+    b64urlTextarea: attestationClientDataJSONEncB64urlTextarea,
+    b64Textarea: attestationClientDataJSONEncB64Textarea,
+    hexTextarea: attestationClientDataJSONEncHexTextarea
+}, decoders.clientDataJSON, editors.attestationClientDataJSONDecEditor, encodeAttestationClientDataJSON)
 
 /* attestation -> attestationObject */
 
@@ -143,27 +159,11 @@ const encodeAttestationAttestationObject = async () => {
     attestationPublicKeyDerHexTextarea.value = derHex
 }
 
-attestationAttestationObjectEncB64urlTextarea.oninput = async () => {
-    const data = decoders.attestationObject(attestationAttestationObjectEncB64urlTextarea.value, "b64url")
-    editors.attestationAttestationObjectDecEditor.setValue(data)
-    await encodeAttestationAttestationObject()
-}
-
-attestationAttestationObjectEncB64Textarea.oninput = async () => {
-    const data = decoders.attestationObject(attestationAttestationObjectEncB64Textarea.value, "b64")
-    editors.attestationAttestationObjectDecEditor.setValue(data)
-    await encodeAttestationAttestationObject()
-}
-
-attestationAttestationObjectEncHexTextarea.oninput = async () => {
-    const data = decoders.attestationObject(attestationAttestationObjectEncHexTextarea.value, "hex")
-    editors.attestationAttestationObjectDecEditor.setValue(data)
-    await encodeAttestationAttestationObject()
-}
-
-editors.attestationAttestationObjectDecEditor.on("change", async () => {
-    await encodeAttestationAttestationObject()
-})
+setupEncodingHandlers({
+    b64urlTextarea: attestationAttestationObjectEncB64urlTextarea,
+    b64Textarea: attestationAttestationObjectEncB64Textarea,
+    hexTextarea: attestationAttestationObjectEncHexTextarea
+}, decoders.attestationObject, editors.attestationAttestationObjectDecEditor, encodeAttestationAttestationObject)
 
 attestationSendKeyToParserBtn.onclick = () => {
     const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
@@ -211,12 +211,7 @@ attestationRpIdBtn.onclick = async () => {
     editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
 }
 
-for (const [k, v] of Object.entries(getAaguids())) {
-    const option = document.createElement("option")
-    option.value = v
-    option.text = k
-    attestationAaguidSelect.appendChild(option)
-}
+populateSelectOptions(attestationAaguidSelect, getAaguids())
 
 attestationAaguidBtn.onclick = async () => {
     const aaguid = attestationAaguidSelect.value
@@ -239,27 +234,11 @@ const encodeAssertionClientDataJSON = async () => {
     assertionClientDataJSONHashHexTextarea.value = hash
 }
 
-assertionClientDataJSONEncB64urlTextarea.oninput = async () => {
-    const data = decoders.clientDataJSON(assertionClientDataJSONEncB64urlTextarea.value, "b64url")
-    editors.assertionClientDataJSONDecEditor.setValue(data)
-    await encodeAssertionClientDataJSON()
-}
-
-assertionClientDataJSONEncB64Textarea.oninput = async () => {
-    const data = decoders.clientDataJSON(assertionClientDataJSONEncB64Textarea.value, "b64")
-    editors.assertionClientDataJSONDecEditor.setValue(data)
-    await encodeAssertionClientDataJSON()
-}
-
-assertionClientDataJSONEncHexTextarea.oninput = async () => {
-    const data = decoders.clientDataJSON(assertionClientDataJSONEncHexTextarea.value, "hex")
-    editors.assertionClientDataJSONDecEditor.setValue(data)
-    await encodeAssertionClientDataJSON()
-}
-
-editors.assertionClientDataJSONDecEditor.on("change", async () => {
-    await encodeAssertionClientDataJSON()
-})
+setupEncodingHandlers({
+    b64urlTextarea: assertionClientDataJSONEncB64urlTextarea,
+    b64Textarea: assertionClientDataJSONEncB64Textarea,
+    hexTextarea: assertionClientDataJSONEncHexTextarea
+}, decoders.clientDataJSON, editors.assertionClientDataJSONDecEditor, encodeAssertionClientDataJSON)
 
 /* assertion -> authenticatorData */
 
@@ -273,27 +252,11 @@ const encodeAssertionAuthenticatorData = () => {
     assertionAuthenticatorDataEncHexTextarea.value = hex
 }
 
-assertionAuthenticatorDataEncB64urlTextarea.oninput = () => {
-    const data = decoders.authenticatorData(assertionAuthenticatorDataEncB64urlTextarea.value, "b64url")
-    editors.assertionAuthenticatorDataDecEditor.setValue(data)
-    encodeAssertionAuthenticatorData()
-}
-
-assertionAuthenticatorDataEncB64Textarea.oninput = () => {
-    const data = decoders.authenticatorData(assertionAuthenticatorDataEncB64Textarea.value, "b64")
-    editors.assertionAuthenticatorDataDecEditor.setValue(data)
-    encodeAssertionAuthenticatorData()
-}
-
-assertionAuthenticatorDataEncHexTextarea.oninput = () => {
-    const data = decoders.authenticatorData(assertionAuthenticatorDataEncHexTextarea.value, "hex")
-    editors.assertionAuthenticatorDataDecEditor.setValue(data)
-    encodeAssertionAuthenticatorData()
-}
-
-editors.assertionAuthenticatorDataDecEditor.on("change", () => {
-    encodeAssertionAuthenticatorData()
-})
+setupEncodingHandlers({
+    b64urlTextarea: assertionAuthenticatorDataEncB64urlTextarea,
+    b64Textarea: assertionAuthenticatorDataEncB64Textarea,
+    hexTextarea: assertionAuthenticatorDataEncHexTextarea
+}, decoders.authenticatorData, editors.assertionAuthenticatorDataDecEditor, encodeAssertionAuthenticatorData)
 
 for (const e of ["change", "keydown", "paste", "input"]) {
     assertionRpIdInput.addEventListener(e, async () => {
@@ -381,84 +344,26 @@ const encodeKeys = async () => {
     keysDerB64urlTextarea.value = der
 }
 
-keysCoseB64urlTextarea.oninput = async () => {
-    const data = await decoders.keys(keysCoseB64urlTextarea.value, "cose", "b64url")
-    editors.keysJwkEditor.setValue(data)
-    encodeKeys()
-}
-
-keysCoseB64Textarea.oninput = async () => {
-    const data = await decoders.keys(keysCoseB64Textarea.value, "cose", "b64")
-    editors.keysJwkEditor.setValue(data)
-    encodeKeys()
-}
-
-keysCoseHexTextarea.oninput = async () => {
-    const data = await decoders.keys(keysCoseHexTextarea.value, "cose", "hex")
-    editors.keysJwkEditor.setValue(data)
-    encodeKeys()
-}
-
-editors.keysJwkEditor.on("change", async () => {
-    await encodeKeys()
-})
+setupEncodingHandlers({
+    b64urlTextarea: keysCoseB64urlTextarea,
+    b64Textarea: keysCoseB64Textarea,
+    hexTextarea: keysCoseHexTextarea
+}, (value, format) => decoders.keys(value, "cose", format), editors.keysJwkEditor, encodeKeys)
 
 export const renderKeys = async () => {
     const keys = await getKeys()
 
-    // attestation -> attestation object
-    attestationLoadKeyNameSelect.innerHTML = ""
-    for (const [name, key] of Object.entries(keys)) {
-        const option = document.createElement("option")
-        option.value = name
-        option.text = name
-        attestationLoadKeyNameSelect.appendChild(option)
-    }
+    // Populate all key-related select elements
+    const keySelects = [
+        attestationLoadKeyNameSelect,
+        verifyAssertionWithStoredKeySelect,
+        signAssertionWithStoredKeySelect,
+        keysLoadKeyNameSelect,
+        keysUpdateCredentialIdSelect,
+        keysDeleteKeyNameSelect
+    ]
 
-    // assertion -> signature -> verify
-    verifyAssertionWithStoredKeySelect.innerHTML = ""
-    for (const [name, key] of Object.entries(keys)) {
-        const option = document.createElement("option")
-        option.value = name
-        option.text = name
-        verifyAssertionWithStoredKeySelect.appendChild(option)
-    }
-
-    // assertion -> signature -> sign
-    signAssertionWithStoredKeySelect.innerHTML = ""
-    for (const [name, key] of Object.entries(keys)) {
-        const option = document.createElement("option")
-        option.value = name
-        option.text = name
-        signAssertionWithStoredKeySelect.appendChild(option)
-    }
-
-    // keys -> key parser -> load key
-    keysLoadKeyNameSelect.innerHTML = ""
-    for (const [name, key] of Object.entries(keys)) {
-        const option = document.createElement("option")
-        option.value = name
-        option.text = name
-        keysLoadKeyNameSelect.appendChild(option)
-    }
-
-    // keys -> key storage -> update credential id
-    keysUpdateCredentialIdSelect.innerHTML = ""
-    for (const [name, key] of Object.entries(keys)) {
-        const option = document.createElement("option")
-        option.value = name
-        option.text = name
-        keysUpdateCredentialIdSelect.appendChild(option)
-    }
-
-    // keys -> key storage -> delete key
-    keysDeleteKeyNameSelect.innerHTML = ""
-    for (const [name, key] of Object.entries(keys)) {
-        const option = document.createElement("option")
-        option.value = name
-        option.text = name
-        keysDeleteKeyNameSelect.appendChild(option)
-    }
+    keySelects.forEach(select => populateSelectOptions(select, keys))
 
     // keys -> key storage -> table
     keysTable.innerHTML = ""
@@ -492,12 +397,7 @@ export const renderKeys = async () => {
 
 (async () => await renderKeys())()
 
-Object.keys(algs).forEach(alg => {
-    const option = document.createElement("option")
-    option.value = alg
-    option.text = alg
-    keysGenerateKeyAlgSelect.appendChild(option)
-})
+populateSelectOptions(keysGenerateKeyAlgSelect, algs)
 
 keysLoadKeyBtn.onclick = async () => {
     const name = keysLoadKeyNameSelect.value
@@ -663,12 +563,7 @@ const loadExample = (example) => {
     assertionSignatureEncHexTextarea.dispatchEvent(new Event("input"))
 }
 
-for (const key of Object.keys(examples)) {
-    const option = document.createElement("option")
-    option.value = key
-    option.text = key
-    examplesSelect.appendChild(option)
-}
+populateSelectOptions(examplesSelect, examples)
 
 examplesLoadBtn.onclick = () => {
     const example = examples[examplesSelect.value]

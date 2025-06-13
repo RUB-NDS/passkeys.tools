@@ -198,7 +198,7 @@ export const assertionAuthenticatorDataSchema = {
 }
 
 // https://www.w3.org/TR/webauthn-2/#sctn-none-attestation
-export const attestationStatementNoneSchema = {
+const attestationStatementNoneSchema = {
     "type": "object",
     "required": true,
     "additionalProperties": false,
@@ -206,7 +206,7 @@ export const attestationStatementNoneSchema = {
 }
 
 // https://www.w3.org/TR/webauthn-2/#sctn-packed-attestation
-export const attestationStatementPackedSchema = {
+const attestationStatementPackedSchema = {
     "type": "object",
     "required": true,
     "additionalProperties": false,

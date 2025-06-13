@@ -196,7 +196,7 @@ export const keys = async (data, format, codec) => {
         // TODO: TypeError: crypto.createPublicKey is not a function
         const jwk = await pemToJwk(data)
         return jwk
-    } {
+    } else {
         throw new Error(`Unsupported format and codec: ${format}, ${codec}`)
     }
 }

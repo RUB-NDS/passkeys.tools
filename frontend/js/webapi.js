@@ -1,32 +1,28 @@
 
-export const navigatorCredentialsCreate = (publicKeyCredentialCreationOptions, mediation="") => {
-    return new Promise((resolve, reject) => {
+export const navigatorCredentialsCreate = async (publicKeyCredentialCreationOptions, mediation="") => {
+    try {
         const options = { publicKey: publicKeyCredentialCreationOptions }
         if (mediation) options.mediation = mediation
-        navigator.credentials.create(options)
-        .then(publicKeyCredential => {
-            console.log("PublicKeyCredential:", publicKeyCredential)
-            console.log("PublicKeyCredential (JSON):", publicKeyCredential.toJSON())
-            resolve(publicKeyCredential)
-        }).catch(error => {
-            console.error(error)
-            reject(error)
-        })
-    })
+        const publicKeyCredential = await navigator.credentials.create(options)
+        console.log("PublicKeyCredential:", publicKeyCredential)
+        console.log("PublicKeyCredential (JSON):", publicKeyCredential.toJSON())
+        return publicKeyCredential
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
 }
 
-export const navigatorCredentialsGet = (publicKeyCredentialRequestOptions, mediation="") => {
-    return new Promise((resolve, reject) => {
+export const navigatorCredentialsGet = async (publicKeyCredentialRequestOptions, mediation="") => {
+    try {
         const options = { publicKey: publicKeyCredentialRequestOptions }
         if (mediation) options.mediation = mediation
-        navigator.credentials.get(options)
-        .then(publicKeyCredential => {
-            console.log("PublicKeyCredential:", publicKeyCredential)
-            console.log("PublicKeyCredential (JSON):", publicKeyCredential.toJSON())
-            resolve(publicKeyCredential)
-        }).catch(error => {
-            console.error(error)
-            reject(error)
-        })
-    })
+        const publicKeyCredential = await navigator.credentials.get(options)
+        console.log("PublicKeyCredential:", publicKeyCredential)
+        console.log("PublicKeyCredential (JSON):", publicKeyCredential.toJSON())
+        return publicKeyCredential
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
 }
