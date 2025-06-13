@@ -5,7 +5,8 @@ export const navigatorCredentialsCreate = (publicKeyCredentialCreationOptions, m
         if (mediation) options.mediation = mediation
         navigator.credentials.create(options)
         .then(publicKeyCredential => {
-            console.log(publicKeyCredential)
+            console.log("PublicKeyCredential:", publicKeyCredential)
+            console.log("PublicKeyCredential (JSON):", publicKeyCredential.toJSON())
             resolve(publicKeyCredential)
         }).catch(error => {
             console.error(error)
@@ -20,7 +21,8 @@ export const navigatorCredentialsGet = (publicKeyCredentialRequestOptions, media
         if (mediation) options.mediation = mediation
         navigator.credentials.get(options)
         .then(publicKeyCredential => {
-            console.log(publicKeyCredential)
+            console.log("PublicKeyCredential:", publicKeyCredential)
+            console.log("PublicKeyCredential (JSON):", publicKeyCredential.toJSON())
             resolve(publicKeyCredential)
         }).catch(error => {
             console.error(error)
