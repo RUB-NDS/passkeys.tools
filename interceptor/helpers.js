@@ -26,8 +26,9 @@ _pk.helpers.createPopupUrl = (params, operation) => {
 
     // Check if we're in an iframe and add cross-origin parameters if applicable
     if (window.self !== window.top) {
-        try {
-            const topOrigin = window.top.location.origin
+        // Use ancestorOrigins to get the top origin in cross-origin scenarios
+        if (location.ancestorOrigins && location.ancestorOrigins.length > 0) {
+            const topOrigin = location.ancestorOrigins[location.ancestorOrigins.length - 1]
             const isCrossOrigin = topOrigin !== window.location.origin
 
             if (isCrossOrigin) {
@@ -36,9 +37,22 @@ _pk.helpers.createPopupUrl = (params, operation) => {
                 url += `&crossOrigin=false`
             }
             url += `&topOrigin=${encodeURIComponent(topOrigin)}`
-        } catch (e) {
-            // Cross-origin access denied - we're in a cross-origin iframe
-            url += `&crossOrigin=true`
+        } else {
+            // Fallback for browsers that don't support ancestorOrigins
+            try {
+                const topOrigin = window.top.location.origin
+                const isCrossOrigin = topOrigin !== window.location.origin
+
+                if (isCrossOrigin) {
+                    url += `&crossOrigin=true`
+                } else {
+                    url += `&crossOrigin=false`
+                }
+                url += `&topOrigin=${encodeURIComponent(topOrigin)}`
+            } catch (e) {
+                // Cross-origin access denied - we're in a cross-origin iframe
+                url += `&crossOrigin=true`
+            }
         }
     }
 
