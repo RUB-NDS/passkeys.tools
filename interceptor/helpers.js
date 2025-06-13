@@ -21,7 +21,28 @@ _pk.helpers.createPopupUrl = (params, operation) => {
     const mode = encodeURIComponent(_pk.interceptorMode || "default")
     const data = encodeURIComponent(JSON.stringify(params))
     const key = operation === "create" ? "pkcco" : "pkcro"
-    return `http://localhost:5173/#${key}=${data}&origin=${origin}&mode=${mode}`
+
+    let url = `http://localhost:5173/#${key}=${data}&origin=${origin}&mode=${mode}`
+
+    // Check if we're in an iframe and add cross-origin parameters if applicable
+    if (window.self !== window.top) {
+        try {
+            const topOrigin = window.top.location.origin
+            const isCrossOrigin = topOrigin !== window.location.origin
+
+            if (isCrossOrigin) {
+                url += `&crossOrigin=true`
+            } else {
+                url += `&crossOrigin=false`
+            }
+            url += `&topOrigin=${encodeURIComponent(topOrigin)}`
+        } catch (e) {
+            // Cross-origin access denied - we're in a cross-origin iframe
+            url += `&crossOrigin=true`
+        }
+    }
+
+    return url
 }
 
 /* Handle popup response */
