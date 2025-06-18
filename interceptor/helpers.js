@@ -103,7 +103,9 @@ _pk.helpers.handlePopupResponse = (operation) => {
 
 /* Create attestation response */
 _pk.helpers.createAttestationResponse = (response) => {
-    if (!response || !response.id || !response.clientDataJSON || !response.attestationObject) {
+    if (!response || !response.id || !response.clientDataJSON ||
+        !response.attestationObject || !response.authenticatorData ||
+        !response.publicKey || !response.publicKeyAlgorithm) {
         throw new Error("Invalid attestation response")
     }
 
@@ -148,7 +150,7 @@ _pk.helpers.createAttestationResponse = (response) => {
 /* Create assertion response */
 _pk.helpers.createAssertionResponse = (response) => {
     if (!response || !response.id || !response.clientDataJSON ||
-        !response.authenticatorData || !response.signature) {
+        !response.authenticatorData || !response.signature || !response.userHandle) {
         throw new Error("Invalid assertion response")
     }
 

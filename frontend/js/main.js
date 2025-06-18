@@ -14,7 +14,7 @@ import {
     b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr,
     strToB64, b64urlToB64, hexToB64, b64ToStr, b64ToB64url, b64ToHex,
     uint8ToHex, strSha256Uint8, parsePublicKeyCredentialCreationOptions,
-    parsePublicKeyCredentialRequestOptions
+    parsePublicKeyCredentialRequestOptions, uint8ToB64url, uint8ToB64
 } from "./converters.js"
 
 /* Helper functions */
@@ -324,6 +324,10 @@ signAssertionWithStoredKeyBtn.onclick = async () => {
     const signature = await signAssertion(clientDataHash, authenticatorData, jwk)
     assertionSignatureEncHexTextarea.value = uint8ToHex(signature)
     assertionSignatureEncHexTextarea.dispatchEvent(new Event("input"))
+    assertionSignatureEncB64urlTextarea.value = uint8ToB64url(signature)
+    assertionSignatureEncB64urlTextarea.dispatchEvent(new Event("input"))
+    assertionSignatureEncB64Textarea.value = uint8ToB64(signature)
+    assertionSignatureEncB64Textarea.dispatchEvent(new Event("input"))
 }
 
 /* keys */

@@ -109,18 +109,22 @@ const applyPkcro = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=
         const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
         updateInterceptorResponseTextarea({clientDataJSON: encoders.clientDataJSON(clientDataJSON, "b64url")})
         signAssertionWithStoredKeyBtn.click() // resign on clientDataJSON change
-        updateSignatureFromTextarea()
     })
 
     editors.assertionAuthenticatorDataDecEditor.on("change", async () => {
         const authenticatorData = editors.assertionAuthenticatorDataDecEditor.getValue()
         updateInterceptorResponseTextarea({authenticatorData: encoders.authenticatorData(authenticatorData, "b64url")})
         signAssertionWithStoredKeyBtn.click() // resign on authenticatorData change
-        updateSignatureFromTextarea()
     })
 
     assertionSignatureEncB64urlTextarea.addEventListener("input", () => {
         updateSignatureFromTextarea()
+    })
+
+    // todo: remove hardcoded values
+    updateInterceptorResponseTextarea({
+        id: "G1h7XQSGUTk10J7A9QTiJaleLapZfPmbmwo9lXT8tl4",
+        userHandle: "Y0dGcFpDNHhNaTVvYTJwNVpHUmtaR1JrWkhjPQ"
     })
 
     editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
