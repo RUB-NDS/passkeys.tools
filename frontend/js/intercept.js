@@ -39,6 +39,120 @@ const addSendButton = (operation) => {
     interceptorActions.appendChild(sendButton)
 }
 
+const addUserHandleSelect = async (operation, rpId, mode) => {
+    const div = document.createElement("div")
+    div.classList.add("input-group", "mb-3")
+
+    const span = document.createElement("span")
+    span.classList.add("input-group-text")
+    span.textContent = "User Handle"
+    div.appendChild(span)
+
+    const select = document.createElement("select")
+    select.className = "form-select"
+    select.size = "3"
+
+    const users = await getUsers()
+    for (const [userId, user] of Object.entries(users)) {
+        if (user.rpId !== rpId) continue // only show users for the relevant rpId
+        const option = document.createElement("option")
+        option.value = userId
+        option.text = user.name || user.displayName || `${user.userId.slice(0, 6)}...`
+        select.appendChild(option)
+    }
+
+    select.addEventListener("change", () => {
+        const userId = select.value
+        console.log("Selected User ID:", userId)
+        // todo
+    })
+
+    div.appendChild(select)
+    interceptorActions.appendChild(div)
+}
+
+const addCredentialIdSelect = async (operation, rpId, mode) => {
+    const div = document.createElement("div")
+    div.classList.add("input-group", "mb-3")
+
+    const span = document.createElement("span")
+    span.classList.add("input-group-text")
+    span.textContent = "Credential ID"
+    div.appendChild(span)
+
+    const select = document.createElement("select")
+    select.className = "form-select"
+    select.size = "3"
+
+    const keys = await getKeys()
+    for (const [name, key] of Object.entries(keys)) {
+        const split = name.split(" | ")
+        if (mode === "attacker" || mode === "victim") {
+            if (split[0] !== "attacker" && split[0] !== "victim") {
+                continue // only show attacker and victim keys in this mode
+            }
+        } else {
+            if (split[0] !== rpId) {
+                continue // only show keys for the relevant rpId in this mode
+            }
+        }
+        const option = document.createElement("option")
+        option.value = key.credentialId
+        option.text = name || `${key.credentialId.slice(0, 6)}...`
+        select.appendChild(option)
+    }
+
+    select.addEventListener("change", () => {
+        const credentialId = select.value
+        console.log("Selected Credential ID:", credentialId)
+        // todo
+    })
+
+    div.appendChild(select)
+    interceptorActions.appendChild(div)
+}
+
+const addKeySelect = async (operation, rpId, mode) => {
+    const div = document.createElement("div")
+    div.classList.add("input-group", "mb-3")
+
+    const span = document.createElement("span")
+    span.classList.add("input-group-text")
+    span.textContent = "Key"
+    div.appendChild(span)
+
+    const select = document.createElement("select")
+    select.className = "form-select"
+    select.size = "3"
+
+    const keys = await getKeys()
+    for (const [name, key] of Object.entries(keys)) {
+        const split = name.split(" | ")
+        if (mode === "attacker" || mode === "victim") {
+            if (split[0] !== "attacker" && split[0] !== "victim") {
+                continue // only show attacker and victim keys in this mode
+            }
+        } else {
+            if (split[0] !== rpId) {
+                continue // only show keys for the relevant rpId in this mode
+            }
+        }
+        const option = document.createElement("option")
+        option.value = name
+        option.text = name
+        select.appendChild(option)
+    }
+
+    select.addEventListener("change", () => {
+        const name = select.value
+        console.log("Selected Key Name:", name)
+        // todo
+    })
+
+    div.appendChild(select)
+    interceptorActions.appendChild(div)
+}
+
 const loadPkcco = (pkcco) => {
     console.log("Load PKCCO:", pkcco)
     editors.createEditor.on("change", async () => {
@@ -182,6 +296,9 @@ export const parseInterceptParams = async () => {
         interceptorControlsCrossOrigin.innerText = crossOrigin || "N/A"
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
 
+        await addUserHandleSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
+        await addCredentialIdSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
+        await addKeySelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
         renderModifications("get")
         addSendButton("get")
     }
