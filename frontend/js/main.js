@@ -5,7 +5,6 @@ import { examples } from "./examples.js"
 import { getAaguids } from "./aaguid.js"
 import { parseInterceptParams } from "./intercept.js"
 import { renderCapabilities } from "./capabilities.js"
-import { renderActions } from "./actions.js"
 import { verifyAssertion, signAssertion } from "./signatures.js"
 import { getUsers, storeUser, deleteUser } from "./users.js"
 import { algs, getKey, getKeys, storeKey, generateKey, deleteKey } from "./keys.js"
@@ -89,7 +88,6 @@ export const highlightTabs = (tabs) => {
 }
 
 renderCapabilities()
-renderActions()
 
 /* create */
 

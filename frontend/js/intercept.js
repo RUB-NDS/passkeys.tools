@@ -1,12 +1,13 @@
 import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
 import { showTab, highlightTabs } from "./main.js"
-import { algs } from "./keys.js"
+import { algs, getKeys } from "./keys.js"
 import { pkccoToAttestation } from "./pkcco.js"
 import { pkcroToAssertion } from "./pkcro.js"
-import { uint8ToB64url, b64urlToHex } from "./converters.js"
-import { storeUser } from "./users.js"
+import { b64urlToHex, hexToB64url } from "./converters.js"
+import { storeUser, getUsers } from "./users.js"
 import { renderUsers } from "./main.js"
+import { renderModifications } from "./modifications.js"
 
 const updateInterceptorResponseTextarea = (dict) => {
     let response = JSON.parse(interceptorResponseTextarea.value || "{}")
@@ -18,32 +19,24 @@ const addSendButton = (operation) => {
     const sendButton = document.createElement("button")
     sendButton.className = "btn btn-primary"
     sendButton.textContent = "Send Response to Extension"
-
     sendButton.addEventListener("click", () => {
         const response = JSON.parse(interceptorResponseTextarea.value || "{}")
-
-        // Send message to opener window
         if (window.opener) {
             window.opener.postMessage({
                 type: "passkey-interceptor-response",
                 operation: operation,
                 response: response
             }, "*")
-
-            // Update button to show success
             sendButton.textContent = "Response Sent!"
             sendButton.className = "btn btn-success"
             sendButton.disabled = true
-
-            // Close window after a short delay
             setTimeout(() => { window.close() }, 1000)
         } else {
             sendButton.textContent = "Error: No opener window"
             sendButton.className = "btn btn-danger"
         }
     })
-
-    interceptorControlsActions.appendChild(sendButton)
+    interceptorActions.appendChild(sendButton)
 }
 
 const loadPkcco = (pkcco) => {
@@ -54,8 +47,8 @@ const loadPkcco = (pkcco) => {
     editors.createEditor.setValue(pkcco)
 }
 
-const loadUserFromPkcco = async (pkcco, origin, mode) => {
-    console.log("Load User from PKCCO:", pkcco, origin, mode)
+const storeUserFromPkcco = async (pkcco, origin, mode) => {
+    console.log("Store User from PKCCO:", pkcco, origin, mode)
     const rpId = pkcco.rp.id || (new URL(origin)).hostname
     const userId = b64urlToHex(pkcco.user.id) || ""
     const userName = pkcco.user.name || ""
@@ -101,19 +94,11 @@ const applyPkcco = async (pkcco, origin, mode, crossOrigin=undefined, topOrigin=
 
     editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
     editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
-
-    addSendButton("create")
 }
 
-const applyPkcro = async (pkcro, origin, crossOrigin=undefined, topOrigin=undefined) => {
-    console.log("Apply PKCRO:", pkcro, origin, crossOrigin, topOrigin)
-    const { clientDataJSON, authenticatorData, signature } = await pkcroToAssertion(pkcro, origin, crossOrigin, topOrigin)
-
-    // todo: select credential and user handle from ui
-    updateInterceptorResponseTextarea({
-        id: pkcro.allowCredentials?.[0]?.id || "TODO",
-        userHandle: "TODO"
-    })
+const applyPkcro = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=undefined) => {
+    console.log("Apply PKCRO:", pkcro, origin, mode, crossOrigin, topOrigin)
+    const { clientDataJSON, authenticatorData } = await pkcroToAssertion(pkcro, origin, mode, crossOrigin, topOrigin)
 
     const updateSignatureFromTextarea = () => {
         const signatureB64url = assertionSignatureEncB64urlTextarea.value
@@ -123,12 +108,14 @@ const applyPkcro = async (pkcro, origin, crossOrigin=undefined, topOrigin=undefi
     editors.assertionClientDataJSONDecEditor.on("change", async () => {
         const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
         updateInterceptorResponseTextarea({clientDataJSON: encoders.clientDataJSON(clientDataJSON, "b64url")})
+        signAssertionWithStoredKeyBtn.click() // resign on clientDataJSON change
         updateSignatureFromTextarea()
     })
 
     editors.assertionAuthenticatorDataDecEditor.on("change", async () => {
         const authenticatorData = editors.assertionAuthenticatorDataDecEditor.getValue()
         updateInterceptorResponseTextarea({authenticatorData: encoders.authenticatorData(authenticatorData, "b64url")})
+        signAssertionWithStoredKeyBtn.click() // resign on authenticatorData change
         updateSignatureFromTextarea()
     })
 
@@ -138,10 +125,6 @@ const applyPkcro = async (pkcro, origin, crossOrigin=undefined, topOrigin=undefi
 
     editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
     editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
-    assertionSignatureEncB64urlTextarea.value = uint8ToB64url(signature)
-    assertionSignatureEncB64urlTextarea.dispatchEvent(new Event("input"))
-
-    addSendButton("get")
 }
 
 export const parseInterceptParams = async () => {
@@ -158,7 +141,7 @@ export const parseInterceptParams = async () => {
         const topOrigin = hparams.get("topOrigin") || undefined
 
         loadPkcco(pkcco)
-        await loadUserFromPkcco(pkcco, origin, mode)
+        await storeUserFromPkcco(pkcco, origin, mode)
         await applyPkcco(pkcco, origin, mode, crossOrigin, topOrigin)
 
         highlightTabs(["create", "attestation", "interceptor"])
@@ -169,6 +152,9 @@ export const parseInterceptParams = async () => {
         interceptorControlsOrigin.innerText = origin
         interceptorControlsCrossOrigin.innerText = crossOrigin || "N/A"
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
+
+        renderModifications("create")
+        addSendButton("create")
     }
 
     // pkcro
@@ -181,7 +167,7 @@ export const parseInterceptParams = async () => {
         const topOrigin = hparams.get("topOrigin") || undefined
 
         loadPkcro(pkcro)
-        await applyPkcro(pkcro, origin, crossOrigin, topOrigin)
+        await applyPkcro(pkcro, origin, mode, crossOrigin, topOrigin)
 
         highlightTabs(["get", "assertion", "interceptor"])
         showTab("interceptor")
@@ -191,5 +177,8 @@ export const parseInterceptParams = async () => {
         interceptorControlsOrigin.innerText = origin
         interceptorControlsCrossOrigin.innerText = crossOrigin || "N/A"
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
+
+        renderModifications("get")
+        addSendButton("get")
     }
 }
