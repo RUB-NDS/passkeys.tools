@@ -7,7 +7,7 @@ import { parseInterceptParams } from "./intercept.js"
 import { renderCapabilities } from "./capabilities.js"
 import { verifyAssertion, signAssertion } from "./signatures.js"
 import { getUsers, storeUser, deleteUser } from "./users.js"
-import { algs, getKey, getKeys, storeKey, generateKey, deleteKey } from "./keys.js"
+import { algs, getKey, getKeys, storeKey, generateKey, deleteKey, generateModeKeys } from "./keys.js"
 import { navigatorCredentialsCreate, navigatorCredentialsGet } from "./webapi.js"
 import { renderStorageSettings } from "./storage.js"
 import {
@@ -445,6 +445,10 @@ keysDeleteKeyBtn.onclick = async () => {
     await deleteKey(name)
     await renderKeys()
 }
+
+window.addEventListener("load", async () => {
+    await generateModeKeys(["attacker", "victim"])
+})
 
 /* users */
 

@@ -1,4 +1,5 @@
 import * as jose from "jose"
+import { renderKeys } from "./main.js"
 import { uint8ToHex } from "./converters.js"
 import { storage } from "./storage.js"
 
@@ -48,4 +49,20 @@ export const getSupportedAlgorithm = (pubKeyCredParams) => {
         if (algName) return algName
     }
     return "ES256"
+}
+
+export const generateModeKeys = async (modes) => {
+    const keys = await getKeys()
+    let changed = false
+    for (const mode of modes) {
+        for (const alg of Object.keys(algs)) {
+            const keyHandle = `${mode} | ${alg}`
+            if (!keys[keyHandle]) {
+                const key = await generateKey(alg)
+                await storeKey(keyHandle, key)
+                changed = true
+            }
+        }
+    }
+    if (changed) await renderKeys()
 }
