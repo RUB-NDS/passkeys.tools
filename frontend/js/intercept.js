@@ -64,7 +64,11 @@ const addUserHandleSelect = async (operation, rpId, mode) => {
     select.addEventListener("change", () => {
         const userId = select.value
         console.log("Selected User ID:", userId)
-        // todo
+        if (operation === "create") {
+            // there is no user handle in create operation, so we do nothing
+        } else if (operation === "get") {
+            updateInterceptorResponseTextarea({userHandle: hexToB64url(userId)})
+        }
     })
 
     div.appendChild(select)
@@ -111,7 +115,7 @@ const addCredentialIdSelect = async (operation, rpId, mode) => {
             attestationObject.authData.attestedCredentialData.credentialIdLength = credentialId.length / 2 // hex to bytes
             editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
         } else if (operation === "get") {
-            // todo
+            updateInterceptorResponseTextarea({id: hexToB64url(credentialId)})
         }
     })
 
@@ -159,7 +163,9 @@ const addKeySelect = async (operation, rpId, mode) => {
             attestationObject.authData.attestedCredentialData.credentialPublicKey = key.publicKey
             editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
         } else if (operation === "get") {
-            // todo
+            signAssertionWithStoredKeySelect.value = name
+            verifyAssertionWithStoredKeySelect.value = name
+            signAssertionWithStoredKeyBtn.click() // resign on key change
         }
     })
 
