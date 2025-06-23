@@ -252,12 +252,6 @@ const applyPkcro = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=
         updateInterceptorResponseTextarea({signature: signature})
     })
 
-    // todo: remove hardcoded values
-    updateInterceptorResponseTextarea({
-        id: "G1h7XQSGUTk10J7A9QTiJaleLapZfPmbmwo9lXT8tl4",
-        userHandle: "Y0dGcFpDNHhNaTVvYTJwNVpHUmtaR1JrWkhjPQ"
-    })
-
     editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
     editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
 }
