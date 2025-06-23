@@ -1,7 +1,7 @@
 import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
 import { showTab, highlightTabs } from "./main.js"
-import { algs, getKeys, getKey } from "./keys.js"
+import { algs, getKeys, getKey, getNameFromPublicKey } from "./keys.js"
 import { pkccoToAttestation } from "./pkcco.js"
 import { pkcroToAssertion } from "./pkcro.js"
 import { b64urlToHex, hexToB64url } from "./converters.js"
@@ -85,6 +85,7 @@ const addCredentialIdSelect = async (operation, rpId, mode) => {
     div.appendChild(span)
 
     const select = document.createElement("select")
+    select.id = `${operation}CredentialIdSelect`
     select.className = "form-select"
     select.size = "3"
 
@@ -133,6 +134,7 @@ const addKeySelect = async (operation, rpId, mode) => {
     div.appendChild(span)
 
     const select = document.createElement("select")
+    select.id = `${operation}KeySelect`
     select.className = "form-select"
     select.size = "3"
 
@@ -225,6 +227,13 @@ const applyPkcco = async (pkcco, origin, mode, crossOrigin=undefined, topOrigin=
 
         const id = attestationObject.authData.attestedCredentialData.credentialId
         updateInterceptorResponseTextarea({id: hexToB64url(id)})
+
+        const idOption = document.querySelector(`#createCredentialIdSelect option[value="${id}"]`)
+        if (idOption) idOption.selected = true
+
+        const name = await getNameFromPublicKey(jwk)
+        const nameOption = document.querySelector(`#createKeySelect option[value="${name}"]`)
+        if (nameOption) nameOption.selected = true
     })
 
     editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
@@ -272,11 +281,8 @@ export const parseInterceptParams = async () => {
 
         loadPkcco(pkcco)
         await storeUserFromPkcco(pkcco, origin, mode)
-        await applyPkcco(pkcco, origin, mode, crossOrigin, topOrigin)
 
-        highlightTabs(["create", "attestation", "interceptor"])
-        showTab("interceptor")
-
+        // overview
         interceptorControlsMode.innerText = mode
         interceptorControlsType.innerText = "Attestation / Create"
         interceptorControlsOrigin.innerText = origin
@@ -284,11 +290,19 @@ export const parseInterceptParams = async () => {
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
         interceptorControlsMediation.innerText = mediation || "N/A"
 
+        // actions
         interceptorActions.innerHTML = ""
         await addCredentialIdSelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
         await addKeySelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
-        renderModifications("create")
         addSendButton("create")
+
+        // modifications
+        renderModifications("create")
+
+        await applyPkcco(pkcco, origin, mode, crossOrigin, topOrigin)
+
+        highlightTabs(["create", "attestation", "interceptor"])
+        showTab("interceptor")
     }
 
     // pkcro

@@ -2,6 +2,7 @@ import * as jose from "jose"
 import { renderKeys } from "./main.js"
 import { uint8ToHex } from "./converters.js"
 import { storage } from "./storage.js"
+import { deepEqual } from "./helpers.js"
 
 export const algs = {"ES256": -7, "ES384": -35, "ES512": -36, "PS256": -37, "PS384": -38, "PS512": -39, "RS256": -257, "RS384": -258, "RS512": -259, "EdDSA": -8}
 
@@ -40,6 +41,16 @@ export const getKey = async (name) => {
 export const getKeys = async () => {
     const keys = await storage.get("keys")
     return keys
+}
+
+export const getNameFromPublicKey = async (publicKey) => {
+    const keys = await getKeys()
+    for (const [name, key] of Object.entries(keys)) {
+        if (deepEqual(publicKey, key.publicKey)) {
+            return name
+        }
+    }
+    return undefined
 }
 
 export const getSupportedAlgorithm = (pubKeyCredParams) => {
