@@ -39,6 +39,9 @@ navigator.credentials.create = async function (...args) {
     const publicKey = args[0].publicKey
     _pk.log.info("PublicKeyCredentialCreationOptions:", publicKey)
 
+    const mediation = args[0].mediation
+    _pk.log.info("Mediation:", mediation)
+
     // Parse creation options
     const pkcco = JSON.parse(JSON.stringify(publicKey))
     pkcco.challenge = _pk.helpers.uint8ToB64url(new Uint8Array(publicKey.challenge))
@@ -54,7 +57,7 @@ navigator.credentials.create = async function (...args) {
     _pk.log.info("Parsed PublicKeyCredentialCreationOptions:", pkcco)
 
     // Open popup and handle response
-    const popupUrl = _pk.helpers.createPopupUrl(pkcco, "create")
+    const popupUrl = _pk.helpers.createPopupUrl(pkcco, "create", mediation)
     window.open(popupUrl, "passkey-interceptor", "width=1200,height=800")
 
     return _pk.helpers.handlePopupResponse("create")
@@ -72,6 +75,9 @@ navigator.credentials.get = async function (...args) {
     const publicKey = args[0].publicKey
     _pk.log.info("PublicKeyCredentialRequestOptions:", publicKey)
 
+    const mediation = args[0].mediation
+    _pk.log.info("Mediation:", mediation)
+
     // Parse request options
     const pkcro = JSON.parse(JSON.stringify(publicKey))
     pkcro.challenge = _pk.helpers.uint8ToB64url(new Uint8Array(publicKey.challenge))
@@ -86,7 +92,7 @@ navigator.credentials.get = async function (...args) {
     _pk.log.info("Parsed PublicKeyCredentialRequestOptions:", pkcro)
 
     // Open popup and handle response
-    const popupUrl = _pk.helpers.createPopupUrl(pkcro, "get")
+    const popupUrl = _pk.helpers.createPopupUrl(pkcro, "get", mediation)
     window.open(popupUrl, "passkey-interceptor", "width=1200,height=800")
 
     return _pk.helpers.handlePopupResponse("get")

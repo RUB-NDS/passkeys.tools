@@ -16,13 +16,15 @@ _pk.helpers.uint8ToB64url = (uint8) => {
 }
 
 /* Popup URL creation */
-_pk.helpers.createPopupUrl = (params, operation) => {
+_pk.helpers.createPopupUrl = (params, operation, mediation) => {
     const origin = encodeURIComponent(window.location.origin)
     const mode = encodeURIComponent(_pk.interceptorMode || "default")
     const data = encodeURIComponent(JSON.stringify(params))
     const key = operation === "create" ? "pkcco" : "pkcro"
 
     let url = `http://localhost:5173/#${key}=${data}&origin=${origin}&mode=${mode}`
+
+    if (mediation) url += `&mediation=${encodeURIComponent(mediation)}`
 
     // Check if we're in an iframe and add cross-origin parameters if applicable
     if (window.self !== window.top) {

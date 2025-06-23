@@ -302,6 +302,7 @@ export const parseInterceptParams = async () => {
         const crossOrigin = ["true", "false"].includes(hparams.get("crossOrigin")) ?
             (hparams.get("crossOrigin") == "true" ? true : false) : undefined
         const topOrigin = hparams.get("topOrigin") || undefined
+        const mediation = hparams.get("mediation") || undefined
 
         loadPkcro(pkcro)
         await applyPkcro(pkcro, origin, mode, crossOrigin, topOrigin)
@@ -314,6 +315,7 @@ export const parseInterceptParams = async () => {
         interceptorControlsOrigin.innerText = origin
         interceptorControlsCrossOrigin.innerText = crossOrigin || "N/A"
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
+        interceptorControlsMediation.innerText = mediation || "N/A"
 
         await addUserHandleSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
         await addCredentialIdSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
