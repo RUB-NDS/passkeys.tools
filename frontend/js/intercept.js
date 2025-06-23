@@ -1,7 +1,7 @@
 import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
 import { showTab, highlightTabs } from "./main.js"
-import { algs, getKeys } from "./keys.js"
+import { algs, getKeys, getKey } from "./keys.js"
 import { pkccoToAttestation } from "./pkcco.js"
 import { pkcroToAssertion } from "./pkcro.js"
 import { b64urlToHex, hexToB64url } from "./converters.js"
@@ -105,7 +105,14 @@ const addCredentialIdSelect = async (operation, rpId, mode) => {
     select.addEventListener("change", () => {
         const credentialId = select.value
         console.log("Selected Credential ID:", credentialId)
-        // todo
+        if (operation === "create") {
+            const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+            attestationObject.authData.attestedCredentialData.credentialId = credentialId
+            attestationObject.authData.attestedCredentialData.credentialIdLength = credentialId.length / 2 // hex to bytes
+            editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+        } else if (operation === "get") {
+            // todo
+        }
     })
 
     div.appendChild(select)
@@ -143,10 +150,17 @@ const addKeySelect = async (operation, rpId, mode) => {
         select.appendChild(option)
     }
 
-    select.addEventListener("change", () => {
+    select.addEventListener("change", async () => {
         const name = select.value
         console.log("Selected Key Name:", name)
-        // todo
+        if (operation === "create") {
+            const key = await getKey(name)
+            const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+            attestationObject.authData.attestedCredentialData.credentialPublicKey = key.publicKey
+            editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+        } else if (operation === "get") {
+            // todo
+        }
     })
 
     div.appendChild(select)
