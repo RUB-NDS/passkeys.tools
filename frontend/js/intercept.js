@@ -184,8 +184,6 @@ const applyPkcco = async (pkcco, origin, mode, crossOrigin=undefined, topOrigin=
     console.log("Apply PKCCO:", pkcco, origin, mode, crossOrigin, topOrigin)
     const { clientDataJSON, attestationObject } = await pkccoToAttestation(pkcco, origin, mode, crossOrigin, topOrigin)
 
-    updateInterceptorResponseTextarea({id: pkcco.user.id})
-
     editors.attestationClientDataJSONDecEditor.on("change", async () => {
         const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
         updateInterceptorResponseTextarea({clientDataJSON: encoders.clientDataJSON(clientDataJSON, "b64url")})
@@ -203,7 +201,10 @@ const applyPkcco = async (pkcco, origin, mode, crossOrigin=undefined, topOrigin=
         updateInterceptorResponseTextarea({publicKey: jwkDerB64url})
 
         const alg = attestationObject.authData.attestedCredentialData.credentialPublicKey.alg
-        updateInterceptorResponseTextarea({publicKeyAlgorithm: algs[alg] || 0})
+        updateInterceptorResponseTextarea({publicKeyAlgorithm: algs[alg]})
+
+        const id = attestationObject.authData.attestedCredentialData.credentialId
+        updateInterceptorResponseTextarea({id: hexToB64url(id)})
     })
 
     editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
@@ -213,11 +214,6 @@ const applyPkcco = async (pkcco, origin, mode, crossOrigin=undefined, topOrigin=
 const applyPkcro = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=undefined) => {
     console.log("Apply PKCRO:", pkcro, origin, mode, crossOrigin, topOrigin)
     const { clientDataJSON, authenticatorData } = await pkcroToAssertion(pkcro, origin, mode, crossOrigin, topOrigin)
-
-    const updateSignatureFromTextarea = () => {
-        const signatureB64url = assertionSignatureEncB64urlTextarea.value
-        updateInterceptorResponseTextarea({signature: signatureB64url})
-    }
 
     editors.assertionClientDataJSONDecEditor.on("change", async () => {
         const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
@@ -232,7 +228,8 @@ const applyPkcro = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=
     })
 
     assertionSignatureEncB64urlTextarea.addEventListener("input", () => {
-        updateSignatureFromTextarea()
+        const signature = assertionSignatureEncB64urlTextarea.value
+        updateInterceptorResponseTextarea({signature: signature})
     })
 
     // todo: remove hardcoded values
@@ -271,6 +268,8 @@ export const parseInterceptParams = async () => {
         interceptorControlsCrossOrigin.innerText = crossOrigin || "N/A"
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
 
+        await addCredentialIdSelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
+        await addKeySelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
         renderModifications("create")
         addSendButton("create")
     }
