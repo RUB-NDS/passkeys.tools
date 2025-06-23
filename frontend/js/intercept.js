@@ -284,6 +284,7 @@ export const parseInterceptParams = async () => {
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
         interceptorControlsMediation.innerText = mediation || "N/A"
 
+        interceptorActions.innerHTML = ""
         await addCredentialIdSelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
         await addKeySelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
         renderModifications("create")
@@ -313,6 +314,7 @@ export const parseInterceptParams = async () => {
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
         interceptorControlsMediation.innerText = mediation || "N/A"
 
+        interceptorActions.innerHTML = ""
         await addUserHandleSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
         await addCredentialIdSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
         await addKeySelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
