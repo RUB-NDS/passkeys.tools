@@ -2,11 +2,13 @@
     const SCRIPTS = ["init.js", "globals.js", "helpers.js", "hooks.js"]
     const MODE_ELEMENT_ID = "pk-interceptor-mode"
     const MODE_CHANGE_EVENT = "pk-mode-changed"
+    const POPUP_MODE_CHANGE_EVENT = "pk-popup-mode-changed"
 
-    function createModeElement(mode) {
+    function createModeElement(mode, popupMode) {
         const element = document.createElement("div")
         element.id = MODE_ELEMENT_ID
         element.setAttribute("data-mode", mode)
+        element.setAttribute("data-popup-mode", popupMode)
         element.style.display = "none"
         return element
     }
@@ -28,12 +30,13 @@
     }
 
     // Initialize extension
-    chrome.storage.local.get(["interceptorMode", "extensionEnabled"], (result) => {
+    chrome.storage.local.get(["interceptorMode", "extensionEnabled", "popupMode"], (result) => {
         const mode = result.interceptorMode || "default"
         const enabled = result.extensionEnabled !== false // Default to true if not set
+        const popupMode = result.popupMode || "detached"
 
         // Inject mode element
-        document.documentElement.appendChild(createModeElement(mode))
+        document.documentElement.appendChild(createModeElement(mode, popupMode))
 
         // Only load scripts if extension is enabled
         if (enabled) {
@@ -45,14 +48,22 @@
 
     // Listen for mode changes
     chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (namespace === "local" && changes.interceptorMode) {
-            const newMode = changes.interceptorMode.newValue || "default"
+        if (namespace === "local") {
             const modeElement = document.getElementById(MODE_ELEMENT_ID)
-
-            if (modeElement) {
+            
+            if (changes.interceptorMode && modeElement) {
+                const newMode = changes.interceptorMode.newValue || "default"
                 modeElement.setAttribute("data-mode", newMode)
                 document.dispatchEvent(
                     new CustomEvent(MODE_CHANGE_EVENT, { detail: { mode: newMode } })
+                )
+            }
+            
+            if (changes.popupMode && modeElement) {
+                const newPopupMode = changes.popupMode.newValue || "detached"
+                modeElement.setAttribute("data-popup-mode", newPopupMode)
+                document.dispatchEvent(
+                    new CustomEvent(POPUP_MODE_CHANGE_EVENT, { detail: { popupMode: newPopupMode } })
                 )
             }
         }

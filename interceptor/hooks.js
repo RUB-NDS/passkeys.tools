@@ -58,7 +58,13 @@ navigator.credentials.create = async function (...args) {
 
     // Open popup and handle response
     const popupUrl = _pk.helpers.createPopupUrl(pkcco, "create", mediation)
-    window.open(popupUrl, "passkey-interceptor", "width=1200,height=800")
+    const popupMode = _pk.popupMode || "detached"
+    
+    if (popupMode === "detached") {
+        window.open(popupUrl, "passkey-interceptor", "width=1200,height=800")
+    } else {
+        window.open(popupUrl, "passkey-interceptor")
+    }
 
     return _pk.helpers.handlePopupResponse("create")
 }
@@ -93,7 +99,13 @@ navigator.credentials.get = async function (...args) {
 
     // Open popup and handle response
     const popupUrl = _pk.helpers.createPopupUrl(pkcro, "get", mediation)
-    window.open(popupUrl, "passkey-interceptor", "width=1200,height=800")
+    const popupMode = _pk.popupMode || "detached"
+    
+    if (popupMode === "detached") {
+        window.open(popupUrl, "passkey-interceptor", "width=1200,height=800")
+    } else {
+        window.open(popupUrl, "passkey-interceptor")
+    }
 
     return _pk.helpers.handlePopupResponse("get")
 }
