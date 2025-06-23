@@ -274,6 +274,7 @@ export const parseInterceptParams = async () => {
         const crossOrigin = ["true", "false"].includes(hparams.get("crossOrigin")) ?
             (hparams.get("crossOrigin") == "true" ? true : false) : undefined
         const topOrigin = hparams.get("topOrigin") || undefined
+        const mediation = hparams.get("mediation") || undefined
 
         loadPkcco(pkcco)
         await storeUserFromPkcco(pkcco, origin, mode)
@@ -287,6 +288,7 @@ export const parseInterceptParams = async () => {
         interceptorControlsOrigin.innerText = origin
         interceptorControlsCrossOrigin.innerText = crossOrigin || "N/A"
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
+        interceptorControlsMediation.innerText = mediation || "N/A"
 
         await addCredentialIdSelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
         await addKeySelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
