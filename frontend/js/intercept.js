@@ -270,8 +270,9 @@ const applyPkcro = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=
     // default key is the first allow credentials key
     const allowCredentials = pkcro.allowCredentials || []
     if (allowCredentials.length > 0) {
-        const defaultId = b64urlToHex(allowCredentials[0].id)
-        const defaultName = await getNameFromCredentialId(defaultId)
+        const defaultId = allowCredentials[0].id
+        updateInterceptorResponseTextarea({id: defaultId})
+        const defaultName = await getNameFromCredentialId(b64urlToHex(defaultId))
         if (defaultName) {
             verifyAssertionWithStoredKeySelect.value = defaultName
             verifyAssertionWithStoredKeySelect.dispatchEvent(new Event("change"))
