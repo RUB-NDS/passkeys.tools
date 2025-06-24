@@ -9,6 +9,31 @@ import { storeUser, getUsers, getUserByRpIdAndMode } from "./users.js"
 import { renderUsers } from "./main.js"
 import { renderModifications } from "./modifications.js"
 
+const addCopyAsJsonButton = (data) => {
+    const overviewHeader = interceptorControls.querySelector("h4")
+    if (!overviewHeader || overviewHeader.textContent !== "Overview") return
+
+    if (interceptorControls.querySelector("#copyAsJsonBtn")) return
+
+    const copyBtn = document.createElement("button")
+    copyBtn.id = "copyAsJsonBtn"
+    copyBtn.className = "btn btn-sm btn-secondary ms-2"
+    copyBtn.textContent = "Copy as JSON"
+    copyBtn.style.verticalAlign = "middle"
+
+    copyBtn.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(JSON.stringify(data, null, 2))
+        copyBtn.textContent = "Copied!"
+        copyBtn.className = "btn btn-sm btn-success ms-2"
+        setTimeout(() => {
+            copyBtn.textContent = "Copy as JSON"
+            copyBtn.className = "btn btn-sm btn-secondary ms-2"
+        }, 2000)
+    })
+
+    overviewHeader.appendChild(copyBtn)
+}
+
 const updateInterceptorResponseTextarea = (dict) => {
     let response = JSON.parse(interceptorResponseTextarea.value || "{}")
     response = {...response, ...dict}
@@ -328,6 +353,12 @@ export const parseInterceptParams = async () => {
         interceptorControlsCrossOrigin.innerText = crossOrigin || "N/A"
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
         interceptorControlsMediation.innerText = mediation || "N/A"
+        addCopyAsJsonButton({
+            origin: origin,
+            crossOrigin: crossOrigin || "N/A",
+            topOrigin: topOrigin || "N/A",
+            mediation: mediation || "N/A"
+        })
 
         // actions
         interceptorActions.innerHTML = ""
@@ -363,6 +394,12 @@ export const parseInterceptParams = async () => {
         interceptorControlsCrossOrigin.innerText = crossOrigin || "N/A"
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
         interceptorControlsMediation.innerText = mediation || "N/A"
+        addCopyAsJsonButton({
+            origin: origin,
+            crossOrigin: crossOrigin || "N/A",
+            topOrigin: topOrigin || "N/A",
+            mediation: mediation || "N/A"
+        })
 
         // actions
         interceptorActions.innerHTML = ""
