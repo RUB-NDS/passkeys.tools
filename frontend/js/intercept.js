@@ -55,7 +55,7 @@ const addSendButton = (operation) => {
             sendButton.textContent = "Response Sent!"
             sendButton.className = "btn btn-success"
             sendButton.disabled = true
-            setTimeout(() => { window.close() }, 1000)
+            setTimeout(() => { window.close() }, 200)
         } else {
             sendButton.textContent = "Error: No opener window"
             sendButton.className = "btn btn-danger"

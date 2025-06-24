@@ -1,6 +1,6 @@
 const modifications = {
     create: {
-        "Type Create": "Verify that the value of C.type is webauthn.create. (§7.1.7)",
+        "Context": "Verify that the value of C.type is webauthn.create. (§7.1.7)",
         "Challenge": "Verify that the value of C.challenge equals the base64url encoding of pkOptions.challenge. (§7.1.8)",
         "Origin": "Verify that the value of C.origin is an origin expected by the Relying Party. (§7.1.9)",
         "Cross Origin": "If C.crossOrigin is present and set to true, verify that the Relying Party expects that this credential would have been created within an iframe that is not same-origin with its ancestors. (§7.1.10)",
@@ -16,8 +16,8 @@ const modifications = {
     get: {
         "Allow Credentials": "If pkOptions.allowCredentials is not empty, verify that credential.id identifies one of the public key credentials listed in pkOptions.allowCredentials. (§7.2.5)",
         "Non-Discoverable Identification": "If the user was identified before the authentication ceremony was initiated, e.g., via a username or cookie, verify that the identified user account contains a credential record whose id equals credential.rawId. If response.userHandle is present, verify that it equals the user handle of the user account. (§7.2.6)",
-        "Discoverable Identification": "If the user was not identified before the authentication ceremony was initiated, verify that response.userHandle is present. Verify that the user account identified by response.userHandle contains a credential record whose id equals credential.rawId.",
-        "Type Get": "Verify that the value of C.type is the string webauthn.get. (§7.2.10)",
+        "Discoverable Identification": "If the user was not identified before the authentication ceremony was initiated, verify that response.userHandle is present. Verify that the user account identified by response.userHandle contains a credential record whose id equals credential.rawId. (§7.2.6)",
+        "Context": "Verify that the value of C.type is the string webauthn.get. (§7.2.10)",
         "Challenge": "Verify that the value of C.challenge equals the base64url encoding of pkOptions.challenge. (§7.2.11)",
         "Origin": "Verify that the value of C.origin is an origin expected by the Relying Party. (§7.2.12)",
         "Cross Origin": "If C.crossOrigin is present and set to true, verify that the Relying Party expects this credential to be used within an iframe that is not same-origin with its ancestors. (§7.2.13)",
