@@ -53,6 +53,16 @@ export const getNameFromPublicKey = async (publicKey) => {
     return undefined
 }
 
+export const getNameFromCredentialId = async (credentialId) => {
+    const keys = await getKeys()
+    for (const [name, key] of Object.entries(keys)) {
+        if (key.credentialId === credentialId) {
+            return name
+        }
+    }
+    return undefined
+}
+
 export const getSupportedAlgorithm = (pubKeyCredParams) => {
     if (!pubKeyCredParams?.length) return "ES256"
     for (const param of pubKeyCredParams) {

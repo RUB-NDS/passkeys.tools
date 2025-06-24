@@ -1,10 +1,10 @@
 import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
 import { showTab, highlightTabs } from "./main.js"
-import { algs, getKeys, getKey, getNameFromPublicKey } from "./keys.js"
+import { algs, getKeys, getKey, getNameFromPublicKey, getNameFromCredentialId } from "./keys.js"
 import { pkccoToAttestation } from "./pkcco.js"
 import { pkcroToAssertion } from "./pkcro.js"
-import { b64urlToHex, hexToB64url } from "./converters.js"
+import { b64urlToHex, hexToB64url, uint8ToHex, strSha256Uint8 } from "./converters.js"
 import { storeUser, getUsers, getUserByRpIdAndMode } from "./users.js"
 import { renderUsers } from "./main.js"
 import { renderModifications } from "./modifications.js"
@@ -245,12 +245,6 @@ const applyPkcro = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=
     console.log("Apply PKCRO:", pkcro, origin, mode, crossOrigin, topOrigin)
     const { clientDataJSON, authenticatorData } = await pkcroToAssertion(pkcro, origin, mode, crossOrigin, topOrigin)
 
-    // todo
-    // get the preferred key with fallback key
-    // set select in assertion pane to this key, and sign
-    // add change listener to select in assertion pane to update the select key in the interceptor pane
-    // add change listener to select in assertion pane to update the select credential id in interceptor pane
-
     // default user handle
     if (mode === "attacker" || mode === "victim") {
         const user = await getUserByRpIdAndMode(pkcro.rpId || (new URL(origin)).hostname, mode)
@@ -263,9 +257,34 @@ const applyPkcro = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=
         }
     }
 
+    // mirror key select in assertion to interceptor
+    signAssertionWithStoredKeySelect.addEventListener("change", async () => {
+        const name = signAssertionWithStoredKeySelect.value
+        const keyOption = document.querySelector(`#getKeySelect option[value="${name}"]`)
+        if (keyOption) keyOption.selected = true
+        const id = await getKey(name).then(key => key.credentialId)
+        const idOption = document.querySelector(`#getCredentialIdSelect option[value="${id}"]`)
+        if (idOption) idOption.selected = true
+    })
+
+    // default key is the first allow credentials key
+    const allowCredentials = pkcro.allowCredentials || []
+    if (allowCredentials.length > 0) {
+        const defaultId = b64urlToHex(allowCredentials[0].id)
+        const defaultName = await getNameFromCredentialId(defaultId)
+        if (defaultName) {
+            verifyAssertionWithStoredKeySelect.value = defaultName
+            verifyAssertionWithStoredKeySelect.dispatchEvent(new Event("change"))
+            signAssertionWithStoredKeySelect.value = defaultName
+            signAssertionWithStoredKeySelect.dispatchEvent(new Event("change"))
+        }
+    }
+
     editors.assertionClientDataJSONDecEditor.on("change", async () => {
         const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
         updateInterceptorResponseTextarea({clientDataJSON: encoders.clientDataJSON(clientDataJSON, "b64url")})
+        const hash = uint8ToHex(await strSha256Uint8(JSON.stringify(clientDataJSON)))
+        attestationClientDataJSONHashHexTextarea.value = hash
         signAssertionWithStoredKeyBtn.click() // resign on clientDataJSON change
     })
 
