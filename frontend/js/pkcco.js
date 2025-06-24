@@ -27,7 +27,7 @@ export const pkccoToAttestation = async (pkcco, origin, mode, crossOrigin=undefi
     attestationObject.authData = {}
 
     // attestationObject.authData.rpIdHash
-    attestationObject.authData.rpIdHash = uint8ToHex(await strSha256Uint8(pkcco.rp.id))
+    attestationObject.authData.rpIdHash = uint8ToHex(await strSha256Uint8(pkcco.rp?.id || (new URL(origin)).hostname))
 
     // attestationObject.authData.flags
     attestationObject.authData.flags = {}

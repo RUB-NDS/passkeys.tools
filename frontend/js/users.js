@@ -16,3 +16,13 @@ export const getUsers = async () => {
     const users = await storage.get("users")
     return users
 }
+
+export const getUserByRpIdAndMode = async (rpId, mode) => {
+    const users = await getUsers()
+    for (const [id, user] of Object.entries(users)) {
+        if (user.rpId === rpId && user.mode === mode) {
+            return user
+        }
+    }
+    return undefined
+}

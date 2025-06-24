@@ -15,7 +15,7 @@ export const pkcroToAssertion = async (pkcro, origin, mode, crossOrigin=undefine
     const authenticatorData = {}
 
     // authenticatorData.rpIdHash
-    authenticatorData.rpIdHash = uint8ToHex(await strSha256Uint8(pkcro.rpId))
+    authenticatorData.rpIdHash = uint8ToHex(await strSha256Uint8(pkcro.rpId || (new URL(origin)).hostname))
 
     // authenticatorData.flags
     authenticatorData.flags = {}

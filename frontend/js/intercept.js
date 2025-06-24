@@ -5,7 +5,7 @@ import { algs, getKeys, getKey, getNameFromPublicKey } from "./keys.js"
 import { pkccoToAttestation } from "./pkcco.js"
 import { pkcroToAssertion } from "./pkcro.js"
 import { b64urlToHex, hexToB64url } from "./converters.js"
-import { storeUser, getUsers } from "./users.js"
+import { storeUser, getUsers, getUserByRpIdAndMode } from "./users.js"
 import { renderUsers } from "./main.js"
 import { renderModifications } from "./modifications.js"
 
@@ -49,6 +49,7 @@ const addUserHandleSelect = async (operation, rpId, mode) => {
     div.appendChild(span)
 
     const select = document.createElement("select")
+    select.id = `${operation}UserHandleSelect`
     select.className = "form-select"
     select.size = "3"
 
@@ -244,6 +245,24 @@ const applyPkcro = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=
     console.log("Apply PKCRO:", pkcro, origin, mode, crossOrigin, topOrigin)
     const { clientDataJSON, authenticatorData } = await pkcroToAssertion(pkcro, origin, mode, crossOrigin, topOrigin)
 
+    // todo
+    // get the preferred key with fallback key
+    // set select in assertion pane to this key, and sign
+    // add change listener to select in assertion pane to update the select key in the interceptor pane
+    // add change listener to select in assertion pane to update the select credential id in interceptor pane
+
+    // default user handle
+    if (mode === "attacker" || mode === "victim") {
+        const user = await getUserByRpIdAndMode(pkcro.rpId || (new URL(origin)).hostname, mode)
+        if (user) {
+            const userOption = document.querySelector(`#getUserHandleSelect option[value="${user.userId}"]`)
+            if (userOption) {
+                userOption.selected = true
+                getUserHandleSelect.dispatchEvent(new Event("change"))
+            }
+        }
+    }
+
     editors.assertionClientDataJSONDecEditor.on("change", async () => {
         const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
         updateInterceptorResponseTextarea({clientDataJSON: encoders.clientDataJSON(clientDataJSON, "b64url")})
@@ -316,11 +335,8 @@ export const parseInterceptParams = async () => {
         const mediation = hparams.get("mediation") || undefined
 
         loadPkcro(pkcro)
-        await applyPkcro(pkcro, origin, mode, crossOrigin, topOrigin)
 
-        highlightTabs(["get", "assertion", "interceptor"])
-        showTab("interceptor")
-
+        // overview
         interceptorControlsMode.innerText = mode
         interceptorControlsType.innerText = "Assertion / Get"
         interceptorControlsOrigin.innerText = origin
@@ -328,11 +344,19 @@ export const parseInterceptParams = async () => {
         interceptorControlsTopOrigin.innerText = topOrigin || "N/A"
         interceptorControlsMediation.innerText = mediation || "N/A"
 
+        // actions
         interceptorActions.innerHTML = ""
         await addUserHandleSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
         await addCredentialIdSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
         await addKeySelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
-        renderModifications("get")
         addSendButton("get")
+
+        // modifications
+        renderModifications("get")
+
+        await applyPkcro(pkcro, origin, mode, crossOrigin, topOrigin)
+
+        highlightTabs(["get", "assertion", "interceptor"])
+        showTab("interceptor")
     }
 }
