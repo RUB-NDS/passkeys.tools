@@ -42,6 +42,7 @@ const updateInterceptorResponseTextarea = (dict) => {
 
 const addSendButton = (operation) => {
     const sendButton = document.createElement("button")
+    sendButton.id = `interceptorSendButton`
     sendButton.className = "btn btn-primary"
     sendButton.textContent = "Send Response to Extension"
     sendButton.addEventListener("click", () => {

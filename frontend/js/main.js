@@ -10,6 +10,7 @@ import { getUsers, storeUser, deleteUser } from "./users.js"
 import { algs, getKey, getKeys, storeKey, generateKey, deleteKey, generateModeKeys } from "./keys.js"
 import { navigatorCredentialsCreate, navigatorCredentialsGet } from "./webapi.js"
 import { renderStorageSettings } from "./storage.js"
+import { initShortcuts, renderShortcuts } from "./shortcuts.js"
 import {
     b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr,
     strToB64, b64urlToB64, hexToB64, b64ToStr, b64ToB64url, b64ToHex,
@@ -88,6 +89,7 @@ export const highlightTabs = (tabs) => {
 }
 
 renderCapabilities()
+renderShortcuts()
 
 /* create */
 
@@ -585,6 +587,7 @@ window.addEventListener("load", () => {
 window.addEventListener("load", async () => {
     await parseInterceptParams()
     renderStorageSettings()
+    initShortcuts()
 })
 
 window.addEventListener("hashchange", async () => {
