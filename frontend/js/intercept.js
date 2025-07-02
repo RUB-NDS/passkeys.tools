@@ -451,7 +451,7 @@ export const parseInterceptParams = async () => {
         addRejectButton("create")
 
         // modifications
-        renderModifications("create")
+        renderModifications("create", pkcco, origin, mode, crossOrigin, topOrigin, mediation)
 
         await applyPkcco(pkcco, origin, mode, crossOrigin, topOrigin)
 
@@ -494,7 +494,7 @@ export const parseInterceptParams = async () => {
         addRejectButton("get")
 
         // modifications
-        renderModifications("get")
+        renderModifications("get", pkcro, origin, mode, crossOrigin, topOrigin, mediation)
 
         await applyPkcro(pkcro, origin, mode, crossOrigin, topOrigin)
 
