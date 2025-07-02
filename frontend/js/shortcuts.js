@@ -1,16 +1,16 @@
 import { showTab } from "./main.js"
 
 const shortcuts = {
-    "Ctrl+1": { action: () => showTab("info"), description: "Navigate to Info tab" },
-    "Ctrl+2": { action: () => showTab("create"), description: "Navigate to Create tab" },
-    "Ctrl+3": { action: () => showTab("get"), description: "Navigate to Get tab" },
-    "Ctrl+4": { action: () => showTab("attestation"), description: "Navigate to Attestation tab" },
-    "Ctrl+5": { action: () => showTab("assertion"), description: "Navigate to Assertion tab" },
-    "Ctrl+6": { action: () => showTab("keys"), description: "Navigate to Keys tab" },
-    "Ctrl+7": { action: () => showTab("users"), description: "Navigate to Users tab" },
-    "Ctrl+8": { action: () => showTab("converters"), description: "Navigate to Converters tab" },
-    "Ctrl+9": { action: () => showTab("interceptor"), description: "Navigate to Interceptor tab" },
-    "Ctrl+0": { action: () => showTab("settings"), description: "Navigate to Settings tab" },
+    "Ctrl+0": { action: () => showTab("info"), description: "Navigate to Info tab" },
+    "Ctrl+1": { action: () => showTab("create"), description: "Navigate to Create tab" },
+    "Ctrl+2": { action: () => showTab("get"), description: "Navigate to Get tab" },
+    "Ctrl+3": { action: () => showTab("attestation"), description: "Navigate to Attestation tab" },
+    "Ctrl+4": { action: () => showTab("assertion"), description: "Navigate to Assertion tab" },
+    "Ctrl+K": { action: () => showTab("keys"), description: "Navigate to Keys tab" },
+    "Ctrl+U": { action: () => showTab("users"), description: "Navigate to Users tab" },
+    "Ctrl+C": { action: () => showTab("converters"), description: "Navigate to Converters tab" },
+    "Ctrl+I": { action: () => showTab("interceptor"), description: "Navigate to Interceptor tab" },
+    "Ctrl+#": { action: () => showTab("settings"), description: "Navigate to Settings tab" },
     "Ctrl+H": { action: () => showTab("history"), description: "Navigate to History tab" },
 
     "Ctrl+S": {
@@ -37,6 +37,12 @@ export const initShortcuts = () => {
         }
         else if (e.key.length === 1 && /^[a-zA-Z]$/.test(e.key)) {
             key += e.key.toUpperCase()
+        }
+        else if (e.key === ",") {
+            key += ","
+        }
+        else if (e.key === "#") {
+            key += "#"
         } else {
             return
         }
