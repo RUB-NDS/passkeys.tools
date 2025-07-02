@@ -5,6 +5,7 @@ import { storage } from "./storage.js"
     timestamp: number,
     mode: string,
     type: string,
+    status: string, // "resolved" or "rejected"
     origin: string,
     info: object,
     credentialId: string,
@@ -69,6 +70,7 @@ const showHistoryDetails = (entry) => {
     document.getElementById("historyDetailsInfo").textContent = JSON.stringify(entry.info, null, 2)
 
     // Controls
+    document.getElementById("historyDetailsStatus").textContent = entry.status || "resolved"
     document.getElementById("historyDetailsCredentialId").textContent = entry.credentialId || "N/A"
     document.getElementById("historyDetailsKey").textContent = entry.key || "N/A"
     document.getElementById("historyDetailsUserHandle").textContent = entry.userHandle || "N/A"
@@ -132,6 +134,14 @@ export const renderHistory = async () => {
         typeBadge.textContent = entry.type
         typeCell.appendChild(typeBadge)
         row.appendChild(typeCell)
+
+        // Status
+        const statusCell = document.createElement("td")
+        const statusBadge = document.createElement("span")
+        statusBadge.className = entry.status === "resolved" ? "badge bg-success" : "badge bg-danger"
+        statusBadge.textContent = entry.status || "resolved"
+        statusCell.appendChild(statusBadge)
+        row.appendChild(statusCell)
 
         // Origin
         const originCell = document.createElement("td")

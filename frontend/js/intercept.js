@@ -57,6 +57,7 @@ const addSendButton = (operation) => {
             mode: interceptorControlsMode.innerText || "",
             type: operation,
             origin: interceptorControlsOrigin.innerText || "",
+            status: "resolved",
             info: {
                 mode: interceptorControlsMode.innerText || "",
                 type: interceptorControlsType.innerText || "",
@@ -109,6 +110,7 @@ const addRejectButton = (operation) => {
             mode: interceptorControlsMode.innerText || "",
             type: operation,
             origin: interceptorControlsOrigin.innerText || "",
+            status: "rejected",
             info: {
                 mode: interceptorControlsMode.innerText || "",
                 type: interceptorControlsType.innerText || "",
