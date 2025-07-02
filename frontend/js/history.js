@@ -138,7 +138,8 @@ export const renderHistory = async () => {
         // Status
         const statusCell = document.createElement("td")
         const statusBadge = document.createElement("span")
-        statusBadge.className = entry.status === "resolved" ? "badge bg-success" : "badge bg-danger"
+        statusBadge.className = entry.status === "resolved" ? "badge bg-success" :
+                                entry.status === "dismissed" ? "badge bg-warning" : "badge bg-danger"
         statusBadge.textContent = entry.status || "resolved"
         statusCell.appendChild(statusBadge)
         row.appendChild(statusCell)

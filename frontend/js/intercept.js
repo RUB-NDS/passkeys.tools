@@ -147,6 +147,49 @@ const addRejectButton = (operation) => {
     interceptorActions.appendChild(buttonDiv)
 }
 
+const addDismissButton = (operation) => {
+    const buttonDiv = document.createElement("div")
+    buttonDiv.className = "mb-2"
+
+    const dismissButton = document.createElement("button")
+    dismissButton.id = `interceptorDismissButton`
+    dismissButton.className = "btn btn-secondary w-100"
+    dismissButton.textContent = "Dismiss"
+    dismissButton.addEventListener("click", async () => {
+        const response = JSON.parse(interceptorResponseTextarea.value || "{}")
+
+        const historyEntry = {
+            timestamp: Date.now(),
+            mode: interceptorControlsMode.innerText || "",
+            type: operation,
+            origin: interceptorControlsOrigin.innerText || "",
+            status: "dismissed",
+            info: {
+                mode: interceptorControlsMode.innerText || "",
+                type: interceptorControlsType.innerText || "",
+                origin: interceptorControlsOrigin.innerText || "",
+                crossOrigin: interceptorControlsCrossOrigin.innerText || "N/A",
+                topOrigin: interceptorControlsTopOrigin.innerText || "N/A",
+                mediation: interceptorControlsMediation.innerText || "N/A"
+            },
+            credentialId: document.querySelector(`#${operation}CredentialIdSelect`)?.value || "",
+            key: document.querySelector(`#${operation}KeySelect`)?.value || "",
+            userHandle: operation === "get" ? document.querySelector(`#${operation}UserHandleSelect`)?.value || "" : "",
+            modification: document.querySelector('input[name="modification"]:checked')?.value || "",
+            request: JSON.parse(interceptorRequestTextarea.value || "{}"),
+            response: response
+        }
+        await addHistoryEntry(historyEntry)
+
+        dismissButton.textContent = "Dismissed!"
+        dismissButton.className = "btn btn-success w-100"
+        dismissButton.disabled = true
+        setTimeout(() => { window.close() }, 200)
+    })
+    buttonDiv.appendChild(dismissButton)
+    interceptorActions.appendChild(buttonDiv)
+}
+
 const addUserHandleSelect = async (operation, rpId, mode) => {
     const div = document.createElement("div")
     div.classList.add("input-group", "mb-3")
@@ -449,6 +492,7 @@ export const parseInterceptParams = async () => {
         await addKeySelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
         addSendButton("create")
         addRejectButton("create")
+        addDismissButton("create")
 
         // modifications
         renderModifications("create", pkcco, origin, mode, crossOrigin, topOrigin, mediation)
@@ -492,6 +536,7 @@ export const parseInterceptParams = async () => {
         await addKeySelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
         addSendButton("get")
         addRejectButton("get")
+        addDismissButton("get")
 
         // modifications
         renderModifications("get", pkcro, origin, mode, crossOrigin, topOrigin, mediation)
