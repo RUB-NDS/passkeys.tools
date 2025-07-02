@@ -57,7 +57,7 @@ const populateSelectOptions = (selectElement, options, valueKey = "value", textK
     }
 }
 
-const createResultAlert = (container, content, isSuccess = true) => {
+export const createResultAlert = (container, content, isSuccess = true) => {
     container.innerHTML = ""
     const div = document.createElement("div")
     div.classList = isSuccess ? "alert alert-success" : "alert alert-danger"
