@@ -1,6 +1,12 @@
+import * as editors from "./editors.js"
+
 const modifications = {
     create: {
-        "Context | Nonsense": () => {},
+        "Context | Nonsense": () => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+            clientDataJSON.type = "abc.def"
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
         "Context | Swap": () => {},
         "Challenge | Bit Flip": () => {},
         "Challenge | Reuse": () => {},
@@ -62,6 +68,10 @@ export const renderModifications = (operation) => {
         input.name = "modification"
         input.id = `modification-${name}`
         input.value = name
+
+        input.addEventListener("change", () => {
+            if (input.checked) action()
+        })
 
         const label = document.createElement("label")
         label.classList.add("form-check-label")
