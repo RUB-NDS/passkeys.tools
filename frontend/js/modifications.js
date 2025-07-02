@@ -1,4 +1,5 @@
 import * as editors from "./editors.js"
+import { b64urlToUint8, uint8ToB64url } from "./converters.js"
 
 const modifications = {
     create: {
@@ -7,10 +8,30 @@ const modifications = {
             clientDataJSON.type = "abc.def"
             editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
         },
-        "Context | Swap": () => {},
-        "Challenge | Bit Flip": () => {},
-        "Challenge | Reuse": () => {},
-        "Challenge | Session Binding": () => {},
+        "Context | Swap": () => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+            clientDataJSON.type = "webauthn.get"
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
+        "Challenge | Bit Flip": () => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+            const challenge = b64urlToUint8(clientDataJSON.challenge)
+            challenge[challenge.length - 1] ^= 0x01 // flip the last bit
+            clientDataJSON.challenge = uint8ToB64url(challenge)
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
+        "Challenge | Reuse": () => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+            const challenge = prompt("Provide an old challenge to reuse (b64url encoded):") // todo: use history to grab old challenge
+            clientDataJSON.challenge = challenge
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
+        "Challenge | Session Binding": () => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+            const challenge = prompt("Provide a challenge from another session (b64url encoded):") // todo: use history to grab challenge from another session
+            clientDataJSON.challenge = challenge
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
         "Origin | Cross Site": () => {},
         "Origin | Cross Origin": () => {},
         "Cross Origin": () => {},
