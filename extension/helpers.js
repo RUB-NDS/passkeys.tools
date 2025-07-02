@@ -90,6 +90,10 @@ _pk.helpers.handlePopupResponse = (operation) => {
                     _pk.log.error("Error creating response:", error)
                     reject(error)
                 }
+            } else if (event.data?.type === "passkey-interceptor-reject" && event.data.operation === operation) {
+                cleanup()
+                _pk.log.info("Received reject from interceptor")
+                reject(new DOMException("The operation was aborted.", "AbortError"))
             }
         }
 

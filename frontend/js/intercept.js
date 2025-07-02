@@ -42,9 +42,12 @@ const updateInterceptorResponseTextarea = (dict) => {
 }
 
 const addSendButton = (operation) => {
+    const buttonDiv = document.createElement("div")
+    buttonDiv.className = "mb-2"
+
     const sendButton = document.createElement("button")
     sendButton.id = `interceptorSendButton`
-    sendButton.className = "btn btn-primary"
+    sendButton.className = "btn btn-primary w-100"
     sendButton.textContent = "Send Response to Extension"
     sendButton.addEventListener("click", async () => {
         const response = JSON.parse(interceptorResponseTextarea.value || "{}")
@@ -78,15 +81,68 @@ const addSendButton = (operation) => {
                 response: response
             }, "*")
             sendButton.textContent = "Response Sent!"
-            sendButton.className = "btn btn-success"
+            sendButton.className = "btn btn-success w-100"
             sendButton.disabled = true
             setTimeout(() => { window.close() }, 200)
         } else {
             sendButton.textContent = "Error: No opener window"
-            sendButton.className = "btn btn-danger"
+            sendButton.className = "btn btn-danger w-100"
         }
     })
-    interceptorActions.appendChild(sendButton)
+    buttonDiv.appendChild(sendButton)
+    interceptorActions.appendChild(buttonDiv)
+}
+
+const addRejectButton = (operation) => {
+    const buttonDiv = document.createElement("div")
+    buttonDiv.className = "mb-2"
+
+    const rejectButton = document.createElement("button")
+    rejectButton.id = `interceptorRejectButton`
+    rejectButton.className = "btn btn-danger w-100"
+    rejectButton.textContent = "Send Reject to Extension"
+    rejectButton.addEventListener("click", async () => {
+        const response = JSON.parse(interceptorResponseTextarea.value || "{}")
+
+        const historyEntry = {
+            timestamp: Date.now(),
+            mode: interceptorControlsMode.innerText || "",
+            type: operation,
+            origin: interceptorControlsOrigin.innerText || "",
+            info: {
+                mode: interceptorControlsMode.innerText || "",
+                type: interceptorControlsType.innerText || "",
+                origin: interceptorControlsOrigin.innerText || "",
+                crossOrigin: interceptorControlsCrossOrigin.innerText || "N/A",
+                topOrigin: interceptorControlsTopOrigin.innerText || "N/A",
+                mediation: interceptorControlsMediation.innerText || "N/A"
+            },
+            credentialId: document.querySelector(`#${operation}CredentialIdSelect`)?.value || "",
+            key: document.querySelector(`#${operation}KeySelect`)?.value || "",
+            userHandle: operation === "get" ? document.querySelector(`#${operation}UserHandleSelect`)?.value || "" : "",
+            modification: document.querySelector('input[name="modification"]:checked')?.value || "",
+            request: JSON.parse(interceptorRequestTextarea.value || "{}"),
+            response: response
+        }
+        await addHistoryEntry(historyEntry)
+
+        if (window.opener) {
+            window.opener.postMessage({
+                type: "passkey-interceptor-reject",
+                operation: operation,
+                response: response
+            }, "*")
+            rejectButton.textContent = "Reject Sent!"
+            rejectButton.className = "btn btn-success w-100"
+            rejectButton.disabled = true
+            setTimeout(() => { window.close() }, 200)
+        } else {
+            rejectButton.textContent = "Error: No opener window"
+            rejectButton.className = "btn btn-danger w-100"
+        }
+    })
+    buttonDiv.appendChild(rejectButton)
+    interceptorActions.appendChild(buttonDiv)
 }
 
 const addUserHandleSelect = async (operation, rpId, mode) => {
@@ -390,6 +446,7 @@ export const parseInterceptParams = async () => {
         await addCredentialIdSelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
         await addKeySelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
         addSendButton("create")
+        addRejectButton("create")
 
         // modifications
         renderModifications("create")
@@ -432,6 +489,7 @@ export const parseInterceptParams = async () => {
         await addCredentialIdSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
         await addKeySelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
         addSendButton("get")
+        addRejectButton("get")
 
         // modifications
         renderModifications("get")
