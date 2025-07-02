@@ -59,7 +59,46 @@ const modifications = {
             editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
         },
 
-        "Challenge | Session Binding": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Challenge | Session Binding": async (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+
+            // Check if mode is default - test is invalid in this case
+            if (mode === "default") {
+                createResultAlert(interceptorModifications, "This test is not valid for default mode", false)
+                return
+            }
+
+            // Get history and filter for matching entries
+            const history = await getHistory()
+            const currentTime = Date.now()
+            const oneMinuteAgo = currentTime - 60000
+
+            // Swap mode for session binding check
+            const targetMode = mode === "attacker" ? "victim" : "attacker"
+
+            // Filter for valid history items with swapped mode and dismissed status
+            const validItems = history.filter(item => {
+                return item.timestamp >= oneMinuteAgo &&
+                       item.mode === targetMode &&
+                       item.origin === origin &&
+                       item.type === "create" &&
+                       item.status === "dismissed" &&
+                       item.request &&
+                       item.request.challenge
+            })
+
+            if (validItems.length === 0) {
+                createResultAlert(interceptorModifications, "No matching history item found (must be within 1 minute, swapped mode, same origin, type=create, status=dismissed)", false)
+                return
+            }
+
+            // Sort by timestamp descending and take the newest
+            validItems.sort((a, b) => b.timestamp - a.timestamp)
+            const newestItem = validItems[0]
+
+            clientDataJSON.challenge = newestItem.request.challenge
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
 
         "Origin | Cross Site": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
@@ -154,7 +193,46 @@ const modifications = {
             editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
         },
 
-        "Challenge | Session Binding": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Challenge | Session Binding": async (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
+
+            // Check if mode is default - test is invalid in this case
+            if (mode === "default") {
+                createResultAlert(interceptorModifications, "This test is not valid for default mode", false)
+                return
+            }
+
+            // Get history and filter for matching entries
+            const history = await getHistory()
+            const currentTime = Date.now()
+            const oneMinuteAgo = currentTime - 60000
+
+            // Swap mode for session binding check
+            const targetMode = mode === "attacker" ? "victim" : "attacker"
+
+            // Filter for valid history items with swapped mode and dismissed status
+            const validItems = history.filter(item => {
+                return item.timestamp >= oneMinuteAgo &&
+                       item.mode === targetMode &&
+                       item.origin === origin &&
+                       item.type === "get" &&
+                       item.status === "dismissed" &&
+                       item.request &&
+                       item.request.challenge
+            })
+
+            if (validItems.length === 0) {
+                createResultAlert(interceptorModifications, "No matching history item found (must be within 1 minute, swapped mode, same origin, type=get, status=dismissed)", false)
+                return
+            }
+
+            // Sort by timestamp descending and take the newest
+            validItems.sort((a, b) => b.timestamp - a.timestamp)
+            const newestItem = validItems[0]
+
+            clientDataJSON.challenge = newestItem.request.challenge
+            editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
 
         "Origin | Cross Site": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
