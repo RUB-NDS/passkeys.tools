@@ -2,43 +2,103 @@
     <div class="col my-3 bg-light rounded-3 text-center p-3">
         <img src="FIDO_Passkey_mark_B_black.svg" width="200px">
         <h1 class="small-caps">Passkey-Workbench</h1>
-        <h2>The first tool that let's you encode, decode, modify, generate, and verify<br>WebAuthn attestations and assertions directly within your browser.</h2>
+        <h2>The first tool that let's you encode, decode, modify, and intercept<br>WebAuthn attestations and assertions directly within your browser.</h2>
     </div>
 </div>
 
 <div class="row mb-3">
     <div class="col">
-        <h5>Client Capabilities</h5>
-        <div id="capabilities"></div>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Welcome to the <span class="small-caps">Passkey-Workbench</span></h5>
+            </div>
+            <div class="card-body">
+                <p><span class="small-caps">Passkey-Workbench</span> is a comprehensive development and debugging tool for WebAuthn/Passkey implementations. It provides a suite of utilities to help developers understand, test, and verify the security of passkey authentication flows.</p>
+
+                <h6>Key Features:</h6>
+                <ul>
+                    <li><strong>Create & Get Operations:</strong> Generate WebAuthn credential creation and assertion requests for testing</li>
+                    <li><strong>Attestation & Assertion Analysis:</strong> Decode and inspect attestation objects and assertion responses</li>
+                    <li><strong>Key Management:</strong> Generate, store, and manage cryptographic keys for testing different scenarios</li>
+                    <li><strong>User Management:</strong> Create and manage test users for different relying parties</li>
+                    <li><strong>Interceptor:</strong> Intercept and modify live passkey operations with preconfigured security tests including context manipulation, challenge reuse, and origin validation</li>
+                    <li><strong>History:</strong> Track all intercepted requests and responses</li>
+                    <li><strong>Converters:</strong> Convert between different encoding formats (Base64, Base64URL, Hex)</li>
+                </ul>
+
+                <h6>Getting Started:</h6>
+                <ol>
+                    <li>Use the <strong>Create</strong> tab to generate credential creation requests</li>
+                    <li>Use the <strong>Get</strong> tab to generate credential get requests</li>
+                    <li>Analyze responses in the <strong>Attestation</strong> and <strong>Assertion</strong> tabs</li>
+                    <li>Manage test credentials in the <strong>Keys</strong> and <strong>Users</strong> tabs</li>
+                    <li>Use the <strong>Interceptor</strong> with the browser extension to debug real passkey flows</li>
+                </ol>
+
+                <div class="mt-3">
+                    <h6>Load Example Data:</h6>
+                    <div class="input-group" style="max-width: 500px;">
+                        <span class="input-group-text">Examples</span>
+                        <select class="form-select" id="examplesSelect">
+                            <option selected>Select an example...</option>
+                        </select>
+                        <button class="btn btn-primary" id="examplesLoadBtn">Load Example</button>
+                    </div>
+                    <small class="text-muted">Load pre-configured examples to explore different attestation and assertion objects</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Client Capabilities</h5>
+            </div>
+            <div class="card-body">
+                <div id="capabilities"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Keyboard Shortcuts</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-hover mb-0" id="shortcutsTable">
+                    <thead>
+                        <tr>
+                            <th>Shortcut</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamically populated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="row mb-3">
     <div class="col">
-        <h5>Current Limitations</h5>
-        <ul>
-            <li>Only the <a href="https://www.w3.org/TR/webauthn-3/#sctn-none-attestation">None</a> and <a href="https://www.w3.org/TR/webauthn-3/#sctn-packed-attestation">Packed</a> attestation statement formats are supported.</li>
-            <li>In the <a href="https://www.w3.org/TR/webauthn-3/#sctn-packed-attestation">Packed</a> attestation statement format, the signature and certificates need to be added manually if required.</li>
-            <li><a href="https://www.w3.org/TR/webauthn-3/#sctn-extensions">Extensions</a> are not automatically parsed but need to be added manually if required.</li>
-            <li><a href="https://www.w3.org/TR/webauthn-3/#sctn-client-extension-processing">Client Extension Processing</a> and <a href="https://www.w3.org/TR/webauthn-3/#sctn-authenticator-extension-processing">Authenticator Extension Processing</a> is not supported.</li>
-            <li>To use the Ed25519 algorithm <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#browser_compatibility">in Chrome</a>, you need to enable the <a href="chrome://flags/#enable-experimental-web-platform-features">#enable-experimental-web-platform-features</a> flag.</li>
-        </ul>
-    </div>
-</div>
-
-<div class="row mb-3">
-    <div class="col">
-        <h5>Keyboard Shortcuts</h5>
-        <table class="table table-sm" id="shortcutsTable">
-            <thead>
-                <tr>
-                    <th>Shortcut</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Dynamically populated -->
-            </tbody>
-        </table>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Current Limitations</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Only the <a href="https://www.w3.org/TR/webauthn-3/#sctn-none-attestation">None</a> and <a href="https://www.w3.org/TR/webauthn-3/#sctn-packed-attestation">Packed</a> attestation statement formats are supported.</li>
+                    <li>In the <a href="https://www.w3.org/TR/webauthn-3/#sctn-packed-attestation">Packed</a> attestation statement format, the signature and certificates need to be added manually if required.</li>
+                    <li><a href="https://www.w3.org/TR/webauthn-3/#sctn-extensions">Extensions</a> are not automatically parsed but need to be added manually if required.</li>
+                    <li><a href="https://www.w3.org/TR/webauthn-3/#sctn-client-extension-processing">Client Extension Processing</a> and <a href="https://www.w3.org/TR/webauthn-3/#sctn-authenticator-extension-processing">Authenticator Extension Processing</a> is not supported.</li>
+                    <li>To use the Ed25519 algorithm <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/importKey#browser_compatibility">in Chrome</a>, you need to enable the <a href="chrome://flags/#enable-experimental-web-platform-features">#enable-experimental-web-platform-features</a> flag.</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
