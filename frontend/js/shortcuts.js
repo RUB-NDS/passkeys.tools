@@ -11,6 +11,7 @@ const shortcuts = {
     "Ctrl+8": { action: () => showTab("converters"), description: "Navigate to Converters tab" },
     "Ctrl+9": { action: () => showTab("interceptor"), description: "Navigate to Interceptor tab" },
     "Ctrl+0": { action: () => showTab("settings"), description: "Navigate to Settings tab" },
+    "Ctrl+H": { action: () => showTab("history"), description: "Navigate to History tab" },
 
     "Ctrl+S": {
         action: () => {

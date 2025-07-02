@@ -1,0 +1,107 @@
+<div class="row">
+    <div class="col text-center">
+        <h1>History</h1>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Interceptions</span>
+                <div>
+                    <button class="btn btn-sm btn-secondary" id="exportHistoryBtn">
+                        <i class="bi bi-download"></i> Export JSON
+                    </button>
+                    <button class="btn btn-sm btn-danger" id="clearHistoryBtn">
+                        <i class="bi bi-trash"></i> Clear All
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Mode</th>
+                                <th>Type</th>
+                                <th>Origin</th>
+                                <th>Credential ID</th>
+                                <th>Key</th>
+                                <th>User Handle</th>
+                                <th>Modification</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <!-- History entries will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                    <div class="p-3 text-center text-muted" id="historyEmptyMessage" style="display: none;">
+                        No history entries yet. Interceptions will appear here.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for viewing full entry details -->
+<div class="modal fade" id="historyDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">History Entry Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Overview</h6>
+                        <pre class="border rounded p-2" id="historyDetailsInfo"></pre>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Controls</h6>
+                        <table class="table table-sm table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th scope="row" style="width: 40%;">Credential ID:</th>
+                                    <td id="historyDetailsCredentialId" style="word-break: break-all;"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Key:</th>
+                                    <td id="historyDetailsKey" style="word-break: break-all;"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">User Handle:</th>
+                                    <td id="historyDetailsUserHandle" style="word-break: break-all;"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Modification:</th>
+                                    <td id="historyDetailsModification" style="word-break: break-all;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h6>Request</h6>
+                        <pre class="border rounded p-2" id="historyDetailsRequest" style="max-height: 300px; overflow-y: auto;"></pre>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Response</h6>
+                        <pre class="border rounded p-2" id="historyDetailsResponse" style="max-height: 300px; overflow-y: auto;"></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="historyDetailsCopyBtn">
+                    <i class="bi bi-clipboard"></i> Copy Full Entry
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

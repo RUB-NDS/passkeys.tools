@@ -8,6 +8,7 @@ import { b64urlToHex, hexToB64url, uint8ToHex, strSha256Uint8 } from "./converte
 import { storeUser, getUsers, getUserByRpIdAndMode } from "./users.js"
 import { renderUsers } from "./main.js"
 import { renderModifications } from "./modifications.js"
+import { addHistoryEntry } from "./history.js"
 
 const addCopyAsJsonButton = (data) => {
     const overviewHeader = interceptorControls.querySelector("h4")
@@ -45,8 +46,31 @@ const addSendButton = (operation) => {
     sendButton.id = `interceptorSendButton`
     sendButton.className = "btn btn-primary"
     sendButton.textContent = "Send Response to Extension"
-    sendButton.addEventListener("click", () => {
+    sendButton.addEventListener("click", async () => {
         const response = JSON.parse(interceptorResponseTextarea.value || "{}")
+
+        const historyEntry = {
+            timestamp: Date.now(),
+            mode: interceptorControlsMode.innerText || "",
+            type: operation,
+            origin: interceptorControlsOrigin.innerText || "",
+            info: {
+                mode: interceptorControlsMode.innerText || "",
+                type: interceptorControlsType.innerText || "",
+                origin: interceptorControlsOrigin.innerText || "",
+                crossOrigin: interceptorControlsCrossOrigin.innerText || "N/A",
+                topOrigin: interceptorControlsTopOrigin.innerText || "N/A",
+                mediation: interceptorControlsMediation.innerText || "N/A"
+            },
+            credentialId: document.querySelector(`#${operation}CredentialIdSelect`)?.value || "",
+            key: document.querySelector(`#${operation}KeySelect`)?.value || "",
+            userHandle: operation === "get" ? document.querySelector(`#${operation}UserHandleSelect`)?.value || "" : "",
+            modification: document.querySelector('input[name="modification"]:checked')?.value || "",
+            request: JSON.parse(interceptorRequestTextarea.value || "{}"),
+            response: response
+        }
+        await addHistoryEntry(historyEntry)
+
         if (window.opener) {
             window.opener.postMessage({
                 type: "passkey-interceptor-response",

@@ -11,6 +11,7 @@ import { algs, getKey, getKeys, storeKey, generateKey, deleteKey, generateModeKe
 import { navigatorCredentialsCreate, navigatorCredentialsGet } from "./webapi.js"
 import { renderStorageSettings } from "./storage.js"
 import { initShortcuts, renderShortcuts } from "./shortcuts.js"
+import { renderHistory } from "./history.js"
 import {
     b64urlToHex, hexToB64url, strToB64url, strToHex, b64urlToStr, hexToStr,
     strToB64, b64urlToB64, hexToB64, b64ToStr, b64ToB64url, b64ToHex,
@@ -588,6 +589,7 @@ window.addEventListener("load", async () => {
     await parseInterceptParams()
     renderStorageSettings()
     initShortcuts()
+    renderHistory()
 })
 
 window.addEventListener("hashchange", async () => {
