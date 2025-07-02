@@ -3,6 +3,15 @@ textarea {
     resize: none;
 }
 
+.tab-content {
+    opacity: 0;
+    transition: opacity 0.15s ease-in;
+}
+
+.tab-content.loaded {
+    opacity: 1;
+}
+
 .card-body {
     overflow: auto;
 }

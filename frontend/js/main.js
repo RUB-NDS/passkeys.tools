@@ -73,9 +73,10 @@ const createResultAlert = (container, content, isSuccess = true) => {
 
 export const showTab = (tab) => {
     const tabBtn = document.querySelector(`[data-bs-target="#${tab}-tab-pane"]`)
-    const bsTab = new bootstrap.Tab(tabBtn)
-    bsTab.show()
-    window.scrollTo(0, 0)
+    if (tabBtn) {
+        const bsTab = new bootstrap.Tab(tabBtn)
+        bsTab.show()
+    }
 }
 
 export const highlightTabs = (tabs) => {
@@ -449,10 +450,6 @@ keysDeleteKeyBtn.onclick = async () => {
     await renderKeys()
 }
 
-window.addEventListener("load", async () => {
-    await generateModeKeys(["attacker", "victim"])
-})
-
 /* users */
 
 usersAddUserBtn.onclick = async () => {
@@ -579,19 +576,57 @@ examplesLoadBtn.onclick = () => {
     loadExample(example)
 }
 
-window.addEventListener("load", () => {
-    loadExample(examples["ES256 Credential with No Attestation"])
-})
-
-/* parse intercept params */
+/* event: load */
 
 window.addEventListener("load", async () => {
+    await generateModeKeys(["attacker", "victim"])
+    loadExample(examples["ES256 Credential with No Attestation"])
     await parseInterceptParams()
     renderStorageSettings()
     initShortcuts()
     renderHistory()
+
+    // Show the appropriate tab based on the current path
+    const tab = getTabFromPath()
+    showTab(tab)
+
+    // Make tab content visible
+    const tabContent = document.querySelector(".tab-content")
+    if (tabContent) {
+        tabContent.classList.add("loaded")
+    }
 })
+
+/* event: hashchange */
 
 window.addEventListener("hashchange", async () => {
     await parseInterceptParams()
+})
+
+/* path navigation */
+
+const getTabFromPath = () => {
+    const path = window.location.pathname
+    if (path === "/" || path === "") return "info"
+    return path.substring(1)
+}
+
+// Listen for Bootstrap tab changes to update URL
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll("button[data-bs-toggle='tab']").forEach((button) => {
+        button.addEventListener("shown.bs.tab", (event) => {
+            const target = event.target.getAttribute("data-bs-target")
+            const tab = target.replace("#", "").replace("-tab-pane", "")
+            const path = tab === "info" ? "/" : `/${tab}`
+            if (window.location.pathname !== path) {
+                history.pushState({ tab }, "", path + window.location.hash)
+            }
+        })
+    })
+})
+
+// Handle browser back/forward navigation
+window.addEventListener("popstate", (event) => {
+    const tab = event.state?.tab || getTabFromPath()
+    showTab(tab)
 })
