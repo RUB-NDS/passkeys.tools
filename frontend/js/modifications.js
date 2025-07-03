@@ -648,7 +648,21 @@ const modifications = {
             editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
         },
 
-        "Signature": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Signature": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Get the signature from the textarea (base64url encoded)
+            const signatureB64url = assertionSignatureEncB64urlTextarea.value
+
+            // Convert to Uint8Array to manipulate bits
+            const signatureBytes = b64urlToUint8(signatureB64url)
+
+            // Flip the last bit of the last byte
+            signatureBytes[signatureBytes.length - 1] ^= 0x01
+
+            // Convert back to base64url and update the textarea
+            const modifiedSignatureB64url = uint8ToB64url(signatureBytes)
+            assertionSignatureEncB64urlTextarea.value = modifiedSignatureB64url
+            assertionSignatureEncB64urlTextarea.dispatchEvent(new Event("input"))
+        },
 
         "Signature Counter": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
     },
