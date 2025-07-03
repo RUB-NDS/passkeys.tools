@@ -349,20 +349,20 @@ const modifications = {
             editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
         },
 
-        "Credential ID Unused | ID+Pubkey Swap": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        // "Credential ID Unused | ID+Pubkey Swap": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
-        "Credential ID Unused | ID Swap": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        // "Credential ID Unused | ID Swap": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
-        "Credential ID Unused | Pubkey Swap": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        // "Credential ID Unused | Pubkey Swap": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
     },
 
     get: {
 
-        "Allow Credentials": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        // "Allow Credentials": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
-        "Non-Discoverable Identification": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        // "Non-Discoverable Identification": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
-        "Discoverable Identification": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        // "Discoverable Identification": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
         "Context | Nonsense": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
             const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
