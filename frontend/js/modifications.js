@@ -275,7 +275,13 @@ const modifications = {
             }
         },
 
-        "Backup State": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Backup State": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Set backup eligible to false and backup state to true
+            const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+            attestationObject.authData.flags.be = false
+            attestationObject.authData.flags.bs = true
+            editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+        },
 
         "Algorithm": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
@@ -558,7 +564,13 @@ const modifications = {
             }
         },
 
-        "Backup State": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Backup State": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Set backup eligible to false and backup state to true
+            const authenticatorData = editors.assertionAuthenticatorDataDecEditor.getValue()
+            authenticatorData.flags.be = false
+            authenticatorData.flags.bs = true
+            editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
+        },
 
         "Backup Eligible | Swap to Off": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
