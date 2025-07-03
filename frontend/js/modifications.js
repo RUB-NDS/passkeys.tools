@@ -263,7 +263,17 @@ const modifications = {
             editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
         },
 
-        "User Verified": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "User Verified": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Check if userVerification is required
+            if (pkcco.authenticatorSelection?.userVerification === "required") {
+                // Set user verified flag to false
+                const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+                attestationObject.authData.flags.uv = false
+                editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+            } else {
+                createResultAlert(interceptorModifications, "This test is not applicable - userVerification is not required", false)
+            }
+        },
 
         "Backup State": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
@@ -536,7 +546,17 @@ const modifications = {
             editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
         },
 
-        "User Verified": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "User Verified": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Check if userVerification is required
+            if (pkcro.userVerification === "required") {
+                // Set user verified flag to false
+                const authenticatorData = editors.assertionAuthenticatorDataDecEditor.getValue()
+                authenticatorData.flags.uv = false
+                editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
+            } else {
+                createResultAlert(interceptorModifications, "This test is not applicable - userVerification is not required", false)
+            }
+        },
 
         "Backup State": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
