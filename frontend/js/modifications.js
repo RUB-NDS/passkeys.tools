@@ -664,7 +664,19 @@ const modifications = {
             assertionSignatureEncB64urlTextarea.dispatchEvent(new Event("input"))
         },
 
-        "Signature Counter": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Signature Counter (Set to 2)": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Set signature counter to 2
+            const authenticatorData = editors.assertionAuthenticatorDataDecEditor.getValue()
+            authenticatorData.signCount = 2
+            editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
+        },
+
+        "Signature Counter (Set to 1)": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Set signature counter to 1
+            const authenticatorData = editors.assertionAuthenticatorDataDecEditor.getValue()
+            authenticatorData.signCount = 1
+            editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
+        },
     },
 }
 
