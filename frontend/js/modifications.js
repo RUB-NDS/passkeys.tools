@@ -321,7 +321,19 @@ const modifications = {
             }
         },
 
-        "Credential ID Length": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Credential ID Length": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Find and select the option with inner text "1024 byte test"
+            if (createCredentialIdSelect) {
+                const options = createCredentialIdSelect.options
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].textContent && options[i].textContent.includes("1024 byte test")) {
+                        createCredentialIdSelect.selectedIndex = i
+                        createCredentialIdSelect.dispatchEvent(new Event("change"))
+                        break
+                    }
+                }
+            }
+        },
 
         "Credential ID Unused | ID+Pubkey Swap": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
