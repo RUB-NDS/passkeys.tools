@@ -2,6 +2,7 @@ import * as editors from "./editors.js"
 import { b64urlToUint8, uint8ToB64url } from "./converters.js"
 import { getHistory } from "./history.js"
 import { createResultAlert } from "./main.js"
+import { algs } from "./keys.js"
 
 const modifications = {
 
@@ -283,7 +284,42 @@ const modifications = {
             editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
         },
 
-        "Algorithm": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Algorithm": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Get algorithms requested in pubKeyCredParams
+            const requestedAlgs = pkcco.pubKeyCredParams?.map(param => {
+                return Object.keys(algs).find(key => algs[key] === param.alg)
+            }).filter(Boolean) || []
+
+            // Find first algorithm from algs not in pubKeyCredParams
+            const availableAlgs = Object.keys(algs)
+            const unusedAlg = availableAlgs.find(alg => !requestedAlgs.includes(alg))
+
+            if (!unusedAlg) {
+                createResultAlert(interceptorModifications, "This test is not applicable - all algorithms are included in pubKeyCredParams", false)
+                return
+            }
+
+            // Select the appropriate key based on "{mode} | {alg}" pattern
+            const keyName = `${mode} | ${unusedAlg}`
+
+            // Set the key select
+            if (createKeySelect) {
+                createKeySelect.value = keyName
+                createKeySelect.dispatchEvent(new Event("change"))
+            }
+
+            // Find and select the credential ID option based on inner text matching the key name
+            if (createCredentialIdSelect) {
+                const options = createCredentialIdSelect.options
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].textContent && options[i].textContent.includes(keyName)) {
+                        createCredentialIdSelect.selectedIndex = i
+                        createCredentialIdSelect.dispatchEvent(new Event("change"))
+                        break
+                    }
+                }
+            }
+        },
 
         "Credential ID Length": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
