@@ -250,7 +250,18 @@ const modifications = {
             setTimeout(() => attestationRpIdBtn.click(), 200)
         },
 
-        "User Present": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "User Present": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Check if mediation is conditional - test is not applicable in this case
+            if (mediation === "conditional") {
+                createResultAlert(interceptorModifications, "This test is not applicable for conditional mediation", false)
+                return
+            }
+
+            // Set user present flag to false
+            const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+            attestationObject.authData.flags.up = false
+            editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+        },
 
         "User Verified": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
@@ -518,7 +529,12 @@ const modifications = {
             setTimeout(() => assertionRpIdBtn.click(), 200)
         },
 
-        "User Present": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "User Present": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Set user present flag to false
+            const authenticatorData = editors.assertionAuthenticatorDataDecEditor.getValue()
+            authenticatorData.flags.up = false
+            editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
+        },
 
         "User Verified": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
