@@ -203,11 +203,52 @@ const modifications = {
             editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
         },
 
-        "RP ID Hash | Cross Site": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "RP ID Hash | Cross Site": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Get RP ID from pkcco.rp.id or fallback to origin hostname
+            const rpId = pkcco.rp?.id || (new URL(origin)).hostname
 
-        "RP ID Hash | Upscoping": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+            // Change TLD to .rocks for cross site
+            const modifiedRpId = rpId.replace(/\.[^.]+$/, ".rocks")
 
-        "RP ID Hash | Downscoping": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+            // Set the modified RP ID in the input field and click the button
+            attestationRpIdInput.value = modifiedRpId
+            attestationRpIdInput.dispatchEvent(new Event("input"))
+            setTimeout(() => attestationRpIdBtn.click(), 200)
+        },
+
+        "RP ID Hash | Downscoping": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Get RP ID from pkcco.rp.id or fallback to origin hostname
+            const rpId = pkcco.rp?.id || (new URL(origin)).hostname
+
+            // Add subdomain for downscoping
+            const modifiedRpId = "sub." + rpId
+
+            // Set the modified RP ID in the input field and click the button
+            attestationRpIdInput.value = modifiedRpId
+            attestationRpIdInput.dispatchEvent(new Event("input"))
+            setTimeout(() => attestationRpIdBtn.click(), 200)
+        },
+
+        "RP ID Hash | Upscoping": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Get RP ID from pkcco.rp.id or fallback to origin hostname
+            const rpId = pkcco.rp?.id || (new URL(origin)).hostname
+            const rpIdParts = rpId.split(".")
+
+            // Check if we can upscope (need at least 3 parts: subdomain.domain.tld)
+            if (rpIdParts.length < 3) {
+                createResultAlert(interceptorModifications, "This test is not applicable - no parent domain available", false)
+                return
+            }
+
+            // Remove the first subdomain to get parent domain
+            rpIdParts.shift()
+            const modifiedRpId = rpIdParts.join(".")
+
+            // Set the modified RP ID in the input field and click the button
+            attestationRpIdInput.value = modifiedRpId
+            attestationRpIdInput.dispatchEvent(new Event("input"))
+            setTimeout(() => attestationRpIdBtn.click(), 200)
+        },
 
         "User Present": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
@@ -430,11 +471,52 @@ const modifications = {
             editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
         },
 
-        "RP ID Hash | Cross Site": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "RP ID Hash | Cross Site": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Get RP ID from pkcro.rpId or fallback to origin hostname
+            const rpId = pkcro.rpId || (new URL(origin)).hostname
 
-        "RP ID Hash | Upscoping": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+            // Change TLD to .rocks for cross site
+            const modifiedRpId = rpId.replace(/\.[^.]+$/, ".rocks")
 
-        "RP ID Hash | Downscoping": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+            // Set the modified RP ID in the input field and click the button
+            assertionRpIdInput.value = modifiedRpId
+            assertionRpIdInput.dispatchEvent(new Event("input"))
+            setTimeout(() => assertionRpIdBtn.click(), 200)
+        },
+
+        "RP ID Hash | Downscoping": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Get RP ID from pkcro.rpId or fallback to origin hostname
+            const rpId = pkcro.rpId || (new URL(origin)).hostname
+
+            // Add subdomain for downscoping
+            const modifiedRpId = "sub." + rpId
+
+            // Set the modified RP ID in the input field and click the button
+            assertionRpIdInput.value = modifiedRpId
+            assertionRpIdInput.dispatchEvent(new Event("input"))
+            setTimeout(() => assertionRpIdBtn.click(), 200)
+        },
+
+        "RP ID Hash | Upscoping": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Get RP ID from pkcro.rpId or fallback to origin hostname
+            const rpId = pkcro.rpId || (new URL(origin)).hostname
+            const rpIdParts = rpId.split(".")
+
+            // Check if we can upscope (need at least 3 parts: subdomain.domain.tld)
+            if (rpIdParts.length < 3) {
+                createResultAlert(interceptorModifications, "This test is not applicable - no parent domain available", false)
+                return
+            }
+
+            // Remove the first subdomain to get parent domain
+            rpIdParts.shift()
+            const modifiedRpId = rpIdParts.join(".")
+
+            // Set the modified RP ID in the input field and click the button
+            assertionRpIdInput.value = modifiedRpId
+            assertionRpIdInput.dispatchEvent(new Event("input"))
+            setTimeout(() => assertionRpIdBtn.click(), 200)
+        },
 
         "User Present": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
