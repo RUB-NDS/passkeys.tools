@@ -335,6 +335,20 @@ const modifications = {
             }
         },
 
+        "Backup Eligible | Set to On": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Set backup eligible flag to true
+            const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+            attestationObject.authData.flags.be = true
+            editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+        },
+
+        "Backup Eligible | Set to Off": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Set backup eligible flag to false
+            const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
+            attestationObject.authData.flags.be = false
+            editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+        },
+
         "Credential ID Unused | ID+Pubkey Swap": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
         "Credential ID Unused | ID Swap": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
@@ -620,9 +634,19 @@ const modifications = {
             editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
         },
 
-        "Backup Eligible | Swap to Off": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Backup Eligible | Swap to Off": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Set backup eligible flag to false
+            const authenticatorData = editors.assertionAuthenticatorDataDecEditor.getValue()
+            authenticatorData.flags.be = false
+            editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
+        },
 
-        "Backup Eligible | Swap to On": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Backup Eligible | Swap to On": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            // Set backup eligible flag to true
+            const authenticatorData = editors.assertionAuthenticatorDataDecEditor.getValue()
+            authenticatorData.flags.be = true
+            editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
+        },
 
         "Signature": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
