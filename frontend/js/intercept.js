@@ -500,7 +500,7 @@ export const parseInterceptParams = async () => {
         addDismissButton("create")
 
         // modifications
-        renderModifications("create", pkcco, origin, mode, crossOrigin, topOrigin, mediation)
+        await renderModifications("create", pkcco, origin, mode, crossOrigin, topOrigin, mediation)
 
         await applyPkcco(pkcco, origin, mode, crossOrigin, topOrigin)
 
@@ -544,7 +544,7 @@ export const parseInterceptParams = async () => {
         addDismissButton("get")
 
         // modifications
-        renderModifications("get", pkcro, origin, mode, crossOrigin, topOrigin, mediation)
+        await renderModifications("get", pkcro, origin, mode, crossOrigin, topOrigin, mediation)
 
         await applyPkcro(pkcro, origin, mode, crossOrigin, topOrigin)
 

@@ -680,8 +680,11 @@ const modifications = {
     },
 }
 
-export const renderModifications = (operation, pkco, origin, mode, crossOrigin, topOrigin, mediation) => {
+export const renderModifications = async (operation, pkco, origin, mode, crossOrigin, topOrigin, mediation) => {
     interceptorModifications.innerHTML = ""
+
+    // Get history to check for already applied modifications
+    const history = await getHistory()
 
     for (const [name, action] of Object.entries(modifications[operation])) {
         const check = document.createElement("div")
@@ -703,7 +706,23 @@ export const renderModifications = (operation, pkco, origin, mode, crossOrigin, 
         const label = document.createElement("label")
         label.classList.add("form-check-label")
         label.setAttribute("for", `modification-${name}`)
-        label.textContent = name
+
+        // Check if this modification has already been applied
+        const isAlreadyApplied = history.some(entry =>
+            entry.mode === mode &&
+            entry.type === operation &&
+            entry.status === "resolved" &&
+            entry.origin === origin &&
+            entry.modification === name
+        )
+
+        // Add checkmark and strike through if already applied
+        if (isAlreadyApplied) {
+            label.innerHTML = `<span style="color: green;">✓</span> <span style="text-decoration: line-through;">${name}</span>`
+            label.title = "This modification has already been applied"
+        } else {
+            label.textContent = name
+        }
 
         check.appendChild(input)
         check.appendChild(label)
