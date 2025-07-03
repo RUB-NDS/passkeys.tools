@@ -100,15 +100,108 @@ const modifications = {
             editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
         },
 
-        "Origin | Cross Site": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Origin | Cross Site": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+            const url = new URL(clientDataJSON.origin)
+            url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+            clientDataJSON.origin = url.origin
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
 
-        "Origin | Cross Origin": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Origin | Downscoping": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+            const url = new URL(clientDataJSON.origin)
+            url.hostname = "sub." + url.hostname
+            clientDataJSON.origin = url.origin
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
 
-        "Cross Origin": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Origin | Upscoping": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+            const url = new URL(clientDataJSON.origin)
+            const hostnameParts = url.hostname.split(".")
 
-        "Top Origin | Cross Site": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+            // Check if we can upscope (need at least 3 parts: subdomain.domain.tld)
+            if (hostnameParts.length < 3) {
+                createResultAlert(interceptorModifications, "This test is not applicable - no parent domain available", false)
+                return
+            }
 
-        "Top Origin | Cross Origin": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
+            // Remove the first subdomain to get parent domain
+            hostnameParts.shift()
+            url.hostname = hostnameParts.join(".")
+            clientDataJSON.origin = url.origin
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
+
+        "Cross Origin": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+            clientDataJSON.crossOrigin = true
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
+
+        "Top Origin | Cross Site": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+            if (topOrigin) {
+                const url = new URL(clientDataJSON.topOrigin)
+                url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+                clientDataJSON.topOrigin = url.origin
+            } else {
+                const url = new URL(origin)
+                url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+                clientDataJSON.topOrigin = url.origin
+            }
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
+
+        "Top Origin | Downscoping": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+            if (topOrigin) {
+                const url = new URL(clientDataJSON.topOrigin)
+                url.hostname = "sub." + url.hostname
+                clientDataJSON.topOrigin = url.origin
+            } else {
+                const url = new URL(origin)
+                url.hostname = "sub." + url.hostname
+                clientDataJSON.topOrigin = url.origin
+            }
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
+
+        "Top Origin | Upscoping": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
+
+            if (topOrigin) {
+                const url = new URL(clientDataJSON.topOrigin)
+                const hostnameParts = url.hostname.split(".")
+
+                // Check if we can upscope (need at least 3 parts: subdomain.domain.tld)
+                if (hostnameParts.length < 3) {
+                    createResultAlert(interceptorModifications, "This test is not applicable - no parent domain available", false)
+                    return
+                }
+
+                // Remove the first subdomain to get parent domain
+                hostnameParts.shift()
+                url.hostname = hostnameParts.join(".")
+                clientDataJSON.topOrigin = url.origin
+            } else {
+                const url = new URL(origin)
+                const hostnameParts = url.hostname.split(".")
+
+                // Check if we can upscope (need at least 3 parts: subdomain.domain.tld)
+                if (hostnameParts.length < 3) {
+                    createResultAlert(interceptorModifications, "This test is not applicable - no parent domain available", false)
+                    return
+                }
+
+                // Remove the first subdomain to get parent domain
+                hostnameParts.shift()
+                url.hostname = hostnameParts.join(".")
+                clientDataJSON.topOrigin = url.origin
+            }
+            editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
 
         "RP ID Hash | Cross Site": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
@@ -234,15 +327,108 @@ const modifications = {
             editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
         },
 
-        "Origin | Cross Site": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Origin | Cross Site": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
+            const url = new URL(clientDataJSON.origin)
+            url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+            clientDataJSON.origin = url.origin
+            editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
 
-        "Origin | Cross Origin": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Origin | Downscoping": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
+            const url = new URL(clientDataJSON.origin)
+            url.hostname = "sub." + url.hostname
+            clientDataJSON.origin = url.origin
+            editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
 
-        "Cross Origin": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+        "Origin | Upscoping": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
+            const url = new URL(clientDataJSON.origin)
+            const hostnameParts = url.hostname.split(".")
 
-        "Top Origin | Cross Site": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+            // Check if we can upscope (need at least 3 parts: subdomain.domain.tld)
+            if (hostnameParts.length < 3) {
+                createResultAlert(interceptorModifications, "This test is not applicable - no parent domain available", false)
+                return
+            }
 
-        "Top Origin | Cross Origin": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
+            // Remove the first subdomain to get parent domain
+            hostnameParts.shift()
+            url.hostname = hostnameParts.join(".")
+            clientDataJSON.origin = url.origin
+            editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
+
+        "Cross Origin": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
+            clientDataJSON.crossOrigin = true
+            editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
+
+        "Top Origin | Cross Site": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
+            if (topOrigin) {
+                const url = new URL(clientDataJSON.topOrigin)
+                url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+                clientDataJSON.topOrigin = url.origin
+            } else {
+                const url = new URL(origin)
+                url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+                clientDataJSON.topOrigin = url.origin
+            }
+            editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
+
+        "Top Origin | Downscoping": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
+            if (topOrigin) {
+                const url = new URL(clientDataJSON.topOrigin)
+                url.hostname = "sub." + url.hostname
+                clientDataJSON.topOrigin = url.origin
+            } else {
+                const url = new URL(origin)
+                url.hostname = "sub." + url.hostname
+                clientDataJSON.topOrigin = url.origin
+            }
+            editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
+
+        "Top Origin | Upscoping": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
+            const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
+
+            if (topOrigin) {
+                const url = new URL(clientDataJSON.topOrigin)
+                const hostnameParts = url.hostname.split(".")
+
+                // Check if we can upscope (need at least 3 parts: subdomain.domain.tld)
+                if (hostnameParts.length < 3) {
+                    createResultAlert(interceptorModifications, "This test is not applicable - no parent domain available", false)
+                    return
+                }
+
+                // Remove the first subdomain to get parent domain
+                hostnameParts.shift()
+                url.hostname = hostnameParts.join(".")
+                clientDataJSON.topOrigin = url.origin
+            } else {
+                const url = new URL(origin)
+                const hostnameParts = url.hostname.split(".")
+
+                // Check if we can upscope (need at least 3 parts: subdomain.domain.tld)
+                if (hostnameParts.length < 3) {
+                    createResultAlert(interceptorModifications, "This test is not applicable - no parent domain available", false)
+                    return
+                }
+
+                // Remove the first subdomain to get parent domain
+                hostnameParts.shift()
+                url.hostname = hostnameParts.join(".")
+                clientDataJSON.topOrigin = url.origin
+            }
+            editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
+        },
 
         "RP ID Hash | Cross Site": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {},
 
