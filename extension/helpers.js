@@ -156,7 +156,7 @@ _pk.helpers.createAttestationResponse = (response) => {
 /* Create assertion response */
 _pk.helpers.createAssertionResponse = (response) => {
     if (!response || !response.id || !response.clientDataJSON ||
-        !response.authenticatorData || !response.signature || !response.userHandle) {
+        !response.authenticatorData || !response.signature) {
         throw new Error("Invalid assertion response")
     }
 
@@ -164,7 +164,7 @@ _pk.helpers.createAssertionResponse = (response) => {
         clientDataJSON: _pk.helpers.b64urlToUint8(response.clientDataJSON).buffer,
         authenticatorData: _pk.helpers.b64urlToUint8(response.authenticatorData).buffer,
         signature: _pk.helpers.b64urlToUint8(response.signature).buffer,
-        userHandle: _pk.helpers.b64urlToUint8(response.userHandle).buffer
+        userHandle: response.userHandle ? _pk.helpers.b64urlToUint8(response.userHandle).buffer : null
     }
     Object.setPrototypeOf(authenticatorAssertionResponse, AuthenticatorAssertionResponse.prototype)
 
