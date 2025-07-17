@@ -59,7 +59,7 @@ navigator.credentials.create = async function (...args) {
     // Open popup and handle response
     const popupUrl = _pk.helpers.createPopupUrl(pkcco, "create", mediation)
     const popupMode = _pk.popupMode || "detached"
-    
+
     if (popupMode === "detached") {
         window.open(popupUrl, "passkey-interceptor", "width=1200,height=800")
     } else {
@@ -100,7 +100,7 @@ navigator.credentials.get = async function (...args) {
     // Open popup and handle response
     const popupUrl = _pk.helpers.createPopupUrl(pkcro, "get", mediation)
     const popupMode = _pk.popupMode || "detached"
-    
+
     if (popupMode === "detached") {
         window.open(popupUrl, "passkey-interceptor", "width=1200,height=800")
     } else {
@@ -158,6 +158,7 @@ if (PublicKeyCredential.parseRequestOptionsFromJSON) {
 
 if (PublicKeyCredential.signalAllAcceptedCredentials) {
     PublicKeyCredential.signalAllAcceptedCredentials = async function (...args) {
+        alert("PublicKeyCredential.signalAllAcceptedCredentials is called, check console for details")
         _pk.log.info("PublicKeyCredential.signalAllAcceptedCredentials is called with:", ...args)
         return _pk.hooks.signalAllAcceptedCredentials(...args)
     }
@@ -167,6 +168,7 @@ if (PublicKeyCredential.signalAllAcceptedCredentials) {
 
 if (PublicKeyCredential.signalCurrentUserDetails) {
     PublicKeyCredential.signalCurrentUserDetails = async function (...args) {
+        alert("PublicKeyCredential.signalCurrentUserDetails is called, check console for details")
         _pk.log.info("PublicKeyCredential.signalCurrentUserDetails is called with:", ...args)
         return _pk.hooks.signalCurrentUserDetails(...args)
     }
@@ -176,6 +178,7 @@ if (PublicKeyCredential.signalCurrentUserDetails) {
 
 if (PublicKeyCredential.signalUnknownCredential) {
     PublicKeyCredential.signalUnknownCredential = async function (...args) {
+        alert("PublicKeyCredential.signalUnknownCredential is called, check console for details")
         _pk.log.info("PublicKeyCredential.signalUnknownCredential is called with:", ...args)
         return _pk.hooks.signalUnknownCredential(...args)
     }
