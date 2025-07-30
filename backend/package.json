@@ -1,5 +1,5 @@
 {
-  "name": "workbench-backend",
+  "name": "passkeys-tools-backend",
   "private": true,
   "version": "1.0.0",
   "type": "module",

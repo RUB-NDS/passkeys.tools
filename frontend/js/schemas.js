@@ -293,7 +293,7 @@ export const createSchema = {
                 "name": {
                     "type": "string",
                     "required": true,
-                    "default": "Passkey Workbench"
+                    "default": "Passkeys.Tools"
                 },
                 "id": {
                     "type": "string",

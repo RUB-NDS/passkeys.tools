@@ -112,7 +112,7 @@ app.post("/api/data/:secretKey/:type", async (req, res) => {
 async function start() {
     await ensureDataFile()
     app.listen(PORT, () => {
-        console.log(`Workbench backend server running on port ${PORT}`)
+        console.log(`Backend server running on port ${PORT}`)
         console.log(`Data file: ${DATA_FILE}`)
     })
 }
