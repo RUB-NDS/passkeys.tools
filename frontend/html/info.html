@@ -19,12 +19,12 @@
                 <ul>
                     <li><strong>Create:</strong> Simulates <code>navigator.credentials.create()</code> WebAuthn API calls to test credential registration flows.</li>
                     <li><strong>Get:</strong> Simulates <code>navigator.credentials.get()</code> for testing authentication flows.</li>
-                    <li><strong>Attestation:</strong> Decode, modify, and encode attestation objects in various formats. Load custom keys or store keys in integrated storage.</li>
+                    <li><strong>Attestation:</strong> Decode, modify, and encode attestation objects in various formats (like <a href="https://www.jwt.io">jwt.io</a> for WebAuthn). Load custom keys or store keys in integrated storage.</li>
                     <li><strong>Assertion:</strong> Decode, modify, and encode assertions. Sign with arbitrary keys from storage or verify existing signatures.</li>
                     <li><strong>Keys:</strong> Integrated key storage with import/export capabilities. Convert between COSE, JWK, and other formats. Generate new keys with all standardized algorithms and manage credential IDs.</li>
                     <li><strong>Users:</strong> Manage user accounts across relying parties with RP IDs, usernames, display names, and user IDs. Automatically captures users from registrations.</li>
                     <li><strong>Converters:</strong> Simple utilities for converting between various encoding formats.</li>
-                    <li><strong>Interceptor:</strong> Requires <a href="extension.zip">companion browser extension</a>. Intercepts all WebAuthn operations for modification (like Burp Suite for WebAuthn). Includes built-in security and compliance tests.</li>
+                    <li><strong>Interceptor:</strong> Requires <a href="extension.zip">companion browser extension</a>. Intercepts all WebAuthn operations for modification (like <a href="https://portswigger.net/burp/documentation/desktop/tools/proxy/intercept-messages">Burp Suite</a> for WebAuthn). Includes built-in security and compliance tests.</li>
                     <li><strong>History:</strong> Tracks all interceptions and modifications, enabling value swaps across different passkey operations and browsers (i.e., victim and attacker browsers).</li>
                 </ul>
 
