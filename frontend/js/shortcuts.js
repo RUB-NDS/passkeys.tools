@@ -10,8 +10,8 @@ const shortcuts = {
     "Ctrl+U": { action: () => showTab("users"), description: "Navigate to Users tab" },
     "Ctrl+C": { action: () => showTab("converters"), description: "Navigate to Converters tab" },
     "Ctrl+I": { action: () => showTab("interceptor"), description: "Navigate to Interceptor tab" },
-    "Ctrl+#": { action: () => showTab("settings"), description: "Navigate to Settings tab" },
     "Ctrl+H": { action: () => showTab("history"), description: "Navigate to History tab" },
+    "Ctrl+#": { action: () => showTab("settings"), description: "Navigate to Settings tab" },
 
     "Ctrl+S": {
         action: () => {
