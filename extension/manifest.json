@@ -1,5 +1,5 @@
 {
-    "name": "Passkey-Interceptor",
+    "name": "Passkeys.Tools - Interceptor",
     "description": "Virtual authenticator intercepting all webauthn operations for testing purposes.",
     "version": "1.0.0",
     "manifest_version": 3,

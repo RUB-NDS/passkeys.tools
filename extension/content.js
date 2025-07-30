@@ -23,7 +23,7 @@
                 script.type = "text/javascript"
                 script.onload = resolve
                 script.onerror = () => {
-                    console.error(`[Interceptor] Failed to load ${scriptFile}`)
+                    console.error(`[Passkeys.Tools] Failed to load ${scriptFile}`)
                     reject(new Error(`Failed to load ${scriptFile}`))
                 }
                 document.documentElement.appendChild(script)
@@ -45,7 +45,7 @@
         if (enabled) {
             loadScripts(SCRIPTS).catch(console.error)
         } else {
-            console.log("[Interceptor] Extension is disabled - hooks not loaded")
+            console.log("[Passkeys.Tools] Extension is disabled - hooks not loaded")
         }
     })
 
