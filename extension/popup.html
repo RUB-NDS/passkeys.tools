@@ -35,6 +35,18 @@
 
         <hr class="my-3">
 
+        <p class="text-muted">Frontend URL:</p>
+
+        <div class="mb-3">
+            <div class="input-group">
+                <input type="url" class="form-control" id="frontendUrl" placeholder="https://passkeys.tools">
+                <button class="btn btn-outline-danger btn-sm" type="button" id="resetUrl" title="Reset to default">Reset</button>
+            </div>
+            <small class="text-muted">Enter the URL of the passkey.tools frontend</small>
+        </div>
+
+        <hr class="my-3">
+
         <p class="text-muted">Select operation mode:</p>
 
         <div class="d-grid gap-2">
@@ -69,7 +81,7 @@
         <hr class="my-3">
 
         <p class="text-muted">Popup display mode:</p>
-        
+
         <div class="form-check">
             <input class="form-check-input" type="radio" name="popupMode" value="detached" id="popup-detached">
             <label class="form-check-label" for="popup-detached">
@@ -78,7 +90,7 @@
                 <small class="text-muted">Opens in a separate window (1200x800)</small>
             </label>
         </div>
-        
+
         <div class="form-check mt-2">
             <input class="form-check-input" type="radio" name="popupMode" value="inline" id="popup-inline">
             <label class="form-check-label" for="popup-inline">

@@ -16,13 +16,13 @@ _pk.helpers.uint8ToB64url = (uint8) => {
 }
 
 /* Popup URL creation */
-_pk.helpers.createPopupUrl = (params, operation, mediation) => {
+_pk.helpers.createPopupUrl = (params, operation, mediation, frontendUrl) => {
     const origin = encodeURIComponent(window.location.origin)
     const mode = encodeURIComponent(_pk.interceptorMode || "default")
     const data = encodeURIComponent(JSON.stringify(params))
     const key = operation === "create" ? "pkcco" : "pkcro"
 
-    let url = `http://localhost:5173/#${key}=${data}&origin=${origin}&mode=${mode}`
+    let url = `${frontendUrl}/#${key}=${data}&origin=${origin}&mode=${mode}`
 
     if (mediation) url += `&mediation=${encodeURIComponent(mediation)}`
 
@@ -62,7 +62,7 @@ _pk.helpers.createPopupUrl = (params, operation, mediation) => {
 }
 
 /* Handle popup response */
-_pk.helpers.handlePopupResponse = (operation) => {
+_pk.helpers.handlePopupResponse = (operation, frontendUrl) => {
     return new Promise((resolve, reject) => {
         let timeoutId
 
@@ -72,7 +72,8 @@ _pk.helpers.handlePopupResponse = (operation) => {
         }
 
         const messageHandler = (event) => {
-            if (event.origin !== "http://localhost:5173") return
+            const expectedOrigin = new URL(frontendUrl).origin
+            if (event.origin !== expectedOrigin) return
 
             if (event.data?.type === "passkey-interceptor-response" && event.data.operation === operation) {
                 cleanup()

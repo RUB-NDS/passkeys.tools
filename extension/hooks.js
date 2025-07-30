@@ -57,7 +57,8 @@ navigator.credentials.create = async function (...args) {
     _pk.log.info("Parsed PublicKeyCredentialCreationOptions:", pkcco)
 
     // Open popup and handle response
-    const popupUrl = _pk.helpers.createPopupUrl(pkcco, "create", mediation)
+    const frontendUrl = _pk.frontendUrl || "https://passkeys.tools"
+    const popupUrl = _pk.helpers.createPopupUrl(pkcco, "create", mediation, frontendUrl)
     const popupMode = _pk.popupMode || "detached"
 
     if (popupMode === "detached") {
@@ -66,7 +67,7 @@ navigator.credentials.create = async function (...args) {
         window.open(popupUrl, "passkey-interceptor")
     }
 
-    return _pk.helpers.handlePopupResponse("create")
+    return _pk.helpers.handlePopupResponse("create", frontendUrl)
 }
 
 /* Hook: navigator.credentials.get */
@@ -98,7 +99,8 @@ navigator.credentials.get = async function (...args) {
     _pk.log.info("Parsed PublicKeyCredentialRequestOptions:", pkcro)
 
     // Open popup and handle response
-    const popupUrl = _pk.helpers.createPopupUrl(pkcro, "get", mediation)
+    const frontendUrl = _pk.frontendUrl || "https://passkeys.tools"
+    const popupUrl = _pk.helpers.createPopupUrl(pkcro, "get", mediation, frontendUrl)
     const popupMode = _pk.popupMode || "detached"
 
     if (popupMode === "detached") {
@@ -107,7 +109,7 @@ navigator.credentials.get = async function (...args) {
         window.open(popupUrl, "passkey-interceptor")
     }
 
-    return _pk.helpers.handlePopupResponse("get")
+    return _pk.helpers.handlePopupResponse("get", frontendUrl)
 }
 
 /* PublicKeyCredential method hooks */

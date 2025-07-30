@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const radioInputs = document.querySelectorAll("input[name='mode']")
     const enableToggle = document.getElementById("enableToggle")
     const popupModeInputs = document.querySelectorAll("input[name='popupMode']")
+    const frontendUrlInput = document.getElementById("frontendUrl")
+    const resetUrlButton = document.getElementById("resetUrl")
 
     function showStatus(message, type) {
         statusElement.textContent = message
@@ -31,17 +33,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Load current settings
     try {
-        const { interceptorMode = "default", extensionEnabled = true, popupMode = "detached" } = await chrome.storage.local.get(["interceptorMode", "extensionEnabled", "popupMode"])
+        const { interceptorMode = "default", extensionEnabled = true, popupMode = "detached", frontendUrl = "https://passkeys.tools" } = await chrome.storage.local.get(["interceptorMode", "extensionEnabled", "popupMode", "frontendUrl"])
         updateSelectedOption(interceptorMode)
         enableToggle.checked = extensionEnabled
         toggleModeOptions(extensionEnabled)
-        
+
         // Set popup mode radio
         const popupModeRadio = document.querySelector(`input[name="popupMode"][value="${popupMode}"]`)
         if (popupModeRadio) {
             popupModeRadio.checked = true
         }
-        
+
+        // Set frontend URL
+        frontendUrlInput.value = frontendUrl
+
         showStatus(extensionEnabled ? `Current mode: ${interceptorMode}` : "Extension disabled", extensionEnabled ? "info" : "secondary")
     } catch (error) {
         console.error("Error loading settings:", error)
@@ -98,7 +103,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             await chrome.storage.local.set({ extensionEnabled: enabled })
             toggleModeOptions(enabled)
-            
+
             if (enabled) {
                 const { interceptorMode = "default" } = await chrome.storage.local.get(["interceptorMode"])
                 showStatus(`Extension enabled - Mode: ${interceptorMode}`, "success")
@@ -129,5 +134,48 @@ document.addEventListener("DOMContentLoaded", async () => {
                 showStatus("Error saving popup mode", "danger")
             }
         })
+    })
+
+    // Handle frontend URL changes
+    let urlDebounceTimer
+    frontendUrlInput.addEventListener("input", async (e) => {
+        clearTimeout(urlDebounceTimer)
+        urlDebounceTimer = setTimeout(async () => {
+            const url = e.target.value.trim() || "https://passkeys.tools"
+
+            try {
+                // Validate URL
+                new URL(url)
+                await chrome.storage.local.set({ frontendUrl: url })
+                showStatus("Frontend URL updated", "success")
+
+                setTimeout(() => {
+                    const currentMode = document.querySelector("input[name='mode']:checked")?.value || "default"
+                    showStatus(`Current mode: ${currentMode}`, "info")
+                }, 2000)
+            } catch (error) {
+                console.error("Error saving frontend URL:", error)
+                showStatus("Error saving frontend URL", "danger")
+            }
+        }, 500)
+    })
+
+    // Handle reset URL button
+    resetUrlButton.addEventListener("click", async () => {
+        const defaultUrl = "https://passkeys.tools"
+        frontendUrlInput.value = defaultUrl
+
+        try {
+            await chrome.storage.local.set({ frontendUrl: defaultUrl })
+            showStatus("Frontend URL reset to default", "success")
+
+            setTimeout(() => {
+                const currentMode = document.querySelector("input[name='mode']:checked")?.value || "default"
+                showStatus(`Current mode: ${currentMode}`, "info")
+            }, 2000)
+        } catch (error) {
+            console.error("Error resetting frontend URL:", error)
+            showStatus("Error resetting frontend URL", "danger")
+        }
     })
 })
