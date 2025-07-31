@@ -18,12 +18,31 @@ services:
       retries: 15
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - traefik-logs:/mnt/logs
-      - traefik-acme:/mnt/acme
+      - ${DATA:-/tmp/pkvolume}/traefik-logs:/mnt/logs
+      - ${DATA:-/tmp/pkvolume}/traefik-acme:/mnt/acme
+    labels:
+      - "traefik.enable=true"
+      # http routers
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_EXTERNAL_DOMAIN:-traefik.docker.localhost}`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.middlewares=adminauth"
+      # https router
+      - "traefik.http.routers.traefik-secure.entrypoints=websecure"
+      - "traefik.http.routers.traefik-secure.rule=Host(`${TRAEFIK_EXTERNAL_DOMAIN:-traefik.docker.localhost}`)"
+      - "traefik.http.routers.traefik-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-secure.service=api@internal"
+      - "traefik.http.routers.traefik-secure.middlewares=adminauth"
+      # middlewares: adminauth
+      - "traefik.http.middlewares.adminauth.basicauth.users=${ADMIN_HASH:-admin:$$2y$$05$$1zzyF57XWcRpfz2zvxyz4eAUqeZHnCbFULhaliUjwGcq6DDDvP/XC}" # admin:changeme
+      - "traefik.http.middlewares.adminauth.basicauth.removeheader=true"
     environment:
       # providers
       - TRAEFIK_PROVIDERS_DOCKER=true
       - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false
+      # api
+      - TRAEFIK_API=true
+      - TRAEFIK_API_DASHBOARD=true
       # ping
       - TRAEFIK_PING=true
       # logs
@@ -87,7 +106,7 @@ services:
       timeout: 10s
       retries: 15
     volumes:
-      - backend-data:/data
+      - ${DATA:-/tmp/pkvolume}/backend-data:/data
     labels:
       - "traefik.enable=true"
       # http router
@@ -104,11 +123,67 @@ services:
       - PORT=3000
       - DATA_FILE=/data/database.json
 
+  mongo:
+    image: mongo:8.0.12
+    restart: unless-stopped
+    networks:
+      - passkey-network
+    expose:
+      - 27017
+    ports:
+      - 127.0.0.1:27017:27017
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 15
+    volumes:
+      - ${DATA:-/tmp/pkvolume}/mongo-db:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${ADMIN_USER:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${ADMIN_PASS:-changeme}
+
+  mongo-express:
+    image: mongo-express:1.0.2
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - passkey-network
+    expose:
+      - 8081
+    ports:
+      - 127.0.0.1:8081:8081
+    labels:
+      - "traefik.enable=true"
+      # http router
+      - "traefik.http.routers.mongo-express.entrypoints=web"
+      - "traefik.http.routers.mongo-express.rule=Host(`${MONGOEXPRESS_EXTERNAL_DOMAIN:-mongoexpress.docker.localhost}`)"
+      - "traefik.http.routers.mongo-express.middlewares=adminauth"
+      # https router
+      - "traefik.http.routers.mongo-express-secure.entrypoints=websecure"
+      - "traefik.http.routers.mongo-express-secure.rule=Host(`${MONGOEXPRESS_EXTERNAL_DOMAIN:-mongoexpress.docker.localhost}`)"
+      - "traefik.http.routers.mongo-express-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.mongo-express-secure.middlewares=adminauth"
+      # service
+      - "traefik.http.services.mongo-express.loadbalancer.server.port=8081"
+    healthcheck:
+      test: wget -q -O /dev/null 127.0.0.1:8081
+      interval: 10s
+      timeout: 10s
+      retries: 15
+    environment:
+      - ME_CONFIG_BASICAUTH=false
+      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+      - ME_CONFIG_MONGODB_AUTH_USERNAME=${ADMIN_USER:-admin}
+      - ME_CONFIG_MONGODB_AUTH_PASSWORD=${ADMIN_PASS:-changeme}
+      - ME_CONFIG_MONGODB_ALLOW_DISK_USE=true
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_OPTIONS_PERSIST_EDIT_MODE=true
+      - ME_CONFIG_OPTIONS_NO_DELETE=false
+
 networks:
   passkey-network:
     name: passkey-network
-
-volumes:
-  traefik-logs:
-  traefik-acme:
-  backend-data:
