@@ -60,9 +60,14 @@ services:
       retries: 15
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.entrypoints=web,websecure"
+      # http router
+      - "traefik.http.routers.frontend.entrypoints=web"
       - "traefik.http.routers.frontend.rule=Host(`${FRONTEND_EXTERNAL_DOMAIN:-frontend.docker.localhost}`)"
-      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
+      # https router
+      - "traefik.http.routers.frontend-secure.entrypoints=websecure"
+      - "traefik.http.routers.frontend-secure.rule=Host(`${FRONTEND_EXTERNAL_DOMAIN:-frontend.docker.localhost}`)"
+      - "traefik.http.routers.frontend-secure.tls.certresolver=letsencrypt"
+      # service
       - "traefik.http.services.frontend.loadbalancer.server.port=4173"
 
   backend:
@@ -85,9 +90,14 @@ services:
       - backend-data:/data
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.entrypoints=web,websecure"
+      # http router
+      - "traefik.http.routers.backend.entrypoints=web"
       - "traefik.http.routers.backend.rule=Host(`${BACKEND_EXTERNAL_DOMAIN:-backend.docker.localhost}`)"
-      - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+      # https router
+      - "traefik.http.routers.backend-secure.entrypoints=websecure"
+      - "traefik.http.routers.backend-secure.rule=Host(`${BACKEND_EXTERNAL_DOMAIN:-backend.docker.localhost}`)"
+      - "traefik.http.routers.backend-secure.tls.certresolver=letsencrypt"
+      # service
       - "traefik.http.services.backend.loadbalancer.server.port=3000"
     environment:
       - NODE_ENV=${NODE_ENV:-development} # development | production
