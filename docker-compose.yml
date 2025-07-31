@@ -1,10 +1,10 @@
 services:
 
   traefik:
-    image: traefik:v3.2
+    image: traefik:v3.5
     restart: unless-stopped
     networks:
-      - workbench-network
+      - passkey-network
     expose:
       - 80
       - 443
@@ -21,8 +21,10 @@ services:
       - traefik-logs:/mnt/logs
       - traefik-acme:/mnt/acme
     environment:
+      # providers
       - TRAEFIK_PROVIDERS_DOCKER=true
       - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false
+      # ping
       - TRAEFIK_PING=true
       # logs
       - TRAEFIK_LOG=true
@@ -37,7 +39,7 @@ services:
       - TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS=:443
       # certificates
       - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_TLSCHALLENGE=true
-      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL=louis.jannett@rub.de
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL=
       - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_STORAGE=/mnt/acme/acme.json
 
   frontend:
@@ -46,7 +48,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     networks:
-      - workbench-network
+      - passkey-network
     expose:
       - 4173
     ports:
@@ -56,8 +58,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 15
-    depends_on:
-      - backend
 
   backend:
     build:
@@ -65,7 +65,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     networks:
-      - workbench-network
+      - passkey-network
     expose:
       - 3000
     ports:
@@ -76,17 +76,17 @@ services:
       timeout: 10s
       retries: 15
     volumes:
-      - workbench-data:/data
+      - backend-data:/data
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=production # development | production
       - PORT=3000
       - DATA_FILE=/data/database.json
 
 networks:
-  workbench-network:
-    name: workbench-network
+  passkey-network:
+    name: passkey-network
 
 volumes:
   traefik-logs:
   traefik-acme:
-  workbench-data:
+  backend-data:
