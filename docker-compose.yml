@@ -124,7 +124,7 @@ services:
       - MONGO_URL=mongodb://${ADMIN_USER:-admin}:${ADMIN_PASS:-changeme}@mongo:27017
 
   mongo:
-    image: mongo:8.0.12
+    image: mongo:4.4.6
     restart: unless-stopped
     networks:
       - passkey-network
@@ -133,7 +133,7 @@ services:
     ports:
       - 127.0.0.1:27017:27017
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      test: echo 'db.runCommand("ping").ok' | mongo localhost:27017/test --quiet
       interval: 10s
       timeout: 10s
       retries: 15
