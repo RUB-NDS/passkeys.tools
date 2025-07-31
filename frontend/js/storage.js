@@ -47,6 +47,14 @@ class StorageInterface {
 
     // Remote storage methods
     async getRemote(type, config) {
+        // Validate secretKey and type
+        if (config.secretKey && config.secretKey.includes("_")) {
+            throw new Error("Secret key cannot contain underscores")
+        }
+        if (type && type.includes("_")) {
+            throw new Error("Type cannot contain underscores")
+        }
+
         try {
             const response = await fetch(`${config.url}/api/data/${config.secretKey}/${type}`, {
                 method: "GET",
@@ -71,6 +79,14 @@ class StorageInterface {
     }
 
     async setRemote(type, data, config) {
+        // Validate secretKey and type
+        if (config.secretKey && config.secretKey.includes("_")) {
+            throw new Error("Secret key cannot contain underscores")
+        }
+        if (type && type.includes("_")) {
+            throw new Error("Type cannot contain underscores")
+        }
+
         try {
             const response = await fetch(`${config.url}/api/data/${config.secretKey}/${type}`, {
                 method: "POST",
@@ -265,6 +281,11 @@ export const renderStorageSettings = () => {
             return
         }
 
+        if (secretKey.includes("_")) {
+            connectionStatus.innerHTML = "<span class='text-danger'>Secret key cannot contain underscores</span>"
+            return
+        }
+
         connectionStatus.innerHTML = "<span class='text-info'>Testing connection...</span>"
 
         const success = await storage.testConnection(url, secretKey)
@@ -287,6 +308,11 @@ export const renderStorageSettings = () => {
 
             if (!url || !secretKey) {
                 saveStatus.innerHTML = "<span class='text-danger'>Please enter both URL and secret key for remote storage</span>"
+                return
+            }
+
+            if (secretKey.includes("_")) {
+                saveStatus.innerHTML = "<span class='text-danger'>Secret key cannot contain underscores</span>"
                 return
             }
 
