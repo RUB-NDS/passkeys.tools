@@ -8,4 +8,7 @@ export default defineConfig({
         nodePolyfills(),
         includeHtml(),
     ],
+    preview: {
+        allowedHosts: ["passkeys.tools"],
+    },
 })
