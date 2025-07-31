@@ -58,6 +58,12 @@ services:
       interval: 10s
       timeout: 10s
       retries: 15
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.entrypoints=web,websecure"
+      - "traefik.http.routers.frontend.rule=Host(`${FRONTEND_EXTERNAL_DOMAIN:-frontend.docker.localhost}`)"
+      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.frontend.loadbalancer.server.port=4173"
 
   backend:
     build:
@@ -77,8 +83,14 @@ services:
       retries: 15
     volumes:
       - backend-data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.entrypoints=web,websecure"
+      - "traefik.http.routers.backend.rule=Host(`${BACKEND_EXTERNAL_DOMAIN:-backend.docker.localhost}`)"
+      - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.backend.loadbalancer.server.port=3000"
     environment:
-      - NODE_ENV=production # development | production
+      - NODE_ENV=${NODE_ENV:-development} # development | production
       - PORT=3000
       - DATA_FILE=/data/database.json
 
