@@ -22,20 +22,15 @@ export const generateKey = async (alg) => {
 }
 
 export const storeKey = async (name, key) => {
-    const keys = await storage.get("keys")
-    keys[name] = { ...keys[name], ...key }
-    await storage.set("keys", keys)
+    await storage.setItem("keys", name, key)
 }
 
 export const deleteKey = async (name) => {
-    const keys = await storage.get("keys")
-    delete keys[name]
-    await storage.set("keys", keys)
+    await storage.deleteItem("keys", name)
 }
 
 export const getKey = async (name) => {
-    const keys = await getKeys()
-    return keys[name]
+    return await storage.getItem("keys", name)
 }
 
 export const getKeys = async () => {

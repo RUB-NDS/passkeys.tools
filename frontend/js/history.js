@@ -19,23 +19,20 @@ import { storage } from "./storage.js"
 
 export const getHistory = async () => {
     const history = await storage.get("history")
-    return Array.isArray(history) ? history : []
+    return Object.values(history || {})
+        .sort((a, b) => b.timestamp - a.timestamp)
 }
 
 export const addHistoryEntry = async (entry) => {
-    const history = await getHistory()
-    history.unshift(entry)
-    await storage.set("history", history)
+    await storage.setItem("history", entry.timestamp.toString(), entry)
 }
 
 export const deleteHistoryEntry = async (timestamp) => {
-    const history = await getHistory()
-    const filtered = history.filter(entry => entry.timestamp !== timestamp)
-    await storage.set("history", filtered)
+    await storage.deleteItem("history", timestamp.toString())
 }
 
 export const clearHistory = async () => {
-    await storage.set("history", [])
+    await storage.set("history", {})
 }
 
 export const exportHistory = async () => {

@@ -105,10 +105,116 @@ class StorageInterface {
                 throw new Error(`HTTP error! Status: ${response.status}`)
             }
 
+            const data = await response.json()
+            if (data.status !== "ok") {
+                throw new Error("Health check failed: status is not ok")
+            }
+
             return true
         } catch (error) {
             console.error("Connection test failed:", error)
             return false
+        }
+    }
+
+    // Single-item operations
+    async getItem(type, key) {
+        const config = getStorageConfig()
+        if (config.mode === "local") {
+            const data = this.getLocal(type)
+            return data[key]
+        } else {
+            return this.getRemoteItem(type, key, config)
+        }
+    }
+
+    async setItem(type, key, value) {
+        const config = getStorageConfig()
+        if (config.mode === "local") {
+            const data = this.getLocal(type)
+            data[key] = value
+            this.setLocal(type, data)
+            return true
+        } else {
+            return this.setRemoteItem(type, key, value, config)
+        }
+    }
+
+    async deleteItem(type, key) {
+        const config = getStorageConfig()
+        if (config.mode === "local") {
+            const data = this.getLocal(type)
+            delete data[key]
+            this.setLocal(type, data)
+            return true
+        } else {
+            return this.deleteRemoteItem(type, key, config)
+        }
+    }
+
+    // Remote single-item methods
+    async getRemoteItem(type, key, config) {
+        try {
+            const response = await fetch(`${config.url}/api/data/${config.secretKey}/${type}/${encodeURIComponent(key)}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            if (response.status === 404) {
+                return undefined
+            }
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`)
+            }
+
+            return await response.json()
+        } catch (error) {
+            console.error("Error fetching item from remote storage:", error)
+            throw error
+        }
+    }
+
+    async setRemoteItem(type, key, value, config) {
+        try {
+            const response = await fetch(`${config.url}/api/data/${config.secretKey}/${type}/${encodeURIComponent(key)}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(value)
+            })
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`)
+            }
+
+            return true
+        } catch (error) {
+            console.error("Error saving item to remote storage:", error)
+            throw error
+        }
+    }
+
+    async deleteRemoteItem(type, key, config) {
+        try {
+            const response = await fetch(`${config.url}/api/data/${config.secretKey}/${type}/${encodeURIComponent(key)}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`)
+            }
+
+            return true
+        } catch (error) {
+            console.error("Error deleting item from remote storage:", error)
+            throw error
         }
     }
 }

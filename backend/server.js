@@ -1,50 +1,14 @@
 import express from "express"
 import cors from "cors"
-import fs from "fs/promises"
-import path from "path"
-import { fileURLToPath } from "url"
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import { getStorage, closeStorage } from "./storage/index.js"
 
 const app = express()
 const PORT = process.env.PORT || 3000
-const DATA_FILE = process.env.DATA_FILE || "data.json"
 
 // Middleware
 app.use(cors())
-app.use(express.json({ limit: "1mb" })) // 1MB limit
-app.use(express.urlencoded({ extended: true, limit: "1mb" }))
-
-// Ensure data file exists
-async function ensureDataFile() {
-    try {
-        await fs.access(DATA_FILE)
-    } catch {
-        await fs.writeFile(DATA_FILE, JSON.stringify({}), "utf8")
-    }
-}
-
-// Read data from file
-async function readData() {
-    try {
-        const data = await fs.readFile(DATA_FILE, "utf8")
-        return JSON.parse(data)
-    } catch (error) {
-        console.error("Error reading data:", error)
-        return {}
-    }
-}
-
-// Write data to file
-async function writeData(data) {
-    try {
-        await fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2), "utf8")
-    } catch (error) {
-        console.error("Error writing data:", error)
-        throw error
-    }
-}
+app.use(express.json({ limit: "500mb" }))
+app.use(express.urlencoded({ extended: true, limit: "500mb" }))
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
@@ -61,14 +25,9 @@ app.get("/api/data/:secretKey/:type", async (req, res) => {
 
 
     try {
-        const data = await readData()
-        const userData = data[secretKey]
-
-        if (!userData || !userData[type]) {
-            return res.json({})
-        }
-
-        res.json(userData[type])
+        const storage = await getStorage()
+        const data = await storage.getData(secretKey, type)
+        res.json(data || {})
     } catch (error) {
         console.error("Error getting data:", error)
         res.status(500).json({ error: "Internal server error" })
@@ -90,17 +49,8 @@ app.post("/api/data/:secretKey/:type", async (req, res) => {
     }
 
     try {
-        const data = await readData()
-
-        // Initialize user data if it doesn't exist
-        if (!data[secretKey]) {
-            data[secretKey] = {}
-        }
-
-        // Update the specific type data
-        data[secretKey][type] = payload
-
-        await writeData(data)
+        const storage = await getStorage()
+        await storage.setData(secretKey, type, payload)
         res.json({ success: true })
     } catch (error) {
         console.error("Error storing data:", error)
@@ -108,13 +58,111 @@ app.post("/api/data/:secretKey/:type", async (req, res) => {
     }
 })
 
+// Get a single item
+app.get("/api/data/:secretKey/:type/:key", async (req, res) => {
+    const { secretKey, type, key } = req.params
+
+    if (!secretKey || !type || !key) {
+        return res.status(400).json({ error: "Missing secretKey, type, or key" })
+    }
+
+
+    try {
+        const storage = await getStorage()
+        const item = await storage.getItem(secretKey, type, key)
+
+        if (item === undefined) {
+            return res.status(404).json({ error: "Item not found" })
+        }
+
+        res.json(item)
+    } catch (error) {
+        console.error("Error getting item:", error)
+        res.status(500).json({ error: "Internal server error" })
+    }
+})
+
+// Set/update a single item
+app.post("/api/data/:secretKey/:type/:key", async (req, res) => {
+    const { secretKey, type, key } = req.params
+    const value = req.body
+
+    if (!secretKey || !type || !key) {
+        return res.status(400).json({ error: "Missing secretKey, type, or key" })
+    }
+
+
+    if (!value || typeof value !== "object") {
+        return res.status(400).json({ error: "Invalid value" })
+    }
+
+    try {
+        const storage = await getStorage()
+        await storage.setItem(secretKey, type, key, value)
+        res.json({ success: true })
+    } catch (error) {
+        console.error("Error setting item:", error)
+        res.status(500).json({ error: "Internal server error" })
+    }
+})
+
+// Delete a single item
+app.delete("/api/data/:secretKey/:type/:key", async (req, res) => {
+    const { secretKey, type, key } = req.params
+
+    if (!secretKey || !type || !key) {
+        return res.status(400).json({ error: "Missing secretKey, type, or key" })
+    }
+
+
+    try {
+        const storage = await getStorage()
+        await storage.deleteItem(secretKey, type, key)
+        res.json({ success: true })
+    } catch (error) {
+        console.error("Error deleting item:", error)
+        res.status(500).json({ error: "Internal server error" })
+    }
+})
+
 // Start server
 async function start() {
-    await ensureDataFile()
-    app.listen(PORT, () => {
-        console.log(`Backend server running on port ${PORT}`)
-        console.log(`Data file: ${DATA_FILE}`)
-    })
+    try {
+        // Initialize storage
+        await getStorage()
+
+        const server = app.listen(PORT, () => {
+            console.log(`Backend server running on port ${PORT}`)
+            console.log(`Environment: ${process.env.NODE_ENV || "development"}`)
+            if (process.env.NODE_ENV === "production" && process.env.MONGO_URL) {
+                console.log(`Using MongoDB storage: ${process.env.MONGO_URL}`)
+            } else {
+                console.log(`Using file storage: ${process.env.DATA_FILE || "data.json"}`)
+            }
+        })
+
+        // Graceful shutdown
+        process.on("SIGTERM", async () => {
+            console.log("SIGTERM signal received: closing HTTP server")
+            server.close(async () => {
+                await closeStorage()
+                console.log("HTTP server closed")
+                process.exit(0)
+            })
+        })
+
+        process.on("SIGINT", async () => {
+            console.log("SIGINT signal received: closing HTTP server")
+            server.close(async () => {
+                await closeStorage()
+                console.log("HTTP server closed")
+                process.exit(0)
+            })
+        })
+    } catch (error) {
+        console.error("Failed to start server:", error)
+        process.exit(1)
+    }
 }
 
 start()

@@ -120,8 +120,8 @@ services:
       - "traefik.http.services.backend.loadbalancer.server.port=3000"
     environment:
       - NODE_ENV=${NODE_ENV:-development} # development | production
-      - PORT=3000
-      - DATA_FILE=/data/database.json
+      - DATA_FILE=/data/data.json
+      - MONGO_URL=mongodb://${ADMIN_USER:-admin}:${ADMIN_PASS:-changeme}@mongo:27017
 
   mongo:
     image: mongo:8.0.12

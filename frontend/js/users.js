@@ -1,15 +1,11 @@
 import { storage } from "./storage.js"
 
 export const storeUser = async (userId, user) => {
-    const users = await storage.get("users")
-    users[userId] = { ...users[userId], ...user }
-    await storage.set("users", users)
+    await storage.setItem("users", userId, user)
 }
 
 export const deleteUser = async (userId) => {
-    const users = await storage.get("users")
-    delete users[userId]
-    await storage.set("users", users)
+    await storage.deleteItem("users", userId)
 }
 
 export const getUsers = async () => {
