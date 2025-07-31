@@ -23,6 +23,9 @@ app.get("/api/data/:secretKey/:type", async (req, res) => {
         return res.status(400).json({ error: "Missing secretKey or type" })
     }
 
+    if (secretKey.includes("_") || type.includes("_")) {
+        return res.status(400).json({ error: "secretKey and type cannot contain underscores" })
+    }
 
     try {
         const storage = await getStorage()
@@ -43,6 +46,9 @@ app.post("/api/data/:secretKey/:type", async (req, res) => {
         return res.status(400).json({ error: "Missing secretKey or type" })
     }
 
+    if (secretKey.includes("_") || type.includes("_")) {
+        return res.status(400).json({ error: "secretKey and type cannot contain underscores" })
+    }
 
     if (!payload || typeof payload !== "object") {
         return res.status(400).json({ error: "Invalid payload" })
@@ -66,6 +72,9 @@ app.get("/api/data/:secretKey/:type/:key", async (req, res) => {
         return res.status(400).json({ error: "Missing secretKey, type, or key" })
     }
 
+    if (secretKey.includes("_") || type.includes("_")) {
+        return res.status(400).json({ error: "secretKey and type cannot contain underscores" })
+    }
 
     try {
         const storage = await getStorage()
@@ -91,6 +100,9 @@ app.post("/api/data/:secretKey/:type/:key", async (req, res) => {
         return res.status(400).json({ error: "Missing secretKey, type, or key" })
     }
 
+    if (secretKey.includes("_") || type.includes("_")) {
+        return res.status(400).json({ error: "secretKey and type cannot contain underscores" })
+    }
 
     if (!value || typeof value !== "object") {
         return res.status(400).json({ error: "Invalid value" })
@@ -114,6 +126,9 @@ app.delete("/api/data/:secretKey/:type/:key", async (req, res) => {
         return res.status(400).json({ error: "Missing secretKey, type, or key" })
     }
 
+    if (secretKey.includes("_") || type.includes("_")) {
+        return res.status(400).json({ error: "secretKey and type cannot contain underscores" })
+    }
 
     try {
         const storage = await getStorage()
