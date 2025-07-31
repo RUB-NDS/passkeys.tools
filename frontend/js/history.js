@@ -36,8 +36,8 @@ export const clearHistory = async () => {
 }
 
 export const exportHistory = async () => {
-    const history = await getHistory()
-    const dataStr = JSON.stringify(history, null, 2)
+    const historyData = await storage.get("history")
+    const dataStr = JSON.stringify(historyData || {}, null, 2)
     const dataBlob = new Blob([dataStr], { type: "application/json" })
     const url = URL.createObjectURL(dataBlob)
 
@@ -47,6 +47,48 @@ export const exportHistory = async () => {
     link.click()
 
     URL.revokeObjectURL(url)
+}
+
+export const importHistory = async (file) => {
+    try {
+        const text = await file.text()
+        const importedData = JSON.parse(text)
+
+        // Validate the imported data
+        if (typeof importedData !== "object" || importedData === null) {
+            throw new Error("Invalid history format: expected an object")
+        }
+
+        // Get current history
+        const currentHistory = await storage.get("history") || {}
+
+        // Merge imported data with current history (imported overwrites existing)
+        const mergedHistory = { ...currentHistory, ...importedData }
+
+        // Save the merged history
+        await storage.set("history", mergedHistory)
+
+        // Re-render the history view
+        await renderHistory()
+
+        // Count how many entries were imported
+        const importedCount = Object.keys(importedData).length
+        const overwrittenCount = Object.keys(importedData).filter(key => key in currentHistory).length
+        const newCount = importedCount - overwrittenCount
+
+        return {
+            success: true,
+            imported: importedCount,
+            new: newCount,
+            overwritten: overwrittenCount
+        }
+    } catch (error) {
+        console.error("Error importing history:", error)
+        return {
+            success: false,
+            error: error.message
+        }
+    }
 }
 
 const formatTimestamp = (timestamp) => {
@@ -236,6 +278,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 await clearHistory()
                 await renderHistory()
             }
+        })
+    }
+
+    const importBtn = document.getElementById("importHistoryBtn")
+    if (importBtn) {
+        importBtn.addEventListener("click", () => {
+            const input = document.createElement("input")
+            input.type = "file"
+            input.accept = ".json"
+            input.onchange = async (e) => {
+                const file = e.target.files[0]
+                if (file) {
+                    const result = await importHistory(file)
+                    if (result.success) {
+                        alert(`Import successful!\n\nTotal entries: ${result.imported}\nNew entries: ${result.new}\nOverwritten: ${result.overwritten}`)
+                    } else {
+                        alert(`Import failed: ${result.error}`)
+                    }
+                }
+            }
+            input.click()
         })
     }
 })
