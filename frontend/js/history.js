@@ -1,4 +1,5 @@
 import { storage } from "./storage.js"
+import { searchHistory } from "./search.js"
 
 /* History entry structure:
 {
@@ -68,8 +69,8 @@ export const importHistory = async (file) => {
         // Save the merged history
         await storage.set("history", mergedHistory)
 
-        // Re-render the history view
-        await renderHistory()
+        // Re-render the history view with current search
+        await renderHistory(currentSearchQuery)
 
         // Count how many entries were imported
         const importedCount = Object.keys(importedData).length
@@ -136,13 +137,29 @@ const showHistoryDetails = (entry) => {
     modal.show()
 }
 
-export const renderHistory = async () => {
-    const history = await getHistory()
+export const renderHistory = async (searchQuery = "") => {
+    const allHistory = await getHistory()
+    const history = searchQuery ? searchHistory(allHistory, searchQuery) : allHistory
     const tbody = document.getElementById("historyTableBody")
     const emptyMessage = document.getElementById("historyEmptyMessage")
+    const searchResultsInfo = document.getElementById("searchResultsInfo")
+
+    // Update search results info
+    if (searchResultsInfo) {
+        if (searchQuery) {
+            searchResultsInfo.textContent = `Showing ${history.length} of ${allHistory.length} entries`
+        } else {
+            searchResultsInfo.textContent = ""
+        }
+    }
 
     if (history.length === 0) {
         tbody.innerHTML = ""
+        if (searchQuery && allHistory.length > 0) {
+            emptyMessage.textContent = "No entries match your search criteria."
+        } else {
+            emptyMessage.textContent = "No history entries yet. Interceptions will appear here."
+        }
         emptyMessage.style.display = "block"
         return
     }
@@ -250,7 +267,7 @@ export const renderHistory = async () => {
         deleteBtn.onclick = async () => {
             if (confirm("Delete this history entry?")) {
                 await deleteHistoryEntry(entry.timestamp)
-                await renderHistory()
+                await renderHistory(currentSearchQuery)
             }
         }
 
@@ -264,8 +281,58 @@ export const renderHistory = async () => {
     })
 }
 
+// Variables to track search state
+let currentSearchQuery = ""
+let searchDebounceTimer = null
+
+// Search functionality
+const performSearch = () => {
+    const searchInput = document.getElementById("searchInput")
+    if (searchInput) {
+        currentSearchQuery = searchInput.value
+        renderHistory(currentSearchQuery)
+    }
+}
+
 // Set up event handlers when module loads
 document.addEventListener("DOMContentLoaded", () => {
+    // Search input handlers
+    const searchInput = document.getElementById("searchInput")
+    if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+            clearTimeout(searchDebounceTimer)
+            searchDebounceTimer = setTimeout(performSearch, 300)
+        })
+
+        searchInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                clearTimeout(searchDebounceTimer)
+                performSearch()
+            }
+        })
+    }
+
+    // Search help button
+    const searchHelpBtn = document.getElementById("searchHelpBtn")
+    if (searchHelpBtn) {
+        searchHelpBtn.addEventListener("click", () => {
+            const modal = new bootstrap.Modal(document.getElementById("searchHelpModal"))
+            modal.show()
+        })
+    }
+
+    // Clear search button
+    const searchClearBtn = document.getElementById("searchClearBtn")
+    if (searchClearBtn) {
+        searchClearBtn.addEventListener("click", () => {
+            if (searchInput) {
+                searchInput.value = ""
+                currentSearchQuery = ""
+                renderHistory("")
+            }
+        })
+    }
+
     const exportBtn = document.getElementById("exportHistoryBtn")
     if (exportBtn) {
         exportBtn.addEventListener("click", exportHistory)
@@ -276,7 +343,12 @@ document.addEventListener("DOMContentLoaded", () => {
         clearBtn.addEventListener("click", async () => {
             if (confirm("Are you sure you want to clear all history?")) {
                 await clearHistory()
-                await renderHistory()
+                currentSearchQuery = ""
+                const searchInputEl = document.getElementById("searchInput")
+                if (searchInputEl) {
+                    searchInputEl.value = ""
+                }
+                await renderHistory("")
             }
         })
     }

@@ -21,6 +21,22 @@
                     </button>
                 </div>
             </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchInput" placeholder='Search entries... (e.g., status == "resolved" AND type == "create")'>
+                            <button class="btn btn-outline-secondary" type="button" id="searchHelpBtn" title="Search syntax help">
+                                <i class="bi bi-question-circle"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary" type="button" id="searchClearBtn" title="Clear search">
+                                <i class="bi bi-x-circle"></i>
+                            </button>
+                        </div>
+                        <div class="form-text" id="searchResultsInfo"></div>
+                    </div>
+                </div>
+            </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0" id="historyTable">
@@ -46,6 +62,90 @@
                         No history entries yet. Interceptions will appear here.
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for search help -->
+<div class="modal fade" id="searchHelpModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search Syntax Help</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Basic Search</h6>
+                <p>Type any text to search across all fields:</p>
+                <ul>
+                    <li><code>excludeCredentials</code> - Find entries containing this text</li>
+                </ul>
+
+                <h6>Field-based Search</h6>
+                <p>Search specific fields using operators:</p>
+                <ul>
+                    <li><code>status == "resolved"</code> - Find entries with resolved status</li>
+                    <li><code>type == "create"</code> - Find create operations</li>
+                    <li><code>origin : "example.com"</code> - Find entries containing example.com in origin</li>
+                    <li><code>credentialId != ""</code> - Find entries with a credential ID</li>
+                    <li><code>timestamp > 1700000000000</code> - Find entries after a timestamp</li>
+                </ul>
+
+                <h6>Logical Operators</h6>
+                <p>Combine multiple conditions:</p>
+                <ul>
+                    <li><code>AND</code> or <code>&&</code> - Both conditions must be true</li>
+                    <li><code>OR</code> or <code>||</code> - Either condition can be true</li>
+                    <li><code>NOT</code> or <code>!</code> - Negate a condition</li>
+                    <li>Use parentheses <code>()</code> for grouping</li>
+                </ul>
+
+                <h6>Available Fields</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li><code>timestamp</code></li>
+                            <li><code>mode</code></li>
+                            <li><code>type</code></li>
+                            <li><code>status</code></li>
+                            <li><code>origin</code></li>
+                            <li><code>credentialId</code></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li><code>key</code></li>
+                            <li><code>userHandle</code></li>
+                            <li><code>modification</code></li>
+                            <li><code>info</code></li>
+                            <li><code>request</code></li>
+                            <li><code>response</code></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h6>Operators</h6>
+                <table class="table table-sm">
+                    <tr><td><code>==</code> or <code>=</code></td><td>Equals (case-insensitive)</td></tr>
+                    <tr><td><code>!=</code></td><td>Not equals</td></tr>
+                    <tr><td><code>:</code> or <code>~</code></td><td>Contains (case-insensitive)</td></tr>
+                    <tr><td><code>></code></td><td>Greater than</td></tr>
+                    <tr><td><code>>=</code></td><td>Greater than or equal</td></tr>
+                    <tr><td><code><</code></td><td>Less than</td></tr>
+                    <tr><td><code><=</code></td><td>Less than or equal</td></tr>
+                </table>
+
+                <h6>Complex Examples</h6>
+                <ul>
+                    <li><code>status == "rejected" OR status == "dismissed"</code></li>
+                    <li><code>type == "create" AND origin : "example.com"</code></li>
+                    <li><code>NOT (status == "resolved") AND credentialId != ""</code></li>
+                    <li><code>(mode == "intercept" OR mode == "manual") AND modification != "None"</code></li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
