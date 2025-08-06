@@ -26,7 +26,13 @@
                     console.error(`[Passkeys.Tools] Failed to load ${scriptFile}`)
                     reject(new Error(`Failed to load ${scriptFile}`))
                 }
-                document.documentElement.appendChild(script)
+                // Insert as first element in head
+                const head = document.head || document.getElementsByTagName("head")[0]
+                if (head.firstChild) {
+                    head.insertBefore(script, head.firstChild)
+                } else {
+                    head.appendChild(script)
+                }
             }))
         }, Promise.resolve())
     }
