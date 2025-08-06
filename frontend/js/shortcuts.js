@@ -184,7 +184,7 @@ const shortcuts = {
 export const initShortcuts = () => {
     document.addEventListener("keydown", (e) => {
         let key = ""
-        if (e.ctrlKey || e.metaKey) key += "Ctrl+"
+        if (e.ctrlKey) key += "Ctrl+"
         if (e.altKey) key += "Alt+"
         if (e.shiftKey) key += "Shift+"
 
