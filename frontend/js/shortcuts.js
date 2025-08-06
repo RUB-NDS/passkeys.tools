@@ -149,6 +149,35 @@ const shortcuts = {
     "Ctrl+Shift+Y": {
         action: () => selectCredentialAndKey("victim | EdDSA"),
         description: "Select victim | EdDSA credential and key"
+    },
+
+    // Special credential ID selection
+    "Ctrl+Shift+X": {
+        action: () => {
+            const createCredentialIdSelect = document.querySelector("#createCredentialIdSelect")
+            const getCredentialIdSelect = document.querySelector("#getCredentialIdSelect")
+
+            if (createCredentialIdSelect) {
+                // Find and select the "32 random bytes" option
+                for (const option of createCredentialIdSelect.options) {
+                    if (option.text === "32 random bytes") {
+                        createCredentialIdSelect.value = option.value
+                        createCredentialIdSelect.dispatchEvent(new Event("change"))
+                        break
+                    }
+                }
+            } else if (getCredentialIdSelect) {
+                // Find and select the "32 random bytes" option
+                for (const option of getCredentialIdSelect.options) {
+                    if (option.text === "32 random bytes") {
+                        getCredentialIdSelect.value = option.value
+                        getCredentialIdSelect.dispatchEvent(new Event("change"))
+                        break
+                    }
+                }
+            }
+        },
+        description: "Select 32 random bytes for credential ID"
     }
 }
 
