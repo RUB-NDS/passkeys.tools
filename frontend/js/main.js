@@ -3,7 +3,7 @@ import * as encoders from "./encoders.js"
 import * as decoders from "./decoders.js"
 import { examples } from "./examples.js"
 import { getAaguids } from "./aaguid.js"
-import { parseInterceptParams } from "./intercept.js"
+import { parseInterceptParams, initializeCopyButtons } from "./intercept.js"
 import { renderCapabilities } from "./capabilities.js"
 import { verifyAssertion, signAssertion } from "./signatures.js"
 import { getUsers, storeUser, deleteUser } from "./users.js"
@@ -585,6 +585,7 @@ window.addEventListener("load", async () => {
     renderStorageSettings()
     initShortcuts()
     renderHistory()
+    initializeCopyButtons()
 
     // Show the appropriate tab based on the current path
     const tab = getTabFromPath()

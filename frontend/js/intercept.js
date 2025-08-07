@@ -35,6 +35,54 @@ const addCopyAsJsonButton = (data) => {
     overviewHeader.appendChild(copyBtn)
 }
 
+export const initializeCopyButtons = () => {
+    // Copy Request as JSON button
+    const copyRequestBtn = document.getElementById("copyRequestAsJsonBtn")
+    if (copyRequestBtn) {
+        copyRequestBtn.addEventListener("click", async () => {
+            const requestTextarea = document.getElementById("interceptorRequestTextarea")
+            if (requestTextarea && requestTextarea.value) {
+                try {
+                    // Parse and re-stringify to ensure valid JSON
+                    const requestData = JSON.parse(requestTextarea.value)
+                    await navigator.clipboard.writeText(JSON.stringify(requestData, null, 2))
+                    copyRequestBtn.textContent = "Copied!"
+                    copyRequestBtn.className = "btn btn-sm btn-success"
+                    setTimeout(() => {
+                        copyRequestBtn.textContent = "Copy as JSON"
+                        copyRequestBtn.className = "btn btn-sm btn-secondary"
+                    }, 2000)
+                } catch (e) {
+                    console.error("Failed to parse request as JSON:", e)
+                }
+            }
+        })
+    }
+
+    // Copy Response as JSON button
+    const copyResponseBtn = document.getElementById("copyResponseAsJsonBtn")
+    if (copyResponseBtn) {
+        copyResponseBtn.addEventListener("click", async () => {
+            const responseTextarea = document.getElementById("interceptorResponseTextarea")
+            if (responseTextarea && responseTextarea.value) {
+                try {
+                    // Parse and re-stringify to ensure valid JSON
+                    const responseData = JSON.parse(responseTextarea.value)
+                    await navigator.clipboard.writeText(JSON.stringify(responseData, null, 2))
+                    copyResponseBtn.textContent = "Copied!"
+                    copyResponseBtn.className = "btn btn-sm btn-success"
+                    setTimeout(() => {
+                        copyResponseBtn.textContent = "Copy as JSON"
+                        copyResponseBtn.className = "btn btn-sm btn-secondary"
+                    }, 2000)
+                } catch (e) {
+                    console.error("Failed to parse response as JSON:", e)
+                }
+            }
+        })
+    }
+}
+
 const updateInterceptorResponseTextarea = (dict) => {
     let response = JSON.parse(interceptorResponseTextarea.value || "{}")
     response = {...response, ...dict}
@@ -516,6 +564,7 @@ export const parseInterceptParams = async () => {
 
         highlightTabs(["create", "attestation", "interceptor"])
         showTab("interceptor")
+        initializeCopyButtons()
     }
 
     // pkcro
@@ -560,5 +609,6 @@ export const parseInterceptParams = async () => {
 
         highlightTabs(["get", "assertion", "interceptor"])
         showTab("interceptor")
+        initializeCopyButtons()
     }
 }

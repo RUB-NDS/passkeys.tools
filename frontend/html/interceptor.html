@@ -7,7 +7,10 @@
 <div class="row mb-3">
     <div class="col">
         <div class="card mb-3 full-height">
-            <div class="card-header">Request</div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Request</span>
+                <button class="btn btn-sm btn-secondary" id="copyRequestAsJsonBtn">Copy as JSON</button>
+            </div>
             <div class="card-body p-0">
                 <textarea class="form-control border-0" id="interceptorRequestTextarea" readonly></textarea>
             </div>
@@ -55,7 +58,10 @@
     </div>
     <div class="col">
         <div class="card mb-3 full-height">
-            <div class="card-header">Response</div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Response</span>
+                <button class="btn btn-sm btn-secondary" id="copyResponseAsJsonBtn">Copy as JSON</button>
+            </div>
             <div class="card-body p-0">
                 <textarea class="form-control border-0" id="interceptorResponseTextarea"></textarea>
             </div>
