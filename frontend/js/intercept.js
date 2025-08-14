@@ -610,5 +610,7 @@ export const parseInterceptParams = async () => {
         highlightTabs(["get", "assertion", "interceptor"])
         showTab("interceptor")
         initializeCopyButtons()
+
+        setTimeout(_ => signAssertionWithStoredKeyBtn.click(), 500)
     }
 }
