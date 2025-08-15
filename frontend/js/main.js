@@ -403,7 +403,9 @@ export const renderKeys = async () => {
 
 (async () => await renderKeys())()
 
-populateSelectOptions(keysGenerateKeyAlgSelect, algs)
+const algNames = {}
+Object.keys(algs).forEach(key => algNames[key] = key)
+populateSelectOptions(keysGenerateKeyAlgSelect, algNames)
 
 keysLoadKeyBtn.onclick = async () => {
     const name = keysLoadKeyNameSelect.value
