@@ -9,6 +9,6 @@ export default defineConfig({
         includeHtml(),
     ],
     preview: {
-        allowedHosts: ["passkeys.tools"],
+        allowedHosts: ["passkeys.tools", "attacker.passkeys.tools"],
     },
 })
