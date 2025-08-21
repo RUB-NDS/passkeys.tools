@@ -81,10 +81,10 @@ services:
       - "traefik.enable=true"
       # http router
       - "traefik.http.routers.frontend.entrypoints=web"
-      - "traefik.http.routers.frontend.rule=Host(`${FRONTEND_EXTERNAL_DOMAIN:-frontend.docker.localhost}`)"
+      - "traefik.http.routers.frontend.rule=Host(`${FRONTEND_EXTERNAL_DOMAIN:-frontend.docker.localhost}`) || Host(`${FRONTEND2_EXTERNAL_DOMAIN:-frontend2.docker.localhost}`)"
       # https router
       - "traefik.http.routers.frontend-secure.entrypoints=websecure"
-      - "traefik.http.routers.frontend-secure.rule=Host(`${FRONTEND_EXTERNAL_DOMAIN:-frontend.docker.localhost}`)"
+      - "traefik.http.routers.frontend-secure.rule=Host(`${FRONTEND_EXTERNAL_DOMAIN:-frontend.docker.localhost}`) || Host(`${FRONTEND2_EXTERNAL_DOMAIN:-frontend2.docker.localhost}`)"
       - "traefik.http.routers.frontend-secure.tls.certresolver=letsencrypt"
       # service
       - "traefik.http.services.frontend.loadbalancer.server.port=4173"
