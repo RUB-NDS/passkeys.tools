@@ -82,6 +82,22 @@ services:
       - "traefik.http.routers.frontend-secure.entrypoints=websecure"
       - "traefik.http.routers.frontend-secure.rule=Host(`${FRONTEND_EXTERNAL_DOMAIN:-frontend.docker.localhost}`) || Host(`${FRONTEND2_EXTERNAL_DOMAIN:-frontend2.docker.localhost}`)"
       - "traefik.http.routers.frontend-secure.tls.certresolver=letsencrypt"
+      # artifacts http router
+      - "traefik.http.routers.artifacts.entrypoints=web"
+      - "traefik.http.routers.artifacts.rule=(Host(`${FRONTEND_EXTERNAL_DOMAIN:-frontend.docker.localhost}`) || Host(`${FRONTEND2_EXTERNAL_DOMAIN:-frontend2.docker.localhost}`)) && Path(`/artifacts.zip`)"
+      - "traefik.http.routers.artifacts.service=frontend"
+      - "traefik.http.routers.artifacts.middlewares=artifactsauth"
+      - "traefik.http.routers.artifacts.priority=100"
+      # artifacts https router
+      - "traefik.http.routers.artifacts-secure.entrypoints=websecure"
+      - "traefik.http.routers.artifacts-secure.rule=(Host(`${FRONTEND_EXTERNAL_DOMAIN:-frontend.docker.localhost}`) || Host(`${FRONTEND2_EXTERNAL_DOMAIN:-frontend2.docker.localhost}`)) && Path(`/artifacts.zip`)"
+      - "traefik.http.routers.artifacts-secure.service=frontend"
+      - "traefik.http.routers.artifacts-secure.middlewares=artifactsauth"
+      - "traefik.http.routers.artifacts-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.artifacts-secure.priority=100"
+      # artifacts middleware
+      - "traefik.http.middlewares.artifactsauth.basicauth.users=usenix:$$apr1$$hgUXQZ2L$$r3Pv8xN2w6IcKjRbixfN.1"
+      - "traefik.http.middlewares.artifactsauth.basicauth.realm=Credentials in Paper"
       # service
       - "traefik.http.services.frontend.loadbalancer.server.port=4173"
 
