@@ -18,7 +18,6 @@ services:
       retries: 15
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${DATA:-/tmp/pkvolume}/traefik-logs:/mnt/logs
       - ${DATA:-/tmp/pkvolume}/traefik-acme:/mnt/acme
     labels:
       - "traefik.enable=true"
@@ -45,12 +44,9 @@ services:
       - TRAEFIK_API_DASHBOARD=true
       # ping
       - TRAEFIK_PING=true
-      # logs
-      - TRAEFIK_LOG=true
-      - TRAEFIK_LOG_FILEPATH=/mnt/logs/traefik.log
-      - TRAEFIK_ACCESSLOG=true
-      - TRAEFIK_ACCESSLOG_FILEPATH=/mnt/logs/access.log
-      - TRAEFIK_ACCESSLOG_BUFFERINGSIZE=100
+      # no logging for privacy
+      - TRAEFIK_LOG=false
+      - TRAEFIK_ACCESSLOG=false
       # entrypoints
       - TRAEFIK_ENTRYPOINTS_WEB=true
       - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
