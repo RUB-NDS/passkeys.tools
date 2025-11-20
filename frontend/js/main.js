@@ -9,7 +9,7 @@ import { verifyAssertion, signAssertion } from "./signatures.js"
 import { getUsers, storeUser, deleteUser } from "./users.js"
 import { algs, getKey, getKeys, storeKey, generateKey, deleteKey, generateModeKeys } from "./keys.js"
 import { navigatorCredentialsCreate, navigatorCredentialsGet } from "./webapi.js"
-import { renderStorageSettings } from "./storage.js"
+import { renderStorageSettings, renderThemeSettings } from "./storage.js"
 import { initShortcuts, renderShortcuts } from "./shortcuts.js"
 import { renderHistory } from "./history.js"
 import {
@@ -592,6 +592,7 @@ window.addEventListener("load", async () => {
     await generateModeKeys(["attacker", "victim"])
     loadExample(examples["ES256 Credential with No Attestation"])
     await parseInterceptParams()
+    renderThemeSettings()
     renderStorageSettings()
     initShortcuts()
     renderHistory()

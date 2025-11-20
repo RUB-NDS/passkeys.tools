@@ -7,15 +7,59 @@
 <div class="row mb-3">
     <div class="col-md-8 offset-md-2">
         <div class="card">
-            <div class="card-header">Storage Configuration</div>
+            <div class="card-header">Theme</div>
             <div class="card-body">
-                <p class="text-muted mb-4">Choose how to store your keys and users data.</p>
+                <p class="text-muted mb-4">Choose your preferred color theme.</p>
 
                 <div class="mb-4">
-                    <h5>Storage Mode</h5>
+                    <h5>Dark Mode</h5>
                     <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio" name="storageMode" id="localStorageMode" value="local" checked>
-                        <label class="form-check-label" for="localStorageMode">
+                        <input class="form-check-input" type="radio" name="themeMode" id="themeAuto" value="auto" checked>
+                        <label class="form-check-label" for="themeAuto">
+                            <strong>Automatic</strong>
+                            <br>
+                            <small class="text-muted">Match system preference (default)</small>
+                        </label>
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="themeMode" id="themeLight" value="light">
+                        <label class="form-check-label" for="themeLight">
+                            <strong>Light</strong>
+                            <br>
+                            <small class="text-muted">Always use light theme</small>
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="themeMode" id="themeDark" value="dark">
+                        <label class="form-check-label" for="themeDark">
+                            <strong>Dark</strong>
+                            <br>
+                            <small class="text-muted">Always use dark theme</small>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="saveTheme">Save Theme</button>
+                <span id="themeStatus" class="ms-3"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">Storage</div>
+            <div class="card-body">
+                <p class="text-muted mb-4">Choose how to store your keys, users, and history.</p>
+
+                <div class="mb-4">
+                    <h5>Mode</h5>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="storageMode" id="storageLocal" value="local" checked>
+                        <label class="form-check-label" for="storageLocal">
                             <strong>Local Storage</strong>
                             <br>
                             <small class="text-muted">Store data in browser's local storage (default)</small>
@@ -23,8 +67,8 @@
                     </div>
 
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="storageMode" id="remoteStorageMode" value="remote">
-                        <label class="form-check-label" for="remoteStorageMode">
+                        <input class="form-check-input" type="radio" name="storageMode" id="storageRemote" value="remote">
+                        <label class="form-check-label" for="storageRemote">
                             <strong>Remote Storage</strong>
                             <br>
                             <small class="text-muted">Store data on a remote server</small>
@@ -32,30 +76,30 @@
                     </div>
                 </div>
 
-                <div id="remoteStorageConfig" class="border rounded p-3" style="display: none;">
-                    <h5 class="mb-3">Remote Storage Settings</h5>
+                <div id="storageRemoteConfig" class="border rounded p-3" style="display: none;">
+                    <h5 class="mb-3">Remote Configuration</h5>
 
                     <div class="mb-3">
-                        <label for="remoteUrl" class="form-label">Remote Server URL</label>
-                        <input type="url" class="form-control" id="remoteUrl" placeholder="https://example.com">
+                        <label for="storageRemoteUrl" class="form-label">Remote Server URL</label>
+                        <input type="url" class="form-control" id="storageRemoteUrl" placeholder="https://example.com">
                         <div class="form-text">The URL of your remote storage server (public backend available at <code>https://db.passkeys.tools</code>)</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="secretKey" class="form-label">Secret Key</label>
-                        <input type="text" class="form-control" id="secretKey" placeholder="Enter your secret key">
+                        <label for="storageSecretKey" class="form-label">Secret Key</label>
+                        <input type="text" class="form-control" id="storageSecretKey" placeholder="Enter your secret key">
                         <div class="form-text">Your unique secret key to access your data. Keep this private!</div>
                     </div>
 
-                    <button class="btn btn-secondary" id="testConnection">Test Connection</button>
-                    <div id="connectionStatus" class="mt-2"></div>
+                    <button class="btn btn-secondary" id="storageTestConnection">Test Connection</button>
+                    <div id="storageConnectionStatus" class="mt-2"></div>
                 </div>
 
                 <hr class="my-4">
 
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-primary" id="saveSettings">Save Settings</button>
-                    <span id="saveStatus" class="ms-3"></span>
+                    <button class="btn btn-primary" id="saveStorage">Save Storage</button>
+                    <span id="storageStatus" class="ms-3"></span>
                 </div>
             </div>
         </div>

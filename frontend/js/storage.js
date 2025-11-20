@@ -1,7 +1,21 @@
 import { renderKeys } from "./main.js"
 import { renderUsers } from "./main.js"
+import { renderHistory } from "./history.js"
 
 const STORAGE_CONFIG_KEY = "storageConfig"
+const THEME_CONFIG_KEY = "themeConfig"
+
+// Get current theme config
+export const getThemeConfig = () => {
+    return localStorage.getItem(THEME_CONFIG_KEY) || "auto"
+}
+
+// Set theme config
+export const setThemeConfig = (theme) => {
+    localStorage.setItem(THEME_CONFIG_KEY, theme)
+    // Dispatch custom event to notify theme.js
+    window.dispatchEvent(new CustomEvent("themechange", { detail: { theme } }))
+}
 
 // Get current storage configuration
 export const getStorageConfig = () => {
@@ -238,17 +252,54 @@ class StorageInterface {
 // Export singleton instance
 export const storage = new StorageInterface()
 
+// Initialize theme settings UI
+export const renderThemeSettings = () => {
+    const themeAuto = document.getElementById("themeAuto")
+    const themeLight = document.getElementById("themeLight")
+    const themeDark = document.getElementById("themeDark")
+    const saveButton = document.getElementById("saveTheme")
+    const themeStatus = document.getElementById("themeStatus")
+
+    // Load current config
+    const config = getThemeConfig()
+    if (config === "light") {
+        themeLight.checked = true
+    } else if (config === "dark") {
+        themeDark.checked = true
+    } else {
+        themeAuto.checked = true
+    }
+
+    // Save theme config
+    saveButton?.addEventListener("click", () => {
+        let selectedTheme = "auto"
+        if (themeLight.checked) {
+            selectedTheme = "light"
+        } else if (themeDark.checked) {
+            selectedTheme = "dark"
+        }
+
+        setThemeConfig(selectedTheme)
+        themeStatus.innerHTML = "<span class='text-success'>Theme saved successfully!</span>"
+
+        // Clear status after 3 seconds
+        setTimeout(() => {
+            themeStatus.innerHTML = ""
+        }, 3000)
+    })
+}
+
 // Initialize settings UI
 export const renderStorageSettings = () => {
-    const localMode = document.getElementById("localStorageMode")
-    const remoteMode = document.getElementById("remoteStorageMode")
-    const remoteConfig = document.getElementById("remoteStorageConfig")
-    const saveButton = document.getElementById("saveSettings")
-    const testButton = document.getElementById("testConnection")
-    const remoteUrlInput = document.getElementById("remoteUrl")
-    const secretKeyInput = document.getElementById("secretKey")
-    const saveStatus = document.getElementById("saveStatus")
-    const connectionStatus = document.getElementById("connectionStatus")
+    const localMode = document.getElementById("storageLocal")
+    const remoteMode = document.getElementById("storageRemote")
+    const remoteConfig = document.getElementById("storageRemoteConfig")
+    const saveButton = document.getElementById("saveStorage")
+    const testButton = document.getElementById("storageTestConnection")
+    const remoteUrlInput = document.getElementById("storageRemoteUrl")
+    const secretKeyInput = document.getElementById("storageSecretKey")
+    const saveStatus = document.getElementById("storageStatus")
+    const connectionStatus = document.getElementById("storageConnectionStatus")
 
     // Load current config
     const config = getStorageConfig()
@@ -325,6 +376,7 @@ export const renderStorageSettings = () => {
 
         await renderKeys()
         await renderUsers()
+        await renderHistory()
 
         // Clear status after 3 seconds
         setTimeout(() => {
