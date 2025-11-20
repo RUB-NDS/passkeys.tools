@@ -66,6 +66,16 @@
                 </li>
             </ul>
             <ul class="navbar-nav ms-md-auto flex-row flex-wrap">
+                <li class="nav-item dropdown me-3">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-braces"></i> Test Vectors
+                    </a>
+                    <ul class="dropdown-menu" id="testVectorsDropdown">
+                        <li><h6 class="dropdown-header">Test Vectors</h6></li>
+                        <li><span class="dropdown-item-text small">Example values from the <a href="https://www.w3.org/TR/webauthn-3/#sctn-test-vectors">WebAuthn specification</a> that you can use in the <a href="#" onclick="showTab('attestation'); return false;">Attestation</a> and <a href="#" onclick="showTab('assertion'); return false;">Assertion</a> tabs.</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                    </ul>
+                </li>
                 <li class="nav-item me-2 me-md-0">
                     <a class="nav-link" href="/extension.zip" download>
                         <i class="bi bi-puzzle"></i> Extension

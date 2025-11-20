@@ -78,6 +78,7 @@ export const showTab = (tab) => {
         bsTab.show()
     }
 }
+window.showTab = showTab
 
 export const highlightTabs = (tabs) => {
     document.querySelectorAll(".badge-navbar").forEach(e => e.remove())
@@ -571,11 +572,18 @@ const loadExample = (example) => {
     assertionSignatureEncHexTextarea.dispatchEvent(new Event("input"))
 }
 
-populateSelectOptions(examplesSelect, examples)
-
-examplesLoadBtn.onclick = () => {
-    const example = examples[examplesSelect.value]
-    loadExample(example)
+for (const [name, example] of Object.entries(examples)) {
+    const li = document.createElement("li")
+    const a = document.createElement("a")
+    a.className = "dropdown-item"
+    a.href = "#"
+    a.textContent = name
+    a.onclick = (e) => {
+        e.preventDefault()
+        loadExample(example)
+    }
+    li.appendChild(a)
+    testVectorsDropdown.appendChild(li)
 }
 
 /* event: load */

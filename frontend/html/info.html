@@ -2,7 +2,7 @@
     <div class="col my-3 bg-light rounded-3 text-center p-3">
         <img src="logo.svg" width="200px">
         <h1 class="small-caps">Passkeys.Tools</h1>
-        <h2>Advanced tools that let you encode, decode, modify, and intercept<br>WebAuthn attestations and assertions directly within your browser.</h2>
+        <h2>Encode, Decode, Intercept, Modify, and Exploit WebAuthn Operations</h2>
     </div>
 </div>
 
@@ -10,7 +10,7 @@
     <div class="col">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Welcome to <span class="small-caps">Passkeys.Tools</span></h5>
+                <h5 class="mb-0">Overview</h5>
             </div>
             <div class="card-body">
                 <p><span class="small-caps">Passkeys.Tools</span> is a comprehensive suite of development and debugging tools for WebAuthn/Passkey implementations. These tools enable full emulation of clients (browsers) and authenticators to thoroughly test relying party implementations, security compliance, and edge cases.</p>
@@ -35,18 +35,6 @@
                     <li><strong>Live Testing:</strong> Requires installation of the <a href="extension.zip">companion browser extension</a>, which overwrites the WebAuthn APIs in the browser to intercept all API calls and present them in the tool. This allows live capturing and modifications of ongoing WebAuthn operations. History is stored in localStorage - again, nothing is sent server-side. All operations happen locally in your browser.</li>
                     <li><strong>Cross-Browser Testing:</strong> Required when two browsers are used to simulate WebAuthn operations in victim and attacker browsers simultaneously. Since data needs to be shared across browsers, a backend component is required. In this case, keys, users, and history are stored server-side but protected with a unique key so only you can access the data. Do not use this server-side storage for real production passkeys or private accounts - only for testing. This setup enables scenarios like replacing the challenge in a passkey registration in the attacker browser with a challenge from the victim's browser to test if the challenge is correctly validated.</li>
                 </ul>
-
-                <div class="mt-3">
-                    <h6>Load Test Vectors:</h6>
-                    <div class="input-group" style="max-width: 500px;">
-                        <span class="input-group-text">Test Vectors</span>
-                        <select class="form-select" id="examplesSelect">
-                            <option selected>Select a test vector...</option>
-                        </select>
-                        <button class="btn btn-primary" id="examplesLoadBtn">Load</button>
-                    </div>
-                    <small class="text-muted">Load and parse <a href="https://www.w3.org/TR/webauthn-3/#sctn-test-vectors">standardized test vectors</a> and explore them with the attestation and assertion tools.</small>
-                </div>
             </div>
         </div>
     </div>
