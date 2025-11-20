@@ -76,3 +76,14 @@ textarea {
     white-space: nowrap;
     overflow: auto;
 }
+
+/* Fix json-editor bg-light class in dark mode */
+[data-bs-theme="dark"] .bg-light {
+    background-color: var(--bs-body-bg) !important;
+    color: var(--bs-body-color) !important;
+}
+
+/* Make logo white in dark mode */
+[data-bs-theme="dark"] img[src*="logo.svg"] {
+    filter: brightness(0) invert(1);
+}
