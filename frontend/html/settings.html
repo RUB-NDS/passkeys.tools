@@ -18,7 +18,7 @@
                         <label class="form-check-label" for="themeAuto">
                             <strong>Automatic</strong>
                             <br>
-                            <small class="text-muted">Match system preference (default)</small>
+                            <small class="text-muted">Match system preference</small>
                         </label>
                     </div>
 
@@ -62,7 +62,7 @@
                         <label class="form-check-label" for="storageLocal">
                             <strong>Local Storage</strong>
                             <br>
-                            <small class="text-muted">Store data in browser's local storage (default)</small>
+                            <small class="text-muted">Store data in browser's local storage</small>
                         </label>
                     </div>
 
@@ -87,7 +87,12 @@
 
                     <div class="mb-3">
                         <label for="storageSecretKey" class="form-label">Secret Key</label>
-                        <input type="text" class="form-control" id="storageSecretKey" placeholder="Enter your secret key">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="storageSecretKey" placeholder="Enter your secret key">
+                            <button class="btn btn-outline-secondary" type="button" id="storageRegenerateKey">
+                                <i class="bi bi-arrow-clockwise"></i> Regenerate
+                            </button>
+                        </div>
                         <div class="form-text">Your unique secret key to access your data. Keep this private!</div>
                     </div>
 

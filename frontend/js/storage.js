@@ -1,6 +1,16 @@
 const STORAGE_CONFIG_KEY = "storageConfig"
 const THEME_CONFIG_KEY = "themeConfig"
 
+// Generate a human-readable secret key with high entropy (192 bits)
+const generateSecretKey = () => {
+    const bytes = new Uint8Array(24) // 24 bytes = 192 bits of entropy
+    crypto.getRandomValues(bytes)
+
+    // Convert to base64url (URL-safe base64)
+    const base64 = btoa(String.fromCharCode(...bytes))
+    return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+}
+
 // Crypto utility functions for E2EE
 
 // Hash the secret key using SHA-256 (returns hex string)
@@ -432,6 +442,7 @@ export const renderStorageSettings = () => {
     const remoteConfig = document.getElementById("storageRemoteConfig")
     const saveButton = document.getElementById("saveStorage")
     const testButton = document.getElementById("storageTestConnection")
+    const regenerateButton = document.getElementById("storageRegenerateKey")
     const remoteUrlInput = document.getElementById("storageRemoteUrl")
     const secretKeyInput = document.getElementById("storageSecretKey")
     const e2eeCheckbox = document.getElementById("storageE2EE")
@@ -446,12 +457,22 @@ export const renderStorageSettings = () => {
         if (config.url) remoteUrlInput.value = config.url
         if (config.secretKey) secretKeyInput.value = config.secretKey
         if (config.e2ee) e2eeCheckbox.checked = true
+    } else {
+        localMode.checked = true
     }
 
     // Handle mode change
     const handleModeChange = () => {
         if (remoteMode.checked) {
             remoteConfig.style.display = "block"
+
+            // Auto-populate with smart defaults only if this is a fresh setup
+            const isFirstTimeSetup = !remoteUrlInput.value.trim() && !secretKeyInput.value.trim()
+            if (isFirstTimeSetup) {
+                remoteUrlInput.value = "https://db.passkeys.tools"
+                secretKeyInput.value = generateSecretKey()
+                e2eeCheckbox.checked = true
+            }
         } else {
             remoteConfig.style.display = "none"
         }
@@ -459,6 +480,14 @@ export const renderStorageSettings = () => {
 
     localMode?.addEventListener("change", handleModeChange)
     remoteMode?.addEventListener("change", handleModeChange)
+
+    // Initialize display state
+    handleModeChange()
+
+    // Regenerate secret key
+    regenerateButton?.addEventListener("click", () => {
+        secretKeyInput.value = generateSecretKey()
+    })
 
     // Test connection
     testButton?.addEventListener("click", async () => {
