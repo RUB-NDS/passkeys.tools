@@ -1,9 +1,89 @@
-import { renderKeys } from "./main.js"
-import { renderUsers } from "./main.js"
-import { renderHistory } from "./history.js"
-
 const STORAGE_CONFIG_KEY = "storageConfig"
 const THEME_CONFIG_KEY = "themeConfig"
+
+// Crypto utility functions for E2EE
+
+// Hash the secret key using SHA-256 (returns hex string)
+const hashSecretKey = async (secretKey) => {
+    const encoder = new TextEncoder()
+    const data = encoder.encode(secretKey)
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("")
+}
+
+// Derive an AES-GCM encryption key from the secret key
+const deriveEncryptionKey = async (secretKey) => {
+    const encoder = new TextEncoder()
+    const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(secretKey),
+        { name: "PBKDF2" },
+        false,
+        ["deriveKey"]
+    )
+
+    // Use a static salt for deterministic key derivation
+    // This is acceptable for this use case where the secret key is the main security factor
+    const salt = encoder.encode("passkey-storage-e2ee-v1")
+
+    return crypto.subtle.deriveKey(
+        {
+            name: "PBKDF2",
+            salt: salt,
+            iterations: 100000,
+            hash: "SHA-256"
+        },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+    )
+}
+
+// Encrypt a value (returns object with enc and iv fields)
+const encryptValue = async (value, secretKey) => {
+    const key = await deriveEncryptionKey(secretKey)
+    const encoder = new TextEncoder()
+    const data = encoder.encode(JSON.stringify(value))
+
+    // Generate random IV
+    const iv = crypto.getRandomValues(new Uint8Array(12))
+
+    const encryptedBuffer = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv: iv },
+        key,
+        data
+    )
+
+    // Convert to base64 for storage
+    const encryptedArray = Array.from(new Uint8Array(encryptedBuffer))
+    const ivArray = Array.from(iv)
+
+    return {
+        enc: btoa(String.fromCharCode(...encryptedArray)),
+        iv: btoa(String.fromCharCode(...ivArray))
+    }
+}
+
+// Decrypt a value (expects object with enc and iv fields)
+const decryptValue = async (encryptedData, secretKey) => {
+    const key = await deriveEncryptionKey(secretKey)
+
+    // Convert from base64
+    const encryptedArray = Uint8Array.from(atob(encryptedData.enc), c => c.charCodeAt(0))
+    const iv = Uint8Array.from(atob(encryptedData.iv), c => c.charCodeAt(0))
+
+    const decryptedBuffer = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv: iv },
+        key,
+        encryptedArray
+    )
+
+    const decoder = new TextDecoder()
+    const jsonString = decoder.decode(decryptedBuffer)
+    return JSON.parse(jsonString)
+}
 
 // Get current theme config
 export const getThemeConfig = () => {
@@ -61,16 +141,15 @@ class StorageInterface {
 
     // Remote storage methods
     async getRemote(type, config) {
-        // Validate secretKey and type
-        if (config.secretKey && config.secretKey.includes("_")) {
-            throw new Error("Secret key cannot contain underscores")
-        }
-        if (type && type.includes("_")) {
-            throw new Error("Type cannot contain underscores")
-        }
-
         try {
-            const response = await fetch(`${config.url}/api/data/${config.secretKey}/${type}`, {
+            // Hash the secret key for backend identification
+            const hashedKey = await hashSecretKey(config.secretKey)
+
+            // Add encryption suffix to type
+            const typeSuffix = config.e2ee ? "_enc" : "_noenc"
+            const fullType = type + typeSuffix
+
+            const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -85,6 +164,20 @@ class StorageInterface {
             }
 
             const data = await response.json()
+
+            // If E2EE is enabled, decrypt each value
+            if (config.e2ee && data) {
+                const decryptedData = {}
+                for (const [key, encryptedValue] of Object.entries(data)) {
+                    if (encryptedValue && encryptedValue.enc && encryptedValue.iv) {
+                        decryptedData[key] = await decryptValue(encryptedValue, config.secretKey)
+                    } else {
+                        decryptedData[key] = encryptedValue
+                    }
+                }
+                return decryptedData
+            }
+
             return data || {}
         } catch (error) {
             console.error("Error fetching from remote storage:", error)
@@ -93,21 +186,30 @@ class StorageInterface {
     }
 
     async setRemote(type, data, config) {
-        // Validate secretKey and type
-        if (config.secretKey && config.secretKey.includes("_")) {
-            throw new Error("Secret key cannot contain underscores")
-        }
-        if (type && type.includes("_")) {
-            throw new Error("Type cannot contain underscores")
-        }
-
         try {
-            const response = await fetch(`${config.url}/api/data/${config.secretKey}/${type}`, {
+            // Hash the secret key for backend identification
+            const hashedKey = await hashSecretKey(config.secretKey)
+
+            // Add encryption suffix to type
+            const typeSuffix = config.e2ee ? "_enc" : "_noenc"
+            const fullType = type + typeSuffix
+
+            // If E2EE is enabled, encrypt each value
+            let dataToSend = data
+            if (config.e2ee && data) {
+                const encryptedData = {}
+                for (const [key, value] of Object.entries(data)) {
+                    encryptedData[key] = await encryptValue(value, config.secretKey)
+                }
+                dataToSend = encryptedData
+            }
+
+            const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(dataToSend)
             })
 
             if (!response.ok) {
@@ -185,7 +287,14 @@ class StorageInterface {
     // Remote single-item methods
     async getRemoteItem(type, key, config) {
         try {
-            const response = await fetch(`${config.url}/api/data/${config.secretKey}/${type}/${encodeURIComponent(key)}`, {
+            // Hash the secret key for backend identification
+            const hashedKey = await hashSecretKey(config.secretKey)
+
+            // Add encryption suffix to type
+            const typeSuffix = config.e2ee ? "_enc" : "_noenc"
+            const fullType = type + typeSuffix
+
+            const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}/${encodeURIComponent(key)}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -200,7 +309,14 @@ class StorageInterface {
                 throw new Error(`HTTP error! Status: ${response.status}`)
             }
 
-            return await response.json()
+            const value = await response.json()
+
+            // If E2EE is enabled, decrypt the value
+            if (config.e2ee && value && value.enc && value.iv) {
+                return await decryptValue(value, config.secretKey)
+            }
+
+            return value
         } catch (error) {
             console.error("Error fetching item from remote storage:", error)
             throw error
@@ -209,12 +325,25 @@ class StorageInterface {
 
     async setRemoteItem(type, key, value, config) {
         try {
-            const response = await fetch(`${config.url}/api/data/${config.secretKey}/${type}/${encodeURIComponent(key)}`, {
+            // Hash the secret key for backend identification
+            const hashedKey = await hashSecretKey(config.secretKey)
+
+            // Add encryption suffix to type
+            const typeSuffix = config.e2ee ? "_enc" : "_noenc"
+            const fullType = type + typeSuffix
+
+            // If E2EE is enabled, encrypt the value
+            let valueToSend = value
+            if (config.e2ee) {
+                valueToSend = await encryptValue(value, config.secretKey)
+            }
+
+            const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}/${encodeURIComponent(key)}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(value)
+                body: JSON.stringify(valueToSend)
             })
 
             if (!response.ok) {
@@ -230,7 +359,14 @@ class StorageInterface {
 
     async deleteRemoteItem(type, key, config) {
         try {
-            const response = await fetch(`${config.url}/api/data/${config.secretKey}/${type}/${encodeURIComponent(key)}`, {
+            // Hash the secret key for backend identification
+            const hashedKey = await hashSecretKey(config.secretKey)
+
+            // Add encryption suffix to type
+            const typeSuffix = config.e2ee ? "_enc" : "_noenc"
+            const fullType = type + typeSuffix
+
+            const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}/${encodeURIComponent(key)}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
@@ -298,6 +434,7 @@ export const renderStorageSettings = () => {
     const testButton = document.getElementById("storageTestConnection")
     const remoteUrlInput = document.getElementById("storageRemoteUrl")
     const secretKeyInput = document.getElementById("storageSecretKey")
+    const e2eeCheckbox = document.getElementById("storageE2EE")
     const saveStatus = document.getElementById("storageStatus")
     const connectionStatus = document.getElementById("storageConnectionStatus")
 
@@ -308,6 +445,7 @@ export const renderStorageSettings = () => {
         remoteConfig.style.display = "block"
         if (config.url) remoteUrlInput.value = config.url
         if (config.secretKey) secretKeyInput.value = config.secretKey
+        if (config.e2ee) e2eeCheckbox.checked = true
     }
 
     // Handle mode change
@@ -329,11 +467,6 @@ export const renderStorageSettings = () => {
 
         if (!url || !secretKey) {
             connectionStatus.innerHTML = "<span class='text-danger'>Please enter both URL and secret key</span>"
-            return
-        }
-
-        if (secretKey.includes("_")) {
-            connectionStatus.innerHTML = "<span class='text-danger'>Secret key cannot contain underscores</span>"
             return
         }
 
@@ -362,17 +495,18 @@ export const renderStorageSettings = () => {
                 return
             }
 
-            if (secretKey.includes("_")) {
-                saveStatus.innerHTML = "<span class='text-danger'>Secret key cannot contain underscores</span>"
-                return
-            }
-
             config.url = url
             config.secretKey = secretKey
+            config.e2ee = e2eeCheckbox.checked
         }
 
         setStorageConfig(config)
         saveStatus.innerHTML = "<span class='text-success'>Settings saved successfully!</span>"
+
+        // Dynamic imports to avoid circular dependency
+        const { renderKeys } = await import("./main.js")
+        const { renderUsers } = await import("./main.js")
+        const { renderHistory } = await import("./history.js")
 
         await renderKeys()
         await renderUsers()

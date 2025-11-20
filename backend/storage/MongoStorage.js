@@ -35,12 +35,6 @@ export class MongoStorage extends StorageInterface {
     }
 
     getCollectionName(secretKey, type) {
-        if (secretKey.includes("_")) {
-            throw new Error("secretKey cannot contain underscore")
-        }
-        if (type.includes("_")) {
-            throw new Error("type cannot contain underscore")
-        }
         return `${secretKey}_${type}`
     }
 
