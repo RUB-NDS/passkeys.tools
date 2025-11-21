@@ -156,7 +156,7 @@ class StorageInterface {
             const hashedKey = await hashSecretKey(config.secretKey)
 
             // Add encryption suffix to type
-            const typeSuffix = config.e2ee ? "_enc" : "_noenc"
+            const typeSuffix = config.e2ee ? "_enc" : "_plain"
             const fullType = type + typeSuffix
 
             const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}`, {
@@ -201,7 +201,7 @@ class StorageInterface {
             const hashedKey = await hashSecretKey(config.secretKey)
 
             // Add encryption suffix to type
-            const typeSuffix = config.e2ee ? "_enc" : "_noenc"
+            const typeSuffix = config.e2ee ? "_enc" : "_plain"
             const fullType = type + typeSuffix
 
             // If E2EE is enabled, encrypt each value
@@ -301,7 +301,7 @@ class StorageInterface {
             const hashedKey = await hashSecretKey(config.secretKey)
 
             // Add encryption suffix to type
-            const typeSuffix = config.e2ee ? "_enc" : "_noenc"
+            const typeSuffix = config.e2ee ? "_enc" : "_plain"
             const fullType = type + typeSuffix
 
             const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}/${encodeURIComponent(key)}`, {
@@ -339,7 +339,7 @@ class StorageInterface {
             const hashedKey = await hashSecretKey(config.secretKey)
 
             // Add encryption suffix to type
-            const typeSuffix = config.e2ee ? "_enc" : "_noenc"
+            const typeSuffix = config.e2ee ? "_enc" : "_plain"
             const fullType = type + typeSuffix
 
             // If E2EE is enabled, encrypt the value
@@ -373,7 +373,7 @@ class StorageInterface {
             const hashedKey = await hashSecretKey(config.secretKey)
 
             // Add encryption suffix to type
-            const typeSuffix = config.e2ee ? "_enc" : "_noenc"
+            const typeSuffix = config.e2ee ? "_enc" : "_plain"
             const fullType = type + typeSuffix
 
             const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}/${encodeURIComponent(key)}`, {
