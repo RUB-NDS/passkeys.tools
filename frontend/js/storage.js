@@ -153,13 +153,13 @@ class StorageInterface {
     async getRemote(type, config) {
         try {
             // Hash the secret for backend identification
-            const hashedKey = await hashSecret(config.secret)
+            const hashedSecret = await hashSecret(config.secret)
 
             // Add encryption suffix to type
             const typeSuffix = config.e2ee ? "_enc" : "_plain"
             const fullType = type + typeSuffix
 
-            const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}`, {
+            const response = await fetch(`${config.url}/api/data/${hashedSecret}/${fullType}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -198,7 +198,7 @@ class StorageInterface {
     async setRemote(type, data, config) {
         try {
             // Hash the secret for backend identification
-            const hashedKey = await hashSecret(config.secret)
+            const hashedSecret = await hashSecret(config.secret)
 
             // Add encryption suffix to type
             const typeSuffix = config.e2ee ? "_enc" : "_plain"
@@ -214,7 +214,7 @@ class StorageInterface {
                 dataToSend = encryptedData
             }
 
-            const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}`, {
+            const response = await fetch(`${config.url}/api/data/${hashedSecret}/${fullType}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -298,13 +298,13 @@ class StorageInterface {
     async getRemoteItem(type, key, config) {
         try {
             // Hash the secret for backend identification
-            const hashedKey = await hashSecret(config.secret)
+            const hashedSecret = await hashSecret(config.secret)
 
             // Add encryption suffix to type
             const typeSuffix = config.e2ee ? "_enc" : "_plain"
             const fullType = type + typeSuffix
 
-            const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}/${encodeURIComponent(key)}`, {
+            const response = await fetch(`${config.url}/api/data/${hashedSecret}/${fullType}/${encodeURIComponent(key)}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -336,7 +336,7 @@ class StorageInterface {
     async setRemoteItem(type, key, value, config) {
         try {
             // Hash the secret for backend identification
-            const hashedKey = await hashSecret(config.secret)
+            const hashedSecret = await hashSecret(config.secret)
 
             // Add encryption suffix to type
             const typeSuffix = config.e2ee ? "_enc" : "_plain"
@@ -348,7 +348,7 @@ class StorageInterface {
                 valueToSend = await encryptValue(value, config.secret)
             }
 
-            const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}/${encodeURIComponent(key)}`, {
+            const response = await fetch(`${config.url}/api/data/${hashedSecret}/${fullType}/${encodeURIComponent(key)}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -370,13 +370,13 @@ class StorageInterface {
     async deleteRemoteItem(type, key, config) {
         try {
             // Hash the secret for backend identification
-            const hashedKey = await hashSecret(config.secret)
+            const hashedSecret = await hashSecret(config.secret)
 
             // Add encryption suffix to type
             const typeSuffix = config.e2ee ? "_enc" : "_plain"
             const fullType = type + typeSuffix
 
-            const response = await fetch(`${config.url}/api/data/${hashedKey}/${fullType}/${encodeURIComponent(key)}`, {
+            const response = await fetch(`${config.url}/api/data/${hashedSecret}/${fullType}/${encodeURIComponent(key)}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
