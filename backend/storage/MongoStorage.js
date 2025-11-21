@@ -31,26 +31,26 @@ export class MongoStorage extends StorageInterface {
         if (!this.client) {
             throw new Error("MongoDB client not initialized")
         }
-        return this.client.db("data")
+        return this.client.db("passkeys-tools")
     }
 
-    getCollectionName(secretKey, type) {
-        return `${secretKey}_${type}`
+    getCollectionName(type) {
+        // Collection name is just the type (e.g., "keys_plain", "users_enc")
+        return type
     }
 
     async getData(secretKey, type) {
         const db = this.getDatabase()
-        const collectionName = this.getCollectionName(secretKey, type)
+        const collectionName = this.getCollectionName(type)
         const collection = db.collection(collectionName)
 
-        // Get all documents
-        const docs = await collection.find({}).toArray()
+        // Get all documents for this secretKey
+        const docs = await collection.find({ secretKey }).toArray()
 
         // Convert array of documents to object format
         const result = {}
         docs.forEach(doc => {
-            const { _id, ...value } = doc
-            result[_id] = value
+            result[doc.key] = doc.value
         })
 
         return result
@@ -58,16 +58,17 @@ export class MongoStorage extends StorageInterface {
 
     async setData(secretKey, type, data) {
         const db = this.getDatabase()
-        const collectionName = this.getCollectionName(secretKey, type)
+        const collectionName = this.getCollectionName(type)
         const collection = db.collection(collectionName)
 
-        // Clear existing data
-        await collection.deleteMany({})
+        // Clear existing data for this secretKey
+        await collection.deleteMany({ secretKey })
 
         // Convert object to array of documents
         const docs = Object.entries(data).map(([key, value]) => ({
-            _id: key,
-            ...value
+            secretKey,
+            key,
+            value
         }))
 
         // Insert new data if any
@@ -78,36 +79,35 @@ export class MongoStorage extends StorageInterface {
 
     async getItem(secretKey, type, key) {
         const db = this.getDatabase()
-        const collectionName = this.getCollectionName(secretKey, type)
+        const collectionName = this.getCollectionName(type)
         const collection = db.collection(collectionName)
 
-        const doc = await collection.findOne({ _id: key })
+        const doc = await collection.findOne({ secretKey, key })
         if (!doc) {
             return undefined
         }
 
-        const { _id, ...value } = doc
-        return value
+        return doc.value
     }
 
     async setItem(secretKey, type, key, value) {
         const db = this.getDatabase()
-        const collectionName = this.getCollectionName(secretKey, type)
+        const collectionName = this.getCollectionName(type)
         const collection = db.collection(collectionName)
 
         // Upsert the document
         await collection.replaceOne(
-            { _id: key },
-            { _id: key, ...value },
+            { secretKey, key },
+            { secretKey, key, value },
             { upsert: true }
         )
     }
 
     async deleteItem(secretKey, type, key) {
         const db = this.getDatabase()
-        const collectionName = this.getCollectionName(secretKey, type)
+        const collectionName = this.getCollectionName(type)
         const collection = db.collection(collectionName)
 
-        await collection.deleteOne({ _id: key })
+        await collection.deleteOne({ secretKey, key })
     }
 }
