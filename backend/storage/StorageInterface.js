@@ -12,27 +12,27 @@ export class StorageInterface {
     }
 
     /* Get all data for a specific type */
-    async getData(secretKey, type) {
+    async getData(secret, type) {
         throw new Error("getData() must be implemented by subclass")
     }
 
     /* Set all data for a specific type */
-    async setData(secretKey, type, data) {
+    async setData(secret, type, data) {
         throw new Error("setData() must be implemented by subclass")
     }
 
     /* Get a single item by key */
-    async getItem(secretKey, type, key) {
+    async getItem(secret, type, key) {
         throw new Error("getItem() must be implemented by subclass")
     }
 
     /* Set/update a single item */
-    async setItem(secretKey, type, key, value) {
+    async setItem(secret, type, key, value) {
         throw new Error("setItem() must be implemented by subclass")
     }
 
     /* Delete a single item by key */
-    async deleteItem(secretKey, type, key) {
+    async deleteItem(secret, type, key) {
         throw new Error("deleteItem() must be implemented by subclass")
     }
 

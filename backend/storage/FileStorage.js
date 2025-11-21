@@ -35,9 +35,9 @@ export class FileStorage extends StorageInterface {
     }
 
 
-    async getData(secretKey, type) {
+    async getData(secret, type) {
         const data = await this.readData()
-        const userData = data[secretKey]
+        const userData = data[secret]
 
         if (!userData || !userData[type]) {
             return {}
@@ -46,47 +46,47 @@ export class FileStorage extends StorageInterface {
         return userData[type]
     }
 
-    async setData(secretKey, type, newData) {
+    async setData(secret, type, newData) {
         const data = await this.readData()
 
         // Initialize user data if it doesn't exist
-        if (!data[secretKey]) {
-            data[secretKey] = {}
+        if (!data[secret]) {
+            data[secret] = {}
         }
 
         // Update the specific type data
-        data[secretKey][type] = newData
+        data[secret][type] = newData
 
         await this.writeData(data)
     }
 
-    async getItem(secretKey, type, key) {
-        const typeData = await this.getData(secretKey, type)
+    async getItem(secret, type, key) {
+        const typeData = await this.getData(secret, type)
         return typeData[key]
     }
 
-    async setItem(secretKey, type, key, value) {
+    async setItem(secret, type, key, value) {
         const data = await this.readData()
 
         // Initialize structures if they don't exist
-        if (!data[secretKey]) {
-            data[secretKey] = {}
+        if (!data[secret]) {
+            data[secret] = {}
         }
-        if (!data[secretKey][type]) {
-            data[secretKey][type] = {}
+        if (!data[secret][type]) {
+            data[secret][type] = {}
         }
 
         // Set the specific item
-        data[secretKey][type][key] = value
+        data[secret][type][key] = value
 
         await this.writeData(data)
     }
 
-    async deleteItem(secretKey, type, key) {
+    async deleteItem(secret, type, key) {
         const data = await this.readData()
 
-        if (data[secretKey] && data[secretKey][type] && data[secretKey][type][key]) {
-            delete data[secretKey][type][key]
+        if (data[secret] && data[secret][type] && data[secret][type][key]) {
+            delete data[secret][type][key]
             await this.writeData(data)
         }
     }

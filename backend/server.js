@@ -15,17 +15,17 @@ app.get("/api/health", (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() })
 })
 
-// Get data for a specific secret key and type
-app.get("/api/data/:secretKey/:type", async (req, res) => {
-    const { secretKey, type } = req.params
+// Get data for a specific secret and type
+app.get("/api/data/:secret/:type", async (req, res) => {
+    const { secret, type } = req.params
 
-    if (!secretKey || !type) {
-        return res.status(400).json({ error: "Missing secretKey or type" })
+    if (!secret || !type) {
+        return res.status(400).json({ error: "Missing secret or type" })
     }
 
     try {
         const storage = await getStorage()
-        const data = await storage.getData(secretKey, type)
+        const data = await storage.getData(secret, type)
         res.json(data || {})
     } catch (error) {
         console.error("Error getting data:", error)
@@ -33,13 +33,13 @@ app.get("/api/data/:secretKey/:type", async (req, res) => {
     }
 })
 
-// Store data for a specific secret key and type
-app.post("/api/data/:secretKey/:type", async (req, res) => {
-    const { secretKey, type } = req.params
+// Store data for a specific secret and type
+app.post("/api/data/:secret/:type", async (req, res) => {
+    const { secret, type } = req.params
     const payload = req.body
 
-    if (!secretKey || !type) {
-        return res.status(400).json({ error: "Missing secretKey or type" })
+    if (!secret || !type) {
+        return res.status(400).json({ error: "Missing secret or type" })
     }
 
     if (!payload || typeof payload !== "object") {
@@ -48,7 +48,7 @@ app.post("/api/data/:secretKey/:type", async (req, res) => {
 
     try {
         const storage = await getStorage()
-        await storage.setData(secretKey, type, payload)
+        await storage.setData(secret, type, payload)
         res.json({ success: true })
     } catch (error) {
         console.error("Error storing data:", error)
@@ -57,16 +57,16 @@ app.post("/api/data/:secretKey/:type", async (req, res) => {
 })
 
 // Get a single item
-app.get("/api/data/:secretKey/:type/:key", async (req, res) => {
-    const { secretKey, type, key } = req.params
+app.get("/api/data/:secret/:type/:key", async (req, res) => {
+    const { secret, type, key } = req.params
 
-    if (!secretKey || !type || !key) {
-        return res.status(400).json({ error: "Missing secretKey, type, or key" })
+    if (!secret || !type || !key) {
+        return res.status(400).json({ error: "Missing secret, type, or key" })
     }
 
     try {
         const storage = await getStorage()
-        const item = await storage.getItem(secretKey, type, key)
+        const item = await storage.getItem(secret, type, key)
 
         if (item === undefined) {
             return res.status(404).json({ error: "Item not found" })
@@ -80,12 +80,12 @@ app.get("/api/data/:secretKey/:type/:key", async (req, res) => {
 })
 
 // Set/update a single item
-app.post("/api/data/:secretKey/:type/:key", async (req, res) => {
-    const { secretKey, type, key } = req.params
+app.post("/api/data/:secret/:type/:key", async (req, res) => {
+    const { secret, type, key } = req.params
     const value = req.body
 
-    if (!secretKey || !type || !key) {
-        return res.status(400).json({ error: "Missing secretKey, type, or key" })
+    if (!secret || !type || !key) {
+        return res.status(400).json({ error: "Missing secret, type, or key" })
     }
 
     if (!value || typeof value !== "object") {
@@ -94,7 +94,7 @@ app.post("/api/data/:secretKey/:type/:key", async (req, res) => {
 
     try {
         const storage = await getStorage()
-        await storage.setItem(secretKey, type, key, value)
+        await storage.setItem(secret, type, key, value)
         res.json({ success: true })
     } catch (error) {
         console.error("Error setting item:", error)
@@ -103,16 +103,16 @@ app.post("/api/data/:secretKey/:type/:key", async (req, res) => {
 })
 
 // Delete a single item
-app.delete("/api/data/:secretKey/:type/:key", async (req, res) => {
-    const { secretKey, type, key } = req.params
+app.delete("/api/data/:secret/:type/:key", async (req, res) => {
+    const { secret, type, key } = req.params
 
-    if (!secretKey || !type || !key) {
-        return res.status(400).json({ error: "Missing secretKey, type, or key" })
+    if (!secret || !type || !key) {
+        return res.status(400).json({ error: "Missing secret, type, or key" })
     }
 
     try {
         const storage = await getStorage()
-        await storage.deleteItem(secretKey, type, key)
+        await storage.deleteItem(secret, type, key)
         res.json({ success: true })
     } catch (error) {
         console.error("Error deleting item:", error)

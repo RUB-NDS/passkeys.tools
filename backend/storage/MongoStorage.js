@@ -39,13 +39,13 @@ export class MongoStorage extends StorageInterface {
         return type
     }
 
-    async getData(secretKey, type) {
+    async getData(secret, type) {
         const db = this.getDatabase()
         const collectionName = this.getCollectionName(type)
         const collection = db.collection(collectionName)
 
-        // Get all documents for this secretKey
-        const docs = await collection.find({ secretKey }).toArray()
+        // Get all documents for this secret
+        const docs = await collection.find({ secret }).toArray()
 
         // Convert array of documents to object format
         const result = {}
@@ -56,17 +56,17 @@ export class MongoStorage extends StorageInterface {
         return result
     }
 
-    async setData(secretKey, type, data) {
+    async setData(secret, type, data) {
         const db = this.getDatabase()
         const collectionName = this.getCollectionName(type)
         const collection = db.collection(collectionName)
 
-        // Clear existing data for this secretKey
-        await collection.deleteMany({ secretKey })
+        // Clear existing data for this secret
+        await collection.deleteMany({ secret })
 
         // Convert object to array of documents
         const docs = Object.entries(data).map(([key, value]) => ({
-            secretKey,
+            secret,
             key,
             value
         }))
@@ -77,12 +77,12 @@ export class MongoStorage extends StorageInterface {
         }
     }
 
-    async getItem(secretKey, type, key) {
+    async getItem(secret, type, key) {
         const db = this.getDatabase()
         const collectionName = this.getCollectionName(type)
         const collection = db.collection(collectionName)
 
-        const doc = await collection.findOne({ secretKey, key })
+        const doc = await collection.findOne({ secret, key })
         if (!doc) {
             return undefined
         }
@@ -90,24 +90,24 @@ export class MongoStorage extends StorageInterface {
         return doc.value
     }
 
-    async setItem(secretKey, type, key, value) {
+    async setItem(secret, type, key, value) {
         const db = this.getDatabase()
         const collectionName = this.getCollectionName(type)
         const collection = db.collection(collectionName)
 
         // Upsert the document
         await collection.replaceOne(
-            { secretKey, key },
-            { secretKey, key, value },
+            { secret, key },
+            { secret, key, value },
             { upsert: true }
         )
     }
 
-    async deleteItem(secretKey, type, key) {
+    async deleteItem(secret, type, key) {
         const db = this.getDatabase()
         const collectionName = this.getCollectionName(type)
         const collection = db.collection(collectionName)
 
-        await collection.deleteOne({ secretKey, key })
+        await collection.deleteOne({ secret, key })
     }
 }
