@@ -152,6 +152,11 @@ class StorageInterface {
     // Remote storage methods
     async getRemote(type, config) {
         try {
+            // Validate config
+            if (!config.url || !config.secret) {
+                throw new Error("Remote storage not configured: missing URL or secret")
+            }
+
             // Hash the secret for backend identification
             const hashedSecret = await hashSecret(config.secret)
 
@@ -171,7 +176,8 @@ class StorageInterface {
                 if (response.status === 404) {
                     return {} // Return empty object if not found
                 }
-                throw new Error(`HTTP error! Status: ${response.status}`)
+                const errorBody = await response.json().catch(() => ({}))
+                throw new Error(errorBody.error || `HTTP error! Status: ${response.status}`)
             }
 
             const data = await response.json()
@@ -198,6 +204,11 @@ class StorageInterface {
 
     async setRemote(type, data, config) {
         try {
+            // Validate config
+            if (!config.url || !config.secret) {
+                throw new Error("Remote storage not configured: missing URL or secret")
+            }
+
             // Hash the secret for backend identification
             const hashedSecret = await hashSecret(config.secret)
 
@@ -225,7 +236,8 @@ class StorageInterface {
             })
 
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`)
+                const errorBody = await response.json().catch(() => ({}))
+                throw new Error(errorBody.error || `HTTP error! Status: ${response.status}`)
             }
 
             return true
@@ -299,6 +311,11 @@ class StorageInterface {
     // Remote single-item methods
     async getRemoteItem(type, key, config) {
         try {
+            // Validate config
+            if (!config.url || !config.secret) {
+                throw new Error("Remote storage not configured: missing URL or secret")
+            }
+
             // Hash the secret for backend identification
             const hashedSecret = await hashSecret(config.secret)
 
@@ -319,7 +336,8 @@ class StorageInterface {
             }
 
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`)
+                const errorBody = await response.json().catch(() => ({}))
+                throw new Error(errorBody.error || `HTTP error! Status: ${response.status}`)
             }
 
             const value = await response.json()
@@ -338,6 +356,11 @@ class StorageInterface {
 
     async setRemoteItem(type, key, value, config) {
         try {
+            // Validate config
+            if (!config.url || !config.secret) {
+                throw new Error("Remote storage not configured: missing URL or secret")
+            }
+
             // Hash the secret for backend identification
             const hashedSecret = await hashSecret(config.secret)
 
@@ -361,7 +384,8 @@ class StorageInterface {
             })
 
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`)
+                const errorBody = await response.json().catch(() => ({}))
+                throw new Error(errorBody.error || `HTTP error! Status: ${response.status}`)
             }
 
             return true
@@ -373,6 +397,11 @@ class StorageInterface {
 
     async deleteRemoteItem(type, key, config) {
         try {
+            // Validate config
+            if (!config.url || !config.secret) {
+                throw new Error("Remote storage not configured: missing URL or secret")
+            }
+
             // Hash the secret for backend identification
             const hashedSecret = await hashSecret(config.secret)
 
@@ -389,7 +418,8 @@ class StorageInterface {
             })
 
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`)
+                const errorBody = await response.json().catch(() => ({}))
+                throw new Error(errorBody.error || `HTTP error! Status: ${response.status}`)
             }
 
             return true

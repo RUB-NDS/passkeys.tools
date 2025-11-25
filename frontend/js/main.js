@@ -21,6 +21,13 @@ import {
 
 /* Helper functions */
 
+let storageErrorShown = false
+export const showStorageError = () => {
+    if (storageErrorShown) return
+    storageErrorShown = true
+    alert("Unable to connect to remote storage. Your keys, users, and history could not be loaded.\n\nPlease check your storage settings to verify the server URL is correct and accessible.")
+}
+
 const setupEncodingHandlers = (elements, decoder, editor, encoder) => {
     const { b64urlTextarea, b64Textarea, hexTextarea } = elements
 
@@ -358,7 +365,13 @@ setupEncodingHandlers({
 }, (value, format) => decoders.keys(value, "cose", format), editors.keysJwkEditor, encodeKeys)
 
 export const renderKeys = async () => {
-    const keys = await getKeys()
+    let keys = {}
+    try {
+        keys = await getKeys()
+    } catch (error) {
+        console.error("Error loading keys:", error)
+        showStorageError()
+    }
 
     // Populate all key-related select elements
     const keySelects = [
@@ -489,7 +502,13 @@ usersDeleteUserBtn.onclick = async () => {
 }
 
 export const renderUsers = async () => {
-    const users = await getUsers()
+    let users = {}
+    try {
+        users = await getUsers()
+    } catch (error) {
+        console.error("Error loading users:", error)
+        showStorageError()
+    }
 
     // users -> user storage -> delete user
     usersDeleteUserSelect.innerHTML = ""
@@ -589,7 +608,13 @@ for (const [name, example] of Object.entries(examples)) {
 /* event: load */
 
 window.addEventListener("load", async () => {
-    await generateModeKeys(["attacker", "victim"])
+    try {
+        await generateModeKeys(["attacker", "victim"])
+    } catch (error) {
+        console.error("Error generating mode keys:", error)
+        showStorageError()
+    }
+
     loadExample(examples["ES256 Credential with No Attestation"])
     await parseInterceptParams()
     renderThemeSettings()

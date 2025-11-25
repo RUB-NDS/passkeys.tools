@@ -1,5 +1,6 @@
 import { storage } from "./storage.js"
 import { searchHistory } from "./search.js"
+import { showStorageError } from "./main.js"
 
 /* History entry structure:
 {
@@ -138,7 +139,14 @@ const showHistoryDetails = (entry) => {
 }
 
 export const renderHistory = async (searchQuery = "") => {
-    const allHistory = await getHistory()
+    let allHistory = []
+    try {
+        allHistory = await getHistory()
+    } catch (error) {
+        console.error("Error loading history:", error)
+        showStorageError()
+    }
+
     const history = searchQuery ? searchHistory(allHistory, searchQuery) : allHistory
     const tbody = document.getElementById("historyTableBody")
     const emptyMessage = document.getElementById("historyEmptyMessage")
