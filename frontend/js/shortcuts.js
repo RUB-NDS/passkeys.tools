@@ -206,7 +206,6 @@ export const initShortcuts = () => {
             return
         }
 
-        console.log(`Shortcut: ${key}`)
         const shortcut = shortcuts[key]
         if (shortcut) {
             e.preventDefault()
