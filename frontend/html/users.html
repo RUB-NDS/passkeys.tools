@@ -47,21 +47,20 @@
                 </div>
             </div>
             <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col">RP ID</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Display Name</th>
-                                <th scope="col">User ID (hex)</th>
-                                <th scope="col">User ID (b64url)</th>
-                                <th scope="col">User ID (b64)</th>
-                                <th scope="col">Mode</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTable" style="white-space: nowrap;"></tbody>
-                    </table>
+                <table class="table table-hover mb-0 users-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">RP ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Display Name</th>
+                            <th scope="col">User ID</th>
+                            <th scope="col">Mode</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable"></tbody>
+                </table>
+                <div id="usersEmptyMessage" class="text-center text-muted py-4" style="display: none;">
+                    No users stored yet. Add a user above to get started.
                 </div>
             </div>
         </div>

@@ -45,6 +45,7 @@ textarea {
     height: 180px;
 }
 
+/* Keys table styling */
 .keys-table {
     table-layout: fixed;
     width: 100%;
@@ -52,29 +53,110 @@ textarea {
 
 .keys-table th:nth-child(1),
 .keys-table td:nth-child(1) {
-    width: 10%;
-    white-space: nowrap;
-    overflow: auto;
+    width: 15%;
 }
 
 .keys-table th:nth-child(2),
-.keys-table td:nth-child(2),
+.keys-table td:nth-child(2) {
+    width: 25%;
+}
+
 .keys-table th:nth-child(3),
 .keys-table td:nth-child(3),
 .keys-table th:nth-child(4),
 .keys-table td:nth-child(4) {
-    width: 10%;
-    white-space: nowrap;
-    overflow: auto;
+    width: 30%;
 }
 
-.keys-table th:nth-child(5),
-.keys-table td:nth-child(5),
-.keys-table th:nth-child(6),
-.keys-table td:nth-child(6) {
+/* Users table styling */
+.users-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.users-table th:nth-child(1),
+.users-table td:nth-child(1) {
+    width: 20%;
+}
+
+.users-table th:nth-child(2),
+.users-table td:nth-child(2),
+.users-table th:nth-child(3),
+.users-table td:nth-child(3) {
+    width: 20%;
+}
+
+.users-table th:nth-child(4),
+.users-table td:nth-child(4) {
     width: 30%;
-    white-space: nowrap;
-    overflow: auto;
+}
+
+.users-table th:nth-child(5),
+.users-table td:nth-child(5) {
+    width: 10%;
+}
+
+/* Scrollable cell content */
+.scrollable-cell {
+    max-height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: block;
+}
+
+/* Code block styling in tables */
+.table-code {
+    font-family: var(--bs-font-monospace);
+    font-size: 0.8rem;
+    background-color: var(--bs-tertiary-bg);
+    border-radius: 4px;
+    padding: 8px;
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+/* Multi-format display for IDs */
+.id-formats {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.id-format {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.id-format-label {
+    font-size: 0.7rem;
+    color: var(--bs-secondary-color);
+    text-transform: uppercase;
+    min-width: 45px;
+    flex-shrink: 0;
+}
+
+.id-format-value {
+    font-family: var(--bs-font-monospace);
+    font-size: 0.75rem;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+}
+
+/* Table cell vertical alignment */
+.keys-table td,
+.users-table td {
+    vertical-align: top;
+    padding: 12px;
+}
+
+.keys-table th,
+.users-table th {
+    padding: 12px;
+    font-weight: 600;
 }
 
 /* Fix json-editor bg-light class in dark mode */
