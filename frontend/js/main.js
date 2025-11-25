@@ -180,7 +180,7 @@ attestationSendKeyToParserBtn.onclick = () => {
     const key = attestationObject.authData.attestedCredentialData.credentialPublicKey
     editors.keysJwkEditor.setValue(key)
     encodeKeys()
-    showTab("keys")
+    showTab("converters")
 }
 
 attestationLoadKeyBtn.onclick = async () => {
