@@ -60,21 +60,21 @@ export const importHistory = async (file) => {
             throw new Error("Invalid history format: expected an object")
         }
 
-        // Get current history
+        // Get current history to count overwrites
         const currentHistory = await storage.get("history") || {}
 
-        // Merge imported data with current history (imported overwrites existing)
-        const mergedHistory = { ...currentHistory, ...importedData }
-
-        // Save the merged history
-        await storage.set("history", mergedHistory)
+        // Import each entry individually using single-item operations
+        const importedEntries = Object.entries(importedData)
+        for (const [timestamp, entry] of importedEntries) {
+            await storage.setItem("history", timestamp, entry)
+        }
 
         // Re-render the history view with current search
         await renderHistory(currentSearchQuery)
 
         // Count how many entries were imported
-        const importedCount = Object.keys(importedData).length
-        const overwrittenCount = Object.keys(importedData).filter(key => key in currentHistory).length
+        const importedCount = importedEntries.length
+        const overwrittenCount = importedEntries.filter(([timestamp]) => timestamp in currentHistory).length
         const newCount = importedCount - overwrittenCount
 
         return {

@@ -112,21 +112,21 @@ export const importKeys = async (file) => {
             throw new Error("Invalid keys format: expected an object")
         }
 
-        // Get current keys
+        // Get current keys to count overwrites
         const currentKeys = await storage.get("keys") || {}
 
-        // Merge imported data with current keys (imported overwrites existing)
-        const mergedKeys = { ...currentKeys, ...importedData }
-
-        // Save the merged keys
-        await storage.set("keys", mergedKeys)
+        // Import each key individually using single-item operations
+        const importedEntries = Object.entries(importedData)
+        for (const [name, key] of importedEntries) {
+            await storage.setItem("keys", name, key)
+        }
 
         // Re-render the keys view
         await renderKeys()
 
         // Count how many keys were imported
-        const importedCount = Object.keys(importedData).length
-        const overwrittenCount = Object.keys(importedData).filter(key => key in currentKeys).length
+        const importedCount = importedEntries.length
+        const overwrittenCount = importedEntries.filter(([name]) => name in currentKeys).length
         const newCount = importedCount - overwrittenCount
 
         return {

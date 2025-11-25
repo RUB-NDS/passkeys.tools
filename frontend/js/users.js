@@ -53,21 +53,21 @@ export const importUsers = async (file) => {
             throw new Error("Invalid users format: expected an object")
         }
 
-        // Get current users
+        // Get current users to count overwrites
         const currentUsers = await storage.get("users") || {}
 
-        // Merge imported data with current users (imported overwrites existing)
-        const mergedUsers = { ...currentUsers, ...importedData }
-
-        // Save the merged users
-        await storage.set("users", mergedUsers)
+        // Import each user individually using single-item operations
+        const importedEntries = Object.entries(importedData)
+        for (const [userId, user] of importedEntries) {
+            await storage.setItem("users", userId, user)
+        }
 
         // Re-render the users view
         await renderUsers()
 
         // Count how many users were imported
-        const importedCount = Object.keys(importedData).length
-        const overwrittenCount = Object.keys(importedData).filter(key => key in currentUsers).length
+        const importedCount = importedEntries.length
+        const overwrittenCount = importedEntries.filter(([userId]) => userId in currentUsers).length
         const newCount = importedCount - overwrittenCount
 
         return {
