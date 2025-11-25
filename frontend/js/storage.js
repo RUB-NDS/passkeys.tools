@@ -159,10 +159,11 @@ class StorageInterface {
             const typeSuffix = config.e2ee ? "_enc" : "_plain"
             const fullType = type + typeSuffix
 
-            const response = await fetch(`${config.url}/api/data/${hashedSecret}/${fullType}`, {
+            const response = await fetch(`${config.url}/api/data/${fullType}`, {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-Secret-Hash": hashedSecret
                 }
             })
 
@@ -214,10 +215,11 @@ class StorageInterface {
                 dataToSend = encryptedData
             }
 
-            const response = await fetch(`${config.url}/api/data/${hashedSecret}/${fullType}`, {
+            const response = await fetch(`${config.url}/api/data/${fullType}`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-Secret-Hash": hashedSecret
                 },
                 body: JSON.stringify(dataToSend)
             })
@@ -304,10 +306,11 @@ class StorageInterface {
             const typeSuffix = config.e2ee ? "_enc" : "_plain"
             const fullType = type + typeSuffix
 
-            const response = await fetch(`${config.url}/api/data/${hashedSecret}/${fullType}/${encodeURIComponent(key)}`, {
+            const response = await fetch(`${config.url}/api/data/${fullType}/${encodeURIComponent(key)}`, {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-Secret-Hash": hashedSecret
                 }
             })
 
@@ -348,10 +351,11 @@ class StorageInterface {
                 valueToSend = await encryptValue(value, config.secret)
             }
 
-            const response = await fetch(`${config.url}/api/data/${hashedSecret}/${fullType}/${encodeURIComponent(key)}`, {
+            const response = await fetch(`${config.url}/api/data/${fullType}/${encodeURIComponent(key)}`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-Secret-Hash": hashedSecret
                 },
                 body: JSON.stringify(valueToSend)
             })
@@ -376,10 +380,11 @@ class StorageInterface {
             const typeSuffix = config.e2ee ? "_enc" : "_plain"
             const fullType = type + typeSuffix
 
-            const response = await fetch(`${config.url}/api/data/${hashedSecret}/${fullType}/${encodeURIComponent(key)}`, {
+            const response = await fetch(`${config.url}/api/data/${fullType}/${encodeURIComponent(key)}`, {
                 method: "DELETE",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-Secret-Hash": hashedSecret
                 }
             })
 

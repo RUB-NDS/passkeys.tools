@@ -14,6 +14,28 @@ export class MongoStorage extends StorageInterface {
             this.client = new MongoClient(this.mongoUrl)
             await this.client.connect()
             console.log("Connected to MongoDB")
+
+            // Create indexes for all collections
+            const db = this.getDatabase()
+            const collections = ["keys_plain", "keys_enc", "users_plain", "users_enc", "history_plain", "history_enc"]
+
+            for (const collectionName of collections) {
+                const collection = db.collection(collectionName)
+
+                // Create compound index on secret and key for fast lookups
+                await collection.createIndex(
+                    { secret: 1, key: 1 },
+                    { unique: true, background: true }
+                )
+
+                // Create index on secret alone for queries that fetch all data for a user
+                await collection.createIndex(
+                    { secret: 1 },
+                    { background: true }
+                )
+            }
+
+            console.log("MongoDB indexes created successfully")
         } catch (error) {
             console.error("Error connecting to MongoDB:", error)
             throw error
