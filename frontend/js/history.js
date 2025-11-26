@@ -183,67 +183,93 @@ export const renderHistory = async (searchQuery = "") => {
         timestampCell.textContent = formatTimestamp(entry.timestamp)
         row.appendChild(timestampCell)
 
-        // Mode
-        const modeCell = document.createElement("td")
+        // Info (Mode, Type, Status, Modification)
+        const infoCell = document.createElement("td")
+        const infoDiv = document.createElement("div")
+        infoDiv.className = "history-info"
+
         const modeBadge = document.createElement("span")
         modeBadge.className = "badge bg-secondary"
         modeBadge.textContent = entry.mode
-        modeCell.appendChild(modeBadge)
-        row.appendChild(modeCell)
+        infoDiv.appendChild(modeBadge)
 
-        // Type
-        const typeCell = document.createElement("td")
         const typeBadge = document.createElement("span")
-        typeBadge.className = "badge bg-secondary"
+        typeBadge.className = "badge bg-info"
         typeBadge.textContent = entry.type
-        typeCell.appendChild(typeBadge)
-        row.appendChild(typeCell)
+        infoDiv.appendChild(typeBadge)
 
-        // Status
-        const statusCell = document.createElement("td")
         const statusBadge = document.createElement("span")
         statusBadge.className = entry.status === "resolved" ? "badge bg-success" :
                                 entry.status === "dismissed" ? "badge bg-warning" : "badge bg-danger"
         statusBadge.textContent = entry.status || "resolved"
-        statusCell.appendChild(statusBadge)
-        row.appendChild(statusCell)
+        infoDiv.appendChild(statusBadge)
+
+        if (entry.modification) {
+            const modBadge = document.createElement("span")
+            modBadge.className = "badge bg-primary"
+            modBadge.textContent = entry.modification
+            modBadge.title = entry.modification
+            infoDiv.appendChild(modBadge)
+        }
+
+        infoCell.appendChild(infoDiv)
+        row.appendChild(infoCell)
 
         // Origin
         const originCell = document.createElement("td")
-        originCell.textContent = truncateText(entry.origin, 40)
-        originCell.title = entry.origin
+        const originCode = document.createElement("code")
+        originCode.className = "history-key-user-value"
+        originCode.textContent = entry.origin || "-"
+        originCode.title = entry.origin
+        originCell.appendChild(originCode)
         row.appendChild(originCell)
 
+        // Credential / Key / User
+        const credKeyUserCell = document.createElement("td")
+        const credKeyUserDiv = document.createElement("div")
+        credKeyUserDiv.className = "history-key-user"
+
         // Credential ID
-        const credentialIdCell = document.createElement("td")
-        credentialIdCell.textContent = truncateText(entry.credentialId, 20)
-        credentialIdCell.title = entry.credentialId || "N/A"
-        row.appendChild(credentialIdCell)
+        const credItem = document.createElement("div")
+        credItem.className = "history-key-user-item"
+        const credLabel = document.createElement("span")
+        credLabel.className = "history-key-user-label"
+        credLabel.textContent = "Cred"
+        const credValue = document.createElement("span")
+        credValue.className = "history-key-user-value"
+        credValue.textContent = entry.credentialId || "N/A"
+        credItem.appendChild(credLabel)
+        credItem.appendChild(credValue)
+        credKeyUserDiv.appendChild(credItem)
 
         // Key
-        const keyCell = document.createElement("td")
-        keyCell.textContent = truncateText(entry.key, 30)
-        keyCell.title = entry.key || "N/A"
-        row.appendChild(keyCell)
+        const keyItem = document.createElement("div")
+        keyItem.className = "history-key-user-item"
+        const keyLabel = document.createElement("span")
+        keyLabel.className = "history-key-user-label"
+        keyLabel.textContent = "Key"
+        const keyValue = document.createElement("span")
+        keyValue.className = "history-key-user-value"
+        keyValue.textContent = entry.key || "N/A"
+        keyItem.appendChild(keyLabel)
+        keyItem.appendChild(keyValue)
+        credKeyUserDiv.appendChild(keyItem)
 
-        // User Handle
-        const userHandleCell = document.createElement("td")
-        userHandleCell.textContent = truncateText(entry.userHandle, 20)
-        userHandleCell.title = entry.userHandle || "N/A"
-        row.appendChild(userHandleCell)
+        // User
+        const userItem = document.createElement("div")
+        userItem.className = "history-key-user-item"
+        const userLabel = document.createElement("span")
+        userLabel.className = "history-key-user-label"
+        userLabel.textContent = "User"
+        const userValue = document.createElement("span")
+        userValue.className = "history-key-user-value"
+        userValue.textContent = entry.userHandle || "N/A"
+        userItem.appendChild(userLabel)
+        userItem.appendChild(userValue)
+        credKeyUserDiv.appendChild(userItem)
 
-        // Modification
-        const modificationCell = document.createElement("td")
-        if (entry.modification) {
-            const modBadge = document.createElement("span")
-            modBadge.className = "badge bg-secondary"
-            modBadge.textContent = truncateText(entry.modification, 25)
-            modBadge.title = entry.modification
-            modificationCell.appendChild(modBadge)
-        } else {
-            modificationCell.textContent = "None"
-        }
-        row.appendChild(modificationCell)
+        credKeyUserCell.appendChild(credKeyUserDiv)
+        row.appendChild(credKeyUserCell)
 
         // Actions
         const actionsCell = document.createElement("td")
