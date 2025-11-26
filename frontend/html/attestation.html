@@ -50,42 +50,40 @@
 
 <div class="row mb-3">
     <div class="col">
-        <div class="action-btn-standalone">
-            <button class="btn btn-primary" id="attestationSendKeyToParserBtn"><i class="bi bi-send me-2"></i>Send Key to Parser</button>
-        </div>
         <div class="action-toolbar-group">
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-download me-2"></i>Load Key</span>
+                <span class="input-group-text"><i class="bi bi-box-arrow-in-down me-2"></i>Load Key</span>
                 <select class="form-select" id="attestationLoadKeyNameSelect"></select>
                 <select class="form-select" id="attestationLoadKeyTypeSelect">
                     <option value="publicKey" selected>Public Key</option>
                     <option value="privateKey">Private Key</option>
                 </select>
-                <button class="btn btn-primary" id="attestationLoadKeyBtn"><i class="bi bi-box-arrow-in-down me-1"></i>Load</button>
+                <button class="btn btn-primary" id="attestationLoadKeyBtn">Load</button>
             </div>
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-upload me-2"></i>Store Key</span>
+                <span class="input-group-text"><i class="bi bi-box-arrow-up me-2"></i>Store Key</span>
                 <input type="text" class="form-control" id="attestationStoreKeyNameInput" placeholder="Key name...">
                 <select class="form-select" id="attestationStoreKeyTypeSelect">
                     <option value="publicKey" selected>Public Key</option>
                     <option value="privateKey">Private Key</option>
                 </select>
-                <button class="btn btn-primary" id="attestationStoreKeyBtn"><i class="bi bi-box-arrow-up me-1"></i>Store</button>
+                <button class="btn btn-primary" id="attestationStoreKeyBtn">Store</button>
+                <button class="btn btn-secondary" id="attestationSendKeyToParserBtn">Send to Converter</button>
             </div>
         </div>
         <div class="action-toolbar toolbar-secondary">
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-hash me-2"></i>RP ID Hash</span>
+                <span class="input-group-text"><i class="bi bi-hash me-2"></i>Set RP ID Hash</span>
                 <input type="text" class="form-control" id="attestationRpIdInput" placeholder="RP ID...">
                 <input type="text" class="form-control" id="attestationRpIdHashInput" placeholder="Hash (auto)" disabled>
-                <button class="btn btn-secondary" id="attestationRpIdBtn"><i class="bi bi-check-lg me-1"></i>Apply</button>
+                <button class="btn btn-secondary" id="attestationRpIdBtn">Apply</button>
             </div>
         </div>
         <div class="action-toolbar toolbar-secondary">
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-fingerprint me-2"></i>AAGUID</span>
+                <span class="input-group-text"><i class="bi bi-fingerprint me-2"></i>Set AAGUID</span>
                 <select class="form-select" id="attestationAaguidSelect"></select>
-                <button class="btn btn-secondary" id="attestationAaguidBtn"><i class="bi bi-check-lg me-1"></i>Apply</button>
+                <button class="btn btn-secondary" id="attestationAaguidBtn">Apply</button>
             </div>
         </div>
     </div>

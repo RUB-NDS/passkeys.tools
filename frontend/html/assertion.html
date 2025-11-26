@@ -52,10 +52,10 @@
     <div class="col">
         <div class="action-toolbar toolbar-secondary">
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-hash me-2"></i>RP ID Hash</span>
+                <span class="input-group-text"><i class="bi bi-hash me-2"></i>Set RP ID Hash</span>
                 <input type="text" class="form-control" id="assertionRpIdInput" placeholder="RP ID...">
                 <input type="text" class="form-control" id="assertionRpIdHashInput" placeholder="Hash (auto)" disabled>
-                <button class="btn btn-secondary" id="assertionRpIdBtn"><i class="bi bi-check-lg me-1"></i>Apply</button>
+                <button class="btn btn-secondary" id="assertionRpIdBtn">Apply</button>
             </div>
         </div>
     </div>
@@ -101,21 +101,19 @@
 
 <div class="row mb-3">
     <div class="col">
-        <div class="action-btn-standalone">
-            <button class="btn btn-success" id="verifyAssertionWithAttestationKeyBtn"><i class="bi bi-patch-check me-2"></i>Verify with Attestation Key</button>
-        </div>
-        <div class="action-toolbar toolbar-success">
+        <div class="action-toolbar">
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-shield-check me-2"></i>Verify</span>
+                <span class="input-group-text"><i class="bi bi-shield-check me-2"></i>Verify Signature</span>
                 <select class="form-select" id="verifyAssertionWithStoredKeySelect"></select>
-                <button class="btn btn-success" id="verifyAssertionWithStoredKeyBtn"><i class="bi bi-check-circle me-1"></i>Verify</button>
+                <button class="btn btn-primary" id="verifyAssertionWithStoredKeyBtn">Use Selected Key</button>
+                <button class="btn btn-secondary" id="verifyAssertionWithAttestationKeyBtn">Use Attestation Key</button>
             </div>
         </div>
         <div class="action-toolbar">
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-pen me-2"></i>Sign</span>
+                <span class="input-group-text"><i class="bi bi-vector-pen me-2"></i>Sign Assertion</span>
                 <select class="form-select" id="signAssertionWithStoredKeySelect"></select>
-                <button class="btn btn-primary" id="signAssertionWithStoredKeyBtn"><i class="bi bi-vector-pen me-1"></i>Sign</button>
+                <button class="btn btn-primary" id="signAssertionWithStoredKeyBtn">Sign</button>
             </div>
         </div>
     </div>
