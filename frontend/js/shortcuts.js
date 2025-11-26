@@ -67,88 +67,88 @@ const shortcuts = {
         description: "Send response in Interceptor tab"
     },
 
-    // Attacker credentials - using Ctrl+Shift+letters
+    // Profile 1 credentials - using Ctrl+Shift+letters
     "Ctrl+Shift+Q": {
-        action: () => selectCredentialAndKey("attacker | ES256"),
-        description: "Select attacker | ES256 credential and key"
+        action: () => selectCredentialAndKey("profile1 | ES256"),
+        description: "Select profile1 | ES256 credential and key"
     },
     "Ctrl+Shift+W": {
-        action: () => selectCredentialAndKey("attacker | ES384"),
-        description: "Select attacker | ES384 credential and key"
+        action: () => selectCredentialAndKey("profile1 | ES384"),
+        description: "Select profile1 | ES384 credential and key"
     },
     "Ctrl+Shift+E": {
-        action: () => selectCredentialAndKey("attacker | ES512"),
-        description: "Select attacker | ES512 credential and key"
+        action: () => selectCredentialAndKey("profile1 | ES512"),
+        description: "Select profile1 | ES512 credential and key"
     },
     "Ctrl+Shift+R": {
-        action: () => selectCredentialAndKey("attacker | PS256"),
-        description: "Select attacker | PS256 credential and key"
+        action: () => selectCredentialAndKey("profile1 | PS256"),
+        description: "Select profile1 | PS256 credential and key"
     },
     "Ctrl+Shift+T": {
-        action: () => selectCredentialAndKey("attacker | PS384"),
-        description: "Select attacker | PS384 credential and key"
+        action: () => selectCredentialAndKey("profile1 | PS384"),
+        description: "Select profile1 | PS384 credential and key"
     },
     "Ctrl+Shift+Z": {
-        action: () => selectCredentialAndKey("attacker | PS512"),
-        description: "Select attacker | PS512 credential and key"
+        action: () => selectCredentialAndKey("profile1 | PS512"),
+        description: "Select profile1 | PS512 credential and key"
     },
     "Ctrl+Shift+U": {
-        action: () => selectCredentialAndKey("attacker | RS256"),
-        description: "Select attacker | RS256 credential and key"
+        action: () => selectCredentialAndKey("profile1 | RS256"),
+        description: "Select profile1 | RS256 credential and key"
     },
     "Ctrl+Shift+I": {
-        action: () => selectCredentialAndKey("attacker | RS384"),
-        description: "Select attacker | RS384 credential and key"
+        action: () => selectCredentialAndKey("profile1 | RS384"),
+        description: "Select profile1 | RS384 credential and key"
     },
     "Ctrl+Shift+O": {
-        action: () => selectCredentialAndKey("attacker | RS512"),
-        description: "Select attacker | RS512 credential and key"
+        action: () => selectCredentialAndKey("profile1 | RS512"),
+        description: "Select profile1 | RS512 credential and key"
     },
     "Ctrl+Shift+P": {
-        action: () => selectCredentialAndKey("attacker | EdDSA"),
-        description: "Select attacker | EdDSA credential and key"
+        action: () => selectCredentialAndKey("profile1 | EdDSA"),
+        description: "Select profile1 | EdDSA credential and key"
     },
 
-    // Victim credentials - using Ctrl+Shift+letters A-J
+    // Profile 2 credentials - using Ctrl+Shift+letters A-J
     "Ctrl+Shift+A": {
-        action: () => selectCredentialAndKey("victim | ES256"),
-        description: "Select victim | ES256 credential and key"
+        action: () => selectCredentialAndKey("profile2 | ES256"),
+        description: "Select profile2 | ES256 credential and key"
     },
     "Ctrl+Shift+S": {
-        action: () => selectCredentialAndKey("victim | ES384"),
-        description: "Select victim | ES384 credential and key"
+        action: () => selectCredentialAndKey("profile2 | ES384"),
+        description: "Select profile2 | ES384 credential and key"
     },
     "Ctrl+Shift+D": {
-        action: () => selectCredentialAndKey("victim | ES512"),
-        description: "Select victim | ES512 credential and key"
+        action: () => selectCredentialAndKey("profile2 | ES512"),
+        description: "Select profile2 | ES512 credential and key"
     },
     "Ctrl+Shift+F": {
-        action: () => selectCredentialAndKey("victim | PS256"),
-        description: "Select victim | PS256 credential and key"
+        action: () => selectCredentialAndKey("profile2 | PS256"),
+        description: "Select profile2 | PS256 credential and key"
     },
     "Ctrl+Shift+G": {
-        action: () => selectCredentialAndKey("victim | PS384"),
-        description: "Select victim | PS384 credential and key"
+        action: () => selectCredentialAndKey("profile2 | PS384"),
+        description: "Select profile2 | PS384 credential and key"
     },
     "Ctrl+Shift+H": {
-        action: () => selectCredentialAndKey("victim | PS512"),
-        description: "Select victim | PS512 credential and key"
+        action: () => selectCredentialAndKey("profile2 | PS512"),
+        description: "Select profile2 | PS512 credential and key"
     },
     "Ctrl+Shift+J": {
-        action: () => selectCredentialAndKey("victim | RS256"),
-        description: "Select victim | RS256 credential and key"
+        action: () => selectCredentialAndKey("profile2 | RS256"),
+        description: "Select profile2 | RS256 credential and key"
     },
     "Ctrl+Shift+K": {
-        action: () => selectCredentialAndKey("victim | RS384"),
-        description: "Select victim | RS384 credential and key"
+        action: () => selectCredentialAndKey("profile2 | RS384"),
+        description: "Select profile2 | RS384 credential and key"
     },
     "Ctrl+Shift+L": {
-        action: () => selectCredentialAndKey("victim | RS512"),
-        description: "Select victim | RS512 credential and key"
+        action: () => selectCredentialAndKey("profile2 | RS512"),
+        description: "Select profile2 | RS512 credential and key"
     },
     "Ctrl+Shift+Y": {
-        action: () => selectCredentialAndKey("victim | EdDSA"),
-        description: "Select victim | EdDSA credential and key"
+        action: () => selectCredentialAndKey("profile2 | EdDSA"),
+        description: "Select profile2 | EdDSA credential and key"
     },
 
     // Special credential ID selection

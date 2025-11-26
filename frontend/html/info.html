@@ -25,7 +25,7 @@
                     <li><strong>Users:</strong> Manage user accounts across relying parties with RP IDs, usernames, display names, and user IDs. Automatically captures users from registrations.</li>
                     <li><strong>Converters:</strong> Simple utilities for converting between various encoding formats.</li>
                     <li><strong>Interceptor:</strong> Requires <a href="extension.zip">companion browser extension</a>. Intercepts all WebAuthn operations for modification (like <a href="https://portswigger.net/burp/documentation/desktop/tools/proxy/intercept-messages">Burp Suite</a> for WebAuthn). Includes built-in security and compliance tests.</li>
-                    <li><strong>History:</strong> Tracks all interceptions and modifications, enabling value swaps across different passkey operations and browsers (i.e., victim and attacker browsers).</li>
+                    <li><strong>History:</strong> Tracks all interceptions and modifications, enabling value swaps across different passkey operations and browser profiles.</li>
                 </ul>
 
                 <h6>Usage Modes:</h6>
@@ -33,7 +33,7 @@
                 <ul>
                     <li><strong>Standalone Testing:</strong> The simplest way to use these tools. Everything runs on this website and stays in your browser with no server-side components or browser extensions required. You can create keys that are stored securely in localStorage in your browser and not sent to anyone. Use these keys to manually create attestations, encode/decode existing ones, sign assertions, verify signatures, and test create/get API calls.</li>
                     <li><strong>Live Testing:</strong> Requires installation of the <a href="extension.zip">companion browser extension</a>, which overwrites the WebAuthn APIs in the browser to intercept all API calls and present them in the tool. This allows live capturing and modifications of ongoing WebAuthn operations. History is stored in localStorage - again, nothing is sent server-side. All operations happen locally in your browser.</li>
-                    <li><strong>Cross-Browser Testing:</strong> Required when two browsers are used to simulate WebAuthn operations in victim and attacker browsers simultaneously. Since data needs to be shared across browsers, a backend component is required. In this case, keys, users, and history are stored server-side but protected with a unique key so only you can access the data. Do not use this server-side storage for real production passkeys or private accounts - only for testing. This setup enables scenarios like replacing the challenge in a passkey registration in the attacker browser with a challenge from the victim's browser to test if the challenge is correctly validated.</li>
+                    <li><strong>Cross-Browser Testing:</strong> Required when two browser profiles are used to simulate WebAuthn operations simultaneously (Profile 1 and Profile 2). Since data needs to be shared across browsers, a backend component is required. In this case, keys, users, and history are stored server-side but protected with a unique key so only you can access the data. Do not use this server-side storage for real production passkeys or private accounts - only for testing. This setup enables scenarios like replacing the challenge in a passkey registration in Profile 1 with a challenge from Profile 2 to test if the challenge is correctly validated.</li>
                 </ul>
             </div>
         </div>

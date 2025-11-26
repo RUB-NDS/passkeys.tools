@@ -694,9 +694,9 @@ for (const [name, example] of Object.entries(examples)) {
 
 window.addEventListener("load", async () => {
     try {
-        await generateModeKeys(["attacker", "victim"])
+        await generateModeKeys(["profile1", "profile2"])
     } catch (error) {
-        console.error("Error generating mode keys:", error)
+        console.error("Error generating profile keys:", error)
         showStorageError()
     }
 

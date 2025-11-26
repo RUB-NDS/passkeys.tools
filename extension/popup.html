@@ -55,27 +55,31 @@
                 <label class="form-check-label w-100" for="mode-default">
                     <strong>Default</strong>
                     <br>
-                    <small class="text-muted">Normal passkey operation</small>
+                    <small class="text-muted">Each website gets its own credential scoped to that website (normal behavior).</small>
                 </label>
             </div>
 
-            <div class="form-check p-3 border rounded mode-option" data-mode="victim">
-                <input class="form-check-input" type="radio" name="mode" value="victim" id="mode-victim">
-                <label class="form-check-label w-100" for="mode-victim">
-                    <strong>Victim</strong>
+            <div class="form-check p-3 border rounded mode-option" data-mode="profile1">
+                <input class="form-check-input" type="radio" name="mode" value="profile1" id="mode-profile1">
+                <label class="form-check-label w-100" for="mode-profile1">
+                    <strong>Profile 1</strong>
                     <br>
-                    <small class="text-muted">Simulate victim behavior</small>
+                    <small class="text-muted">All websites share the same credential scoped to Profile 1. Use in browser profile 1 (e.g., attacker browser) when cross-browser testing is desired.</small>
                 </label>
             </div>
 
-            <div class="form-check p-3 border rounded mode-option" data-mode="attacker">
-                <input class="form-check-input" type="radio" name="mode" value="attacker" id="mode-attacker">
-                <label class="form-check-label w-100" for="mode-attacker">
-                    <strong>Attacker</strong>
+            <div class="form-check p-3 border rounded mode-option" data-mode="profile2">
+                <input class="form-check-input" type="radio" name="mode" value="profile2" id="mode-profile2">
+                <label class="form-check-label w-100" for="mode-profile2">
+                    <strong>Profile 2</strong>
                     <br>
-                    <small class="text-muted">Simulate attacker behavior</small>
+                    <small class="text-muted">All websites share the same credential scoped to Profile 2. Use in browser profile 2 (e.g., victim browser) when cross-browser testing is desired.</small>
                 </label>
             </div>
+        </div>
+
+        <div class="alert alert-info mt-2 py-2 small">
+            <strong>Profile modes:</strong> Unlike default mode where each website gets its own credential, profile modes share the same credential across all websites. This enables cross-browser credential swapping tests (e.g., replacing victim's challenge with attacker's challenge).
         </div>
 
         <hr class="my-3">

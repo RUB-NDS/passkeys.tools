@@ -316,9 +316,9 @@ const addCredentialIdSelect = async (operation, rpId, mode) => {
     const keys = await getKeys()
     for (const [name, key] of Object.entries(keys)) {
         const split = name.split(" | ")
-        if (mode === "attacker" || mode === "victim") {
-            if (split[0] !== "attacker" && split[0] !== "victim") {
-                continue // only show attacker and victim keys in this mode
+        if (mode === "profile1" || mode === "profile2") {
+            if (split[0] !== "profile1" && split[0] !== "profile2") {
+                continue // only show profile keys in this mode
             }
         } else {
             if (split[0] !== rpId) {
@@ -380,9 +380,9 @@ const addKeySelect = async (operation, rpId, mode) => {
     const keys = await getKeys()
     for (const [name, key] of Object.entries(keys)) {
         const split = name.split(" | ")
-        if (mode === "attacker" || mode === "victim") {
-            if (split[0] !== "attacker" && split[0] !== "victim") {
-                continue // only show attacker and victim keys in this mode
+        if (mode === "profile1" || mode === "profile2") {
+            if (split[0] !== "profile1" && split[0] !== "profile2") {
+                continue // only show profile keys in this mode
             }
         } else {
             if (split[0] !== rpId) {
@@ -484,7 +484,7 @@ const applyPkcro = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=
     const { clientDataJSON, authenticatorData } = await pkcroToAssertion(pkcro, origin, mode, crossOrigin, topOrigin)
 
     // default user handle
-    if (mode === "attacker" || mode === "victim") {
+    if (mode === "profile1" || mode === "profile2") {
         const user = await getUserByRpIdAndMode(pkcro.rpId || (new URL(origin)).hostname, mode)
         if (user) {
             const userOption = document.querySelector(`#getUserHandleSelect option[value="${user.userId}"]`)

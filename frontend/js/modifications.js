@@ -75,8 +75,8 @@ const modifications = {
             const currentTime = Date.now()
             const oneMinuteAgo = currentTime - 60000
 
-            // Swap mode for session binding check
-            const targetMode = mode === "attacker" ? "victim" : "attacker"
+            // Swap mode for profile-based testing
+            const targetMode = mode === "profile1" ? "profile2" : "profile1"
 
             // Filter for valid history items with swapped mode and dismissed status
             const validItems = history.filter(item => {
@@ -431,8 +431,8 @@ const modifications = {
             const currentTime = Date.now()
             const oneMinuteAgo = currentTime - 60000
 
-            // Swap mode for session binding check
-            const targetMode = mode === "attacker" ? "victim" : "attacker"
+            // Swap mode for profile-based testing
+            const targetMode = mode === "profile1" ? "profile2" : "profile1"
 
             // Filter for valid history items with swapped mode and dismissed status
             const validItems = history.filter(item => {

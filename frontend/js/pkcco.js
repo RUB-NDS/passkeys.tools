@@ -44,11 +44,11 @@ export const pkccoToAttestation = async (pkcco, origin, mode, crossOrigin=undefi
     // key handle
     let keyHandle = undefined
     const alg = getSupportedAlgorithm(pkcco.pubKeyCredParams)
-    if (mode === "attacker" || mode === "victim") {
-        // attacker or victim mode
+    if (mode === "profile1" || mode === "profile2") {
+        // profile mode - same keys across all websites
         keyHandle = `${mode} | ${alg}`
     } else {
-        // default mode
+        // default mode - each website gets its own key
         keyHandle = `${pkcco.rp.id} | ${pkcco.user.name} | ${alg}`
     }
 
