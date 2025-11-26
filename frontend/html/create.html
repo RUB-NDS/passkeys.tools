@@ -6,18 +6,13 @@
 
 <div class="row mb-3">
     <div class="col">
-        <p>
-            <button class="btn btn-primary" id="createWebApiBtn">Call Web API</button>
-        </p>
-    </div>
-</div>
-
-<div class="row mb-3">
-    <div class="col">
         <div class="card full-height">
-            <div class="card-header">navigator.credentials.create({publicKey: {</div>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <code>navigator.credentials.create({publicKey: {</code>
+                <button class="btn btn-sm btn-primary" id="createWebApiBtn"><i class="bi bi-play-fill me-1"></i>Call Web API</button>
+            </div>
             <div class="card-body" id="createCard"></div>
-            <div class="card-footer">}})</div>
+            <div class="card-footer"><code>}})</code></div>
         </div>
     </div>
 </div>
