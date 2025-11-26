@@ -9,6 +9,7 @@ import { storeUser, getUsers, getUserByRpIdAndMode } from "./users.js"
 import { renderUsers } from "./main.js"
 import { renderModifications } from "./modifications.js"
 import { addHistoryEntry } from "./history.js"
+import { createIcon, setButtonContent, setButtonIcon } from "./helpers.js"
 
 const updateStatusBanner = (type, origin, mode) => {
     const banner = document.getElementById("interceptorStatusBanner")
@@ -19,14 +20,30 @@ const updateStatusBanner = (type, origin, mode) => {
     const iconClass = isCreate ? "bi-person-plus-fill" : "bi-person-badge-fill"
 
     banner.className = `alert alert-primary d-flex align-items-center mb-0`
-    banner.innerHTML = `
-        <i class="bi ${iconClass} me-2 fs-5"></i>
-        <div>
-            <strong>${typeLabel}</strong> request intercepted from
-            <code class="ms-1">${origin}</code>
-            <span class="badge bg-secondary ms-2">${mode}</span>
-        </div>
-    `
+    banner.replaceChildren()
+
+    const icon = createIcon(iconClass, "me-2 fs-5")
+    banner.appendChild(icon)
+
+    const div = document.createElement("div")
+
+    const strong = document.createElement("strong")
+    strong.textContent = typeLabel
+    div.appendChild(strong)
+
+    div.appendChild(document.createTextNode(" request intercepted from "))
+
+    const code = document.createElement("code")
+    code.className = "ms-1"
+    code.textContent = origin
+    div.appendChild(code)
+
+    const badge = document.createElement("span")
+    badge.className = "badge bg-secondary ms-2"
+    badge.textContent = mode
+    div.appendChild(badge)
+
+    banner.appendChild(div)
 }
 
 const addCopyAsJsonButton = (data) => {
@@ -65,10 +82,10 @@ export const initializeCopyButtons = () => {
                     // Parse and re-stringify to ensure valid JSON
                     const requestData = JSON.parse(requestTextarea.value)
                     await navigator.clipboard.writeText(JSON.stringify(requestData, null, 2))
-                    copyRequestBtn.innerHTML = '<i class="bi bi-check"></i>'
+                    setButtonIcon(copyRequestBtn, "bi-check")
                     copyRequestBtn.className = "btn btn-sm btn-success"
                     setTimeout(() => {
-                        copyRequestBtn.innerHTML = '<i class="bi bi-clipboard"></i>'
+                        setButtonIcon(copyRequestBtn, "bi-clipboard")
                         copyRequestBtn.className = "btn btn-sm btn-outline-secondary"
                     }, 2000)
                 } catch (e) {
@@ -88,10 +105,10 @@ export const initializeCopyButtons = () => {
                     // Parse and re-stringify to ensure valid JSON
                     const responseData = JSON.parse(responseTextarea.value)
                     await navigator.clipboard.writeText(JSON.stringify(responseData, null, 2))
-                    copyResponseBtn.innerHTML = '<i class="bi bi-check"></i>'
+                    setButtonIcon(copyResponseBtn, "bi-check")
                     copyResponseBtn.className = "btn btn-sm btn-success"
                     setTimeout(() => {
-                        copyResponseBtn.innerHTML = '<i class="bi bi-clipboard"></i>'
+                        setButtonIcon(copyResponseBtn, "bi-clipboard")
                         copyResponseBtn.className = "btn btn-sm btn-outline-secondary"
                     }, 2000)
                 } catch (e) {
@@ -112,7 +129,7 @@ const addSendButton = (operation) => {
     const sendButton = document.createElement("button")
     sendButton.id = `interceptorSendButton`
     sendButton.className = "btn btn-sm btn-primary"
-    sendButton.innerHTML = '<i class="bi bi-send me-1"></i>Send'
+    setButtonContent(sendButton, "bi-send", "Send")
     sendButton.addEventListener("click", async () => {
         const response = JSON.parse(interceptorResponseTextarea.value || "{}")
 
@@ -145,12 +162,12 @@ const addSendButton = (operation) => {
                 operation: operation,
                 response: response
             }, "*")
-            sendButton.innerHTML = '<i class="bi bi-check me-1"></i>Sent!'
+            setButtonContent(sendButton, "bi-check", "Sent!")
             sendButton.className = "btn btn-sm btn-success"
             sendButton.disabled = true
             setTimeout(() => { window.close() }, 200)
         } else {
-            sendButton.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>Error'
+            setButtonContent(sendButton, "bi-exclamation-triangle", "Error")
             sendButton.className = "btn btn-sm btn-danger"
         }
     })
@@ -161,7 +178,7 @@ const addRejectButton = (operation) => {
     const rejectButton = document.createElement("button")
     rejectButton.id = `interceptorRejectButton`
     rejectButton.className = "btn btn-sm btn-danger"
-    rejectButton.innerHTML = '<i class="bi bi-x-circle me-1"></i>Reject'
+    setButtonContent(rejectButton, "bi-x-circle", "Reject")
     rejectButton.addEventListener("click", async () => {
         const response = JSON.parse(interceptorResponseTextarea.value || "{}")
 
@@ -194,12 +211,12 @@ const addRejectButton = (operation) => {
                 operation: operation,
                 response: response
             }, "*")
-            rejectButton.innerHTML = '<i class="bi bi-check me-1"></i>Rejected!'
+            setButtonContent(rejectButton, "bi-check", "Rejected!")
             rejectButton.className = "btn btn-sm btn-success"
             rejectButton.disabled = true
             setTimeout(() => { window.close() }, 200)
         } else {
-            rejectButton.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>Error'
+            setButtonContent(rejectButton, "bi-exclamation-triangle", "Error")
             rejectButton.className = "btn btn-sm btn-danger"
         }
     })
@@ -210,7 +227,7 @@ const addDismissButton = (operation) => {
     const dismissButton = document.createElement("button")
     dismissButton.id = `interceptorDismissButton`
     dismissButton.className = "btn btn-sm btn-secondary"
-    dismissButton.innerHTML = '<i class="bi bi-dash-circle me-1"></i>Dismiss'
+    setButtonContent(dismissButton, "bi-dash-circle", "Dismiss")
     dismissButton.addEventListener("click", async () => {
         const response = JSON.parse(interceptorResponseTextarea.value || "{}")
 
@@ -237,7 +254,7 @@ const addDismissButton = (operation) => {
         }
         await addHistoryEntry(historyEntry)
 
-        dismissButton.innerHTML = '<i class="bi bi-check me-1"></i>Dismissed!'
+        setButtonContent(dismissButton, "bi-check", "Dismissed!")
         dismissButton.className = "btn btn-sm btn-success"
         dismissButton.disabled = true
         setTimeout(() => { window.close() }, 200)
@@ -560,7 +577,7 @@ export const parseInterceptParams = async () => {
         })
 
         // actions
-        interceptorActions.innerHTML = ""
+        interceptorActions.replaceChildren()
         await addCredentialIdSelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
         await addKeySelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
         addSendButton("create")
@@ -607,7 +624,7 @@ export const parseInterceptParams = async () => {
         })
 
         // actions
-        interceptorActions.innerHTML = ""
+        interceptorActions.replaceChildren()
         await addUserHandleSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
         await addCredentialIdSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
         await addKeySelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)

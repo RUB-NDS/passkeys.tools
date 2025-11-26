@@ -1,3 +1,5 @@
+import { setStatusMessage, clearStatus } from "./helpers.js"
+
 const STORAGE_CONFIG_KEY = "storageConfig"
 const THEME_CONFIG_KEY = "themeConfig"
 
@@ -461,11 +463,11 @@ export const renderThemeSettings = () => {
         }
 
         setThemeConfig(selectedTheme)
-        themeStatus.innerHTML = "<span class='text-success'>Theme saved successfully!</span>"
+        setStatusMessage(themeStatus, "Theme saved successfully!", "success")
 
         // Clear status after 3 seconds
         setTimeout(() => {
-            themeStatus.innerHTML = ""
+            clearStatus(themeStatus)
         }, 3000)
     })
 }
@@ -530,17 +532,17 @@ export const renderStorageSettings = () => {
         const secret = secretInput.value.trim()
 
         if (!url || !secret) {
-            connectionStatus.innerHTML = "<span class='text-danger'>Please enter both URL and secret</span>"
+            setStatusMessage(connectionStatus, "Please enter both URL and secret", "danger")
             return
         }
 
-        connectionStatus.innerHTML = "<span class='text-info'>Testing connection...</span>"
+        setStatusMessage(connectionStatus, "Testing connection...", "info")
 
         const success = await storage.testConnection(url, secret)
         if (success) {
-            connectionStatus.innerHTML = "<span class='text-success'>Connection successful!</span>"
+            setStatusMessage(connectionStatus, "Connection successful!", "success")
         } else {
-            connectionStatus.innerHTML = "<span class='text-danger'>Connection failed. Please check your URL.</span>"
+            setStatusMessage(connectionStatus, "Connection failed. Please check your URL.", "danger")
         }
     })
 
@@ -555,7 +557,7 @@ export const renderStorageSettings = () => {
             const secret = secretInput.value.trim()
 
             if (!url || !secret) {
-                saveStatus.innerHTML = "<span class='text-danger'>Please enter both URL and secret for remote storage</span>"
+                setStatusMessage(saveStatus, "Please enter both URL and secret for remote storage", "danger")
                 return
             }
 
@@ -565,7 +567,7 @@ export const renderStorageSettings = () => {
         }
 
         setStorageConfig(config)
-        saveStatus.innerHTML = "<span class='text-success'>Settings saved successfully!</span>"
+        setStatusMessage(saveStatus, "Settings saved successfully!", "success")
 
         // Dynamic imports to avoid circular dependency
         const { renderKeys } = await import("./main.js")
@@ -578,7 +580,7 @@ export const renderStorageSettings = () => {
 
         // Clear status after 3 seconds
         setTimeout(() => {
-            saveStatus.innerHTML = ""
+            clearStatus(saveStatus)
         }, 3000)
     })
 }

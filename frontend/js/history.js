@@ -1,6 +1,7 @@
 import { storage } from "./storage.js"
 import { searchHistory } from "./search.js"
 import { showStorageError } from "./main.js"
+import { setButtonContent, setButtonIcon } from "./helpers.js"
 
 /* History entry structure:
 {
@@ -125,11 +126,11 @@ const showHistoryDetails = (entry) => {
     const copyBtn = document.getElementById("historyDetailsCopyBtn")
     copyBtn.onclick = async () => {
         await navigator.clipboard.writeText(JSON.stringify(entry, null, 2))
-        copyBtn.innerHTML = '<i class="bi bi-check"></i> Copied!'
+        setButtonContent(copyBtn, "bi-check", "Copied!")
         copyBtn.classList.add("btn-success")
         copyBtn.classList.remove("btn-secondary")
         setTimeout(() => {
-            copyBtn.innerHTML = '<i class="bi bi-clipboard"></i> Copy Full Entry'
+            setButtonContent(copyBtn, "bi-clipboard", "Copy Full Entry")
             copyBtn.classList.remove("btn-success")
             copyBtn.classList.add("btn-secondary")
         }, 2000)
@@ -162,7 +163,7 @@ export const renderHistory = async (searchQuery = "") => {
     }
 
     if (history.length === 0) {
-        tbody.innerHTML = ""
+        tbody.replaceChildren()
         if (searchQuery && allHistory.length > 0) {
             emptyMessage.textContent = "No entries match your search criteria."
         } else {
@@ -173,7 +174,7 @@ export const renderHistory = async (searchQuery = "") => {
     }
 
     emptyMessage.style.display = "none"
-    tbody.innerHTML = ""
+    tbody.replaceChildren()
 
     history.forEach(entry => {
         const row = document.createElement("tr")
@@ -278,25 +279,25 @@ export const renderHistory = async (searchQuery = "") => {
 
         const viewBtn = document.createElement("button")
         viewBtn.className = "btn btn-outline-primary"
-        viewBtn.innerHTML = '<i class="bi bi-eye"></i>'
+        setButtonIcon(viewBtn, "bi-eye")
         viewBtn.title = "View Details"
         viewBtn.onclick = () => showHistoryDetails(entry)
 
         const copyBtn = document.createElement("button")
         copyBtn.className = "btn btn-outline-secondary"
-        copyBtn.innerHTML = '<i class="bi bi-clipboard"></i>'
+        setButtonIcon(copyBtn, "bi-clipboard")
         copyBtn.title = "Copy JSON"
         copyBtn.onclick = async () => {
             await navigator.clipboard.writeText(JSON.stringify(entry, null, 2))
-            copyBtn.innerHTML = '<i class="bi bi-check"></i>'
+            setButtonIcon(copyBtn, "bi-check")
             setTimeout(() => {
-                copyBtn.innerHTML = '<i class="bi bi-clipboard"></i>'
+                setButtonIcon(copyBtn, "bi-clipboard")
             }, 2000)
         }
 
         const deleteBtn = document.createElement("button")
         deleteBtn.className = "btn btn-outline-danger"
-        deleteBtn.innerHTML = '<i class="bi bi-trash"></i>'
+        setButtonIcon(deleteBtn, "bi-trash")
         deleteBtn.title = "Delete"
         deleteBtn.onclick = async () => {
             if (confirm("Delete this history entry?")) {

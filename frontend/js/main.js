@@ -55,7 +55,7 @@ const setupEncodingHandlers = (elements, decoder, editor, encoder) => {
 }
 
 const populateSelectOptions = (selectElement, options, valueKey = "value", textKey = "text") => {
-    selectElement.innerHTML = ""
+    selectElement.replaceChildren()
     for (const [key, value] of Object.entries(options)) {
         const option = document.createElement("option")
         option.value = typeof value === "object" ? key : value
@@ -65,7 +65,7 @@ const populateSelectOptions = (selectElement, options, valueKey = "value", textK
 }
 
 export const createResultAlert = (container, content, isSuccess = true) => {
-    container.innerHTML = ""
+    container.replaceChildren()
     const div = document.createElement("div")
     div.classList = isSuccess ? "alert alert-success" : "alert alert-danger"
     if (typeof content === "object") {
@@ -387,7 +387,7 @@ export const renderKeys = async () => {
 
     // keys -> key storage -> table
     const keysEmptyMessage = document.getElementById("keysEmptyMessage")
-    keysTable.innerHTML = ""
+    keysTable.replaceChildren()
 
     const keyEntries = Object.entries(keys)
     if (keyEntries.length === 0) {
@@ -550,7 +550,7 @@ export const renderUsers = async () => {
     }
 
     // users -> user storage -> delete user
-    usersDeleteUserSelect.innerHTML = ""
+    usersDeleteUserSelect.replaceChildren()
     for (const [userId, user] of Object.entries(users)) {
         const option = document.createElement("option")
         option.value = userId
@@ -560,7 +560,7 @@ export const renderUsers = async () => {
 
     // users -> user storage -> table
     const usersEmptyMessage = document.getElementById("usersEmptyMessage")
-    usersTable.innerHTML = ""
+    usersTable.replaceChildren()
 
     const userEntries = Object.entries(users)
     if (userEntries.length === 0) {

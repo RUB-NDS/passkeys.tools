@@ -17,3 +17,37 @@ export const deepEqual = (a, b) => {
 
     return true
 }
+
+// Helper to create icon element safely
+export const createIcon = (iconClass, extraClasses = "") => {
+    const icon = document.createElement("i")
+    icon.className = `bi ${iconClass}${extraClasses ? " " + extraClasses : ""}`
+    return icon
+}
+
+// Helper to set button content with icon safely
+export const setButtonContent = (button, iconClass, text, iconExtraClasses = "me-1") => {
+    button.replaceChildren()
+    button.appendChild(createIcon(iconClass, iconExtraClasses))
+    button.appendChild(document.createTextNode(text))
+}
+
+// Helper to set button icon only
+export const setButtonIcon = (button, iconClass) => {
+    button.replaceChildren()
+    button.appendChild(createIcon(iconClass))
+}
+
+// Helper to set status message safely
+export const setStatusMessage = (element, message, type = "info") => {
+    element.replaceChildren()
+    const span = document.createElement("span")
+    span.className = `text-${type}`
+    span.textContent = message
+    element.appendChild(span)
+}
+
+// Helper to clear status message
+export const clearStatus = (element) => {
+    element.replaceChildren()
+}

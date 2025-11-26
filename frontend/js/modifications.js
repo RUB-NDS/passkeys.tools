@@ -3,6 +3,7 @@ import { b64urlToUint8, uint8ToB64url } from "./converters.js"
 import { getHistory } from "./history.js"
 import { createResultAlert } from "./main.js"
 import { algs } from "./keys.js"
+import { createIcon } from "./helpers.js"
 
 const modifications = {
 
@@ -681,7 +682,7 @@ const modifications = {
 }
 
 export const renderModifications = async (operation, pkco, origin, mode, crossOrigin, topOrigin, mediation) => {
-    interceptorModifications.innerHTML = ""
+    interceptorModifications.replaceChildren()
 
     // Get history to check for already applied modifications
     const history = await getHistory()
@@ -718,7 +719,11 @@ export const renderModifications = async (operation, pkco, origin, mode, crossOr
 
         // Add checkmark and strike through if already applied
         if (isAlreadyApplied) {
-            label.innerHTML = `<i class="bi bi-check-circle-fill text-success me-1"></i><span class="text-decoration-line-through text-muted">${name}</span>`
+            label.appendChild(createIcon("bi-check-circle-fill", "text-success me-1"))
+            const nameSpan = document.createElement("span")
+            nameSpan.className = "text-decoration-line-through text-muted"
+            nameSpan.textContent = name
+            label.appendChild(nameSpan)
             label.title = "This modification has already been applied"
         } else {
             label.textContent = name

@@ -217,7 +217,7 @@ export const initShortcuts = () => {
 export const renderShortcuts = () => {
     const shortcutsTable = document.querySelector("#shortcutsTable")
     const tbody = shortcutsTable.querySelector("tbody")
-    tbody.innerHTML = ""
+    tbody.replaceChildren()
 
     Object.entries(shortcuts).forEach(([key, shortcut]) => {
         const row = document.createElement("tr")

@@ -1,7 +1,12 @@
 export const renderCapabilities = () => {
     if (!PublicKeyCredential || !PublicKeyCredential.getClientCapabilities) {
         console.error("PublicKeyCredential.getClientCapabilities is not supported in this browser.")
-        document.getElementById("capabilities").innerHTML = "<p class='text-danger'>PublicKeyCredential.getClientCapabilities is not supported in this browser.</p>"
+        const capEl = document.getElementById("capabilities")
+        capEl.replaceChildren()
+        const p = document.createElement("p")
+        p.className = "text-danger"
+        p.textContent = "PublicKeyCredential.getClientCapabilities is not supported in this browser."
+        capEl.appendChild(p)
     } else {
         PublicKeyCredential.getClientCapabilities().then(capabilities => {
             console.info("PublicKeyCredential.getClientCapabilities:", capabilities)
