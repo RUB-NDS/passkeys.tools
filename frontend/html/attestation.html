@@ -50,46 +50,44 @@
 
 <div class="row mb-3">
     <div class="col">
-        <p>
-            <button class="btn btn-primary" id="attestationSendKeyToParserBtn">Send Key to Parser</button>
-        </p>
-        <p>
+        <div class="action-btn-standalone">
+            <button class="btn btn-primary" id="attestationSendKeyToParserBtn"><i class="bi bi-send me-2"></i>Send Key to Parser</button>
+        </div>
+        <div class="action-toolbar-group">
             <div class="input-group">
-                <span class="input-group-text">Load Key</span>
-                <select class="form-select" id="attestationLoadKeyNameSelect" style="max-width: 200px;"></select>
-                <select class="form-select" id="attestationLoadKeyTypeSelect" style="max-width: 200px;">
+                <span class="input-group-text"><i class="bi bi-download me-2"></i>Load Key</span>
+                <select class="form-select" id="attestationLoadKeyNameSelect"></select>
+                <select class="form-select" id="attestationLoadKeyTypeSelect">
                     <option value="publicKey" selected>Public Key</option>
                     <option value="privateKey">Private Key</option>
                 </select>
-                <button class="btn btn-primary" id="attestationLoadKeyBtn">Load</button>
+                <button class="btn btn-primary" id="attestationLoadKeyBtn"><i class="bi bi-box-arrow-in-down me-1"></i>Load</button>
             </div>
-        </p>
-        <p>
             <div class="input-group">
-                <span class="input-group-text">Store Key</span>
-                <input type="text" class="form-control" id="attestationStoreKeyNameInput" placeholder="Choose a name ..." style="max-width: 200px;">
-                <select class="form-select" id="attestationStoreKeyTypeSelect" style="max-width: 200px;">
+                <span class="input-group-text"><i class="bi bi-upload me-2"></i>Store Key</span>
+                <input type="text" class="form-control" id="attestationStoreKeyNameInput" placeholder="Key name...">
+                <select class="form-select" id="attestationStoreKeyTypeSelect">
                     <option value="publicKey" selected>Public Key</option>
                     <option value="privateKey">Private Key</option>
                 </select>
-                <button class="btn btn-primary" id="attestationStoreKeyBtn">Store</button>
+                <button class="btn btn-primary" id="attestationStoreKeyBtn"><i class="bi bi-box-arrow-up me-1"></i>Store</button>
             </div>
-        </p>
-        <p>
+        </div>
+        <div class="action-toolbar toolbar-secondary">
             <div class="input-group">
-                <span class="input-group-text">RP ID Hash</span>
-                <input type="text" class="form-control" id="attestationRpIdInput" placeholder="Choose an rp id ..." style="max-width: 200px;">
-                <input type="text" class="form-control" id="attestationRpIdHashInput" style="max-width: 200px;" disabled>
-                <button class="btn btn-primary" id="attestationRpIdBtn">Apply</button>
+                <span class="input-group-text"><i class="bi bi-hash me-2"></i>RP ID Hash</span>
+                <input type="text" class="form-control" id="attestationRpIdInput" placeholder="RP ID...">
+                <input type="text" class="form-control" id="attestationRpIdHashInput" placeholder="Hash (auto)" disabled>
+                <button class="btn btn-secondary" id="attestationRpIdBtn"><i class="bi bi-check-lg me-1"></i>Apply</button>
             </div>
-        </p>
-        <p>
+        </div>
+        <div class="action-toolbar toolbar-secondary">
             <div class="input-group">
-                <span class="input-group-text">AAGUID</span>
-                <select class="form-select" id="attestationAaguidSelect" style="max-width: 200px;"></select>
-                <button class="btn btn-primary" id="attestationAaguidBtn">Apply</button>
+                <span class="input-group-text"><i class="bi bi-fingerprint me-2"></i>AAGUID</span>
+                <select class="form-select" id="attestationAaguidSelect"></select>
+                <button class="btn btn-secondary" id="attestationAaguidBtn"><i class="bi bi-check-lg me-1"></i>Apply</button>
             </div>
-        </p>
+        </div>
     </div>
 </div>
 

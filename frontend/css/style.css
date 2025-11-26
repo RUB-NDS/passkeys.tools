@@ -159,6 +159,99 @@ textarea {
     font-weight: 600;
 }
 
+/* Action toolbar styling */
+.action-toolbar {
+    background-color: var(--bs-tertiary-bg);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.action-toolbar .input-group {
+    flex-wrap: nowrap;
+}
+
+.action-toolbar .input-group-text {
+    background-color: var(--bs-primary);
+    color: white;
+    border-color: var(--bs-primary);
+    font-weight: 500;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.action-toolbar .form-control,
+.action-toolbar .form-select {
+    max-width: none;
+    flex: 1;
+}
+
+.action-toolbar .btn {
+    min-width: 100px;
+}
+
+/* Toolbar variants */
+.action-toolbar.toolbar-danger .input-group-text {
+    background-color: var(--bs-danger);
+    border-color: var(--bs-danger);
+}
+
+.action-toolbar.toolbar-secondary .input-group-text {
+    background-color: var(--bs-secondary);
+    border-color: var(--bs-secondary);
+}
+
+.action-toolbar.toolbar-success .input-group-text {
+    background-color: var(--bs-success);
+    border-color: var(--bs-success);
+}
+
+/* Action toolbar with multiple rows */
+.action-toolbar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: var(--bs-tertiary-bg);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.action-toolbar-group .input-group {
+    flex-wrap: nowrap;
+}
+
+.action-toolbar-group .input-group-text {
+    background-color: var(--bs-primary);
+    color: white;
+    border-color: var(--bs-primary);
+    font-weight: 500;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.action-toolbar-group .form-control,
+.action-toolbar-group .form-select {
+    max-width: none;
+    flex: 1;
+}
+
+.action-toolbar-group .btn {
+    min-width: 100px;
+}
+
+/* Standalone action button */
+.action-btn-standalone {
+    background-color: var(--bs-tertiary-bg);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.action-btn-standalone .btn {
+    min-width: 200px;
+}
+
 /* Fix json-editor bg-light class in dark mode */
 [data-bs-theme="dark"] .bg-light {
     background-color: var(--bs-body-bg) !important;

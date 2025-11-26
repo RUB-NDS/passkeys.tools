@@ -6,31 +6,31 @@
 
 <div class="row mb-3">
     <div class="col">
-        <p>
+        <div class="action-toolbar">
             <div class="input-group">
-                <span class="input-group-text">Generate Key</span>
-                <input type="text" class="form-control" id="keysGenerateKeyNameInput" placeholder="Choose a name ..." style="max-width: 200px;">
-                <select class="form-select" id="keysGenerateKeyAlgSelect" style="max-width: 200px;"></select>
-                <button class="btn btn-primary" id="keysGenerateKeyBtn">Generate</button>
+                <span class="input-group-text"><i class="bi bi-key me-2"></i>Generate</span>
+                <input type="text" class="form-control" id="keysGenerateKeyNameInput" placeholder="Key name...">
+                <select class="form-select" id="keysGenerateKeyAlgSelect"></select>
+                <button class="btn btn-primary" id="keysGenerateKeyBtn"><i class="bi bi-plus-lg me-1"></i>Generate</button>
             </div>
-        </p>
-        <p>
+        </div>
+        <div class="action-toolbar toolbar-secondary">
             <div class="input-group">
-                <span class="input-group-text">Update Credential ID</span>
-                <input type="text" class="form-control" id="keysUpdateCredentialIdHexInput" placeholder="Choose a hex cid ..." style="max-width: 200px;">
-                <input type="text" class="form-control" id="keysUpdateCredentialIdB64urlInput" placeholder="Choose a b64url cid ..." style="max-width: 200px;">
-                <input type="text" class="form-control" id="keysUpdateCredentialIdB64Input" placeholder="Choose a b64 cid ..." style="max-width: 200px;">
-                <select class="form-select" id="keysUpdateCredentialIdSelect" style="max-width: 200px;"></select>
-                <button class="btn btn-primary" id="keysUpdateCredentialIdBtn">Update</button>
+                <span class="input-group-text"><i class="bi bi-pencil me-2"></i>Update CID</span>
+                <input type="text" class="form-control" id="keysUpdateCredentialIdHexInput" placeholder="Hex">
+                <input type="text" class="form-control" id="keysUpdateCredentialIdB64urlInput" placeholder="B64URL">
+                <input type="text" class="form-control" id="keysUpdateCredentialIdB64Input" placeholder="B64">
+                <select class="form-select" id="keysUpdateCredentialIdSelect"></select>
+                <button class="btn btn-secondary" id="keysUpdateCredentialIdBtn"><i class="bi bi-check-lg me-1"></i>Update</button>
             </div>
-        </p>
-        <p>
+        </div>
+        <div class="action-toolbar toolbar-danger">
             <div class="input-group">
-                <span class="input-group-text">Delete Key</span>
-                <select class="form-select" id="keysDeleteKeyNameSelect" style="max-width: 200px;"></select>
-                <button class="btn btn-danger" id="keysDeleteKeyBtn">Delete</button>
+                <span class="input-group-text"><i class="bi bi-trash me-2"></i>Delete</span>
+                <select class="form-select" id="keysDeleteKeyNameSelect"></select>
+                <button class="btn btn-danger" id="keysDeleteKeyBtn"><i class="bi bi-x-lg me-1"></i>Delete</button>
             </div>
-        </p>
+        </div>
     </div>
 </div>
 

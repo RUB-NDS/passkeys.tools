@@ -6,26 +6,29 @@
 
 <div class="row mb-3">
     <div class="col">
-        <p>
+        <div class="action-toolbar-group">
             <div class="input-group">
-                <span class="input-group-text">Add User</span>
-                <input type="text" class="form-control" id="usersAddUserRpIdInput" placeholder="RP ID" style="max-width: 150px;">
-                <input type="text" class="form-control" id="usersAddUserNameInput" placeholder="Name" style="max-width: 150px;">
-                <input type="text" class="form-control" id="usersAddUserDisplayNameInput" placeholder="Display Name" style="max-width: 150px;">
-                <input type="text" class="form-control" id="usersAddUserIdHexInput" placeholder="User ID (hex)" style="max-width: 150px;">
-                <input type="text" class="form-control" id="usersAddUserIdB64urlInput" placeholder="User ID (b64url)" style="max-width: 150px;">
-                <input type="text" class="form-control" id="usersAddUserIdB64Input" placeholder="User ID (b64)" style="max-width: 150px;">
-                <input type="text" class="form-control" id="usersAddUserModeInput" placeholder="Mode" style="max-width: 150px;">
-                <button class="btn btn-primary" id="usersAddUserBtn">Add</button>
+                <span class="input-group-text"><i class="bi bi-person-plus me-2"></i>Add User</span>
+                <input type="text" class="form-control" id="usersAddUserRpIdInput" placeholder="RP ID">
+                <input type="text" class="form-control" id="usersAddUserNameInput" placeholder="Name">
+                <input type="text" class="form-control" id="usersAddUserDisplayNameInput" placeholder="Display Name">
+                <input type="text" class="form-control" id="usersAddUserModeInput" placeholder="Mode">
             </div>
-        </p>
-        <p>
             <div class="input-group">
-                <span class="input-group-text">Delete User</span>
-                <select class="form-select" id="usersDeleteUserSelect" style="max-width: 200px;"></select>
-                <button class="btn btn-danger" id="usersDeleteUserBtn">Delete</button>
+                <span class="input-group-text"><i class="bi bi-hash me-2"></i>User ID</span>
+                <input type="text" class="form-control" id="usersAddUserIdHexInput" placeholder="Hex">
+                <input type="text" class="form-control" id="usersAddUserIdB64urlInput" placeholder="B64URL">
+                <input type="text" class="form-control" id="usersAddUserIdB64Input" placeholder="B64">
+                <button class="btn btn-primary" id="usersAddUserBtn"><i class="bi bi-plus-lg me-1"></i>Add</button>
             </div>
-        </p>
+        </div>
+        <div class="action-toolbar toolbar-danger">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person-x me-2"></i>Delete</span>
+                <select class="form-select" id="usersDeleteUserSelect"></select>
+                <button class="btn btn-danger" id="usersDeleteUserBtn"><i class="bi bi-x-lg me-1"></i>Delete</button>
+            </div>
+        </div>
     </div>
 </div>
 
