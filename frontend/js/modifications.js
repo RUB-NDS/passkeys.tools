@@ -688,7 +688,7 @@ export const renderModifications = async (operation, pkco, origin, mode, crossOr
 
     for (const [name, action] of Object.entries(modifications[operation])) {
         const check = document.createElement("div")
-        check.classList.add("form-check", "ms-3")
+        check.classList.add("form-check")
 
         const input = document.createElement("input")
         input.classList.add("form-check-input")
@@ -718,7 +718,7 @@ export const renderModifications = async (operation, pkco, origin, mode, crossOr
 
         // Add checkmark and strike through if already applied
         if (isAlreadyApplied) {
-            label.innerHTML = `<span style="color: green;">✓</span> <span style="text-decoration: line-through;">${name}</span>`
+            label.innerHTML = `<i class="bi bi-check-circle-fill text-success me-1"></i><span class="text-decoration-line-through text-muted">${name}</span>`
             label.title = "This modification has already been applied"
         } else {
             label.textContent = name

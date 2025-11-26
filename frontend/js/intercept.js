@@ -10,6 +10,25 @@ import { renderUsers } from "./main.js"
 import { renderModifications } from "./modifications.js"
 import { addHistoryEntry } from "./history.js"
 
+const updateStatusBanner = (type, origin, mode) => {
+    const banner = document.getElementById("interceptorStatusBanner")
+    if (!banner) return
+
+    const isCreate = type === "create"
+    const typeLabel = isCreate ? "Attestation / Create" : "Assertion / Get"
+    const iconClass = isCreate ? "bi-person-plus-fill" : "bi-person-badge-fill"
+
+    banner.className = `alert alert-primary d-flex align-items-center mb-0`
+    banner.innerHTML = `
+        <i class="bi ${iconClass} me-2 fs-5"></i>
+        <div>
+            <strong>${typeLabel}</strong> request intercepted from
+            <code class="ms-1">${origin}</code>
+            <span class="badge bg-secondary ms-2">${mode}</span>
+        </div>
+    `
+}
+
 const addCopyAsJsonButton = (data) => {
     const overviewHeader = interceptorControls.querySelector("h4")
     if (!overviewHeader || overviewHeader.textContent !== "Overview") return
@@ -46,11 +65,11 @@ export const initializeCopyButtons = () => {
                     // Parse and re-stringify to ensure valid JSON
                     const requestData = JSON.parse(requestTextarea.value)
                     await navigator.clipboard.writeText(JSON.stringify(requestData, null, 2))
-                    copyRequestBtn.textContent = "Copied!"
+                    copyRequestBtn.innerHTML = '<i class="bi bi-check"></i>'
                     copyRequestBtn.className = "btn btn-sm btn-success"
                     setTimeout(() => {
-                        copyRequestBtn.textContent = "Copy as JSON"
-                        copyRequestBtn.className = "btn btn-sm btn-secondary"
+                        copyRequestBtn.innerHTML = '<i class="bi bi-clipboard"></i>'
+                        copyRequestBtn.className = "btn btn-sm btn-outline-secondary"
                     }, 2000)
                 } catch (e) {
                     console.error("Failed to parse request as JSON:", e)
@@ -69,11 +88,11 @@ export const initializeCopyButtons = () => {
                     // Parse and re-stringify to ensure valid JSON
                     const responseData = JSON.parse(responseTextarea.value)
                     await navigator.clipboard.writeText(JSON.stringify(responseData, null, 2))
-                    copyResponseBtn.textContent = "Copied!"
+                    copyResponseBtn.innerHTML = '<i class="bi bi-check"></i>'
                     copyResponseBtn.className = "btn btn-sm btn-success"
                     setTimeout(() => {
-                        copyResponseBtn.textContent = "Copy as JSON"
-                        copyResponseBtn.className = "btn btn-sm btn-secondary"
+                        copyResponseBtn.innerHTML = '<i class="bi bi-clipboard"></i>'
+                        copyResponseBtn.className = "btn btn-sm btn-outline-secondary"
                     }, 2000)
                 } catch (e) {
                     console.error("Failed to parse response as JSON:", e)
@@ -90,13 +109,10 @@ const updateInterceptorResponseTextarea = (dict) => {
 }
 
 const addSendButton = (operation) => {
-    const buttonDiv = document.createElement("div")
-    buttonDiv.className = "mb-2"
-
     const sendButton = document.createElement("button")
     sendButton.id = `interceptorSendButton`
-    sendButton.className = "btn btn-primary w-100"
-    sendButton.textContent = "Send Response to Extension"
+    sendButton.className = "btn btn-sm btn-primary"
+    sendButton.innerHTML = '<i class="bi bi-send me-1"></i>Send'
     sendButton.addEventListener("click", async () => {
         const response = JSON.parse(interceptorResponseTextarea.value || "{}")
 
@@ -129,27 +145,23 @@ const addSendButton = (operation) => {
                 operation: operation,
                 response: response
             }, "*")
-            sendButton.textContent = "Response Sent!"
-            sendButton.className = "btn btn-success w-100"
+            sendButton.innerHTML = '<i class="bi bi-check me-1"></i>Sent!'
+            sendButton.className = "btn btn-sm btn-success"
             sendButton.disabled = true
             setTimeout(() => { window.close() }, 200)
         } else {
-            sendButton.textContent = "Error: No opener window"
-            sendButton.className = "btn btn-danger w-100"
+            sendButton.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>Error'
+            sendButton.className = "btn btn-sm btn-danger"
         }
     })
-    buttonDiv.appendChild(sendButton)
-    interceptorActions.appendChild(buttonDiv)
+    interceptorResponseActions.appendChild(sendButton)
 }
 
 const addRejectButton = (operation) => {
-    const buttonDiv = document.createElement("div")
-    buttonDiv.className = "mb-2"
-
     const rejectButton = document.createElement("button")
     rejectButton.id = `interceptorRejectButton`
-    rejectButton.className = "btn btn-danger w-100"
-    rejectButton.textContent = "Send Reject to Extension"
+    rejectButton.className = "btn btn-sm btn-danger"
+    rejectButton.innerHTML = '<i class="bi bi-x-circle me-1"></i>Reject'
     rejectButton.addEventListener("click", async () => {
         const response = JSON.parse(interceptorResponseTextarea.value || "{}")
 
@@ -182,27 +194,23 @@ const addRejectButton = (operation) => {
                 operation: operation,
                 response: response
             }, "*")
-            rejectButton.textContent = "Reject Sent!"
-            rejectButton.className = "btn btn-success w-100"
+            rejectButton.innerHTML = '<i class="bi bi-check me-1"></i>Rejected!'
+            rejectButton.className = "btn btn-sm btn-success"
             rejectButton.disabled = true
             setTimeout(() => { window.close() }, 200)
         } else {
-            rejectButton.textContent = "Error: No opener window"
-            rejectButton.className = "btn btn-danger w-100"
+            rejectButton.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>Error'
+            rejectButton.className = "btn btn-sm btn-danger"
         }
     })
-    buttonDiv.appendChild(rejectButton)
-    interceptorActions.appendChild(buttonDiv)
+    interceptorResponseActions.appendChild(rejectButton)
 }
 
 const addDismissButton = (operation) => {
-    const buttonDiv = document.createElement("div")
-    buttonDiv.className = "mb-2"
-
     const dismissButton = document.createElement("button")
     dismissButton.id = `interceptorDismissButton`
-    dismissButton.className = "btn btn-secondary w-100"
-    dismissButton.textContent = "Dismiss"
+    dismissButton.className = "btn btn-sm btn-secondary"
+    dismissButton.innerHTML = '<i class="bi bi-dash-circle me-1"></i>Dismiss'
     dismissButton.addEventListener("click", async () => {
         const response = JSON.parse(interceptorResponseTextarea.value || "{}")
 
@@ -229,13 +237,12 @@ const addDismissButton = (operation) => {
         }
         await addHistoryEntry(historyEntry)
 
-        dismissButton.textContent = "Dismissed!"
-        dismissButton.className = "btn btn-success w-100"
+        dismissButton.innerHTML = '<i class="bi bi-check me-1"></i>Dismissed!'
+        dismissButton.className = "btn btn-sm btn-success"
         dismissButton.disabled = true
         setTimeout(() => { window.close() }, 200)
     })
-    buttonDiv.appendChild(dismissButton)
-    interceptorActions.appendChild(buttonDiv)
+    interceptorResponseActions.appendChild(dismissButton)
 }
 
 const addUserHandleSelect = async (operation, rpId, mode) => {
@@ -535,6 +542,9 @@ export const parseInterceptParams = async () => {
         loadPkcco(pkcco)
         await storeUserFromPkcco(pkcco, origin, mode)
 
+        // status banner
+        updateStatusBanner("create", origin, mode)
+
         // overview
         interceptorControlsMode.innerText = mode
         interceptorControlsType.innerText = "Attestation / Create"
@@ -578,6 +588,9 @@ export const parseInterceptParams = async () => {
         const mediation = hparams.get("mediation") || undefined
 
         loadPkcro(pkcro)
+
+        // status banner
+        updateStatusBanner("get", origin, mode)
 
         // overview
         interceptorControlsMode.innerText = mode

@@ -332,6 +332,49 @@ textarea {
     min-width: 200px;
 }
 
+/* Interceptor styling */
+#interceptorRequestTextarea,
+#interceptorResponseTextarea {
+    height: 100%;
+    min-height: 850px;
+    resize: none;
+}
+
+#interceptorControls {
+    max-height: 850px;
+    overflow-y: auto;
+}
+
+.interceptor-modifications {
+    padding: 8px;
+    background-color: var(--bs-tertiary-bg);
+    border-radius: 6px;
+}
+
+.interceptor-modifications .form-check {
+    padding: 6px 8px 6px 28px;
+    margin: 0;
+    border-radius: 4px;
+    transition: background-color 0.15s ease;
+}
+
+.interceptor-modifications .form-check:hover {
+    background-color: var(--bs-secondary-bg);
+}
+
+.interceptor-modifications .form-check-input:checked + .form-check-label {
+    font-weight: 500;
+}
+
+/* Interceptor action selects */
+#interceptorActions .input-group {
+    margin-bottom: 8px;
+}
+
+#interceptorActions .input-group-text {
+    min-width: 100px;
+}
+
 /* Fix json-editor bg-light class in dark mode */
 [data-bs-theme="dark"] .bg-light {
     background-color: var(--bs-body-bg) !important;
