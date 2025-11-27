@@ -1,3 +1,8 @@
+/**
+ * Extension initialization script (runs in page context).
+ * Sets up the global namespace and listens for configuration changes.
+ */
+
 /* Initialize global namespace */
 window._pk = window._pk || {}
 

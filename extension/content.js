@@ -1,3 +1,9 @@
+/**
+ * Content script for the Passkeys.Tools extension.
+ * Injects page scripts and handles communication between
+ * the extension context and the page context.
+ */
+
 (() => {
     const SCRIPTS = ["init.js", "globals.js", "helpers.js", "hooks.js"]
     const MODE_ELEMENT_ID = "pk-interceptor-mode"

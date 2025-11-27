@@ -1,3 +1,8 @@
+/**
+ * Extension popup UI controller.
+ * Handles settings for interceptor mode, popup display, and frontend URL.
+ */
+
 document.addEventListener("DOMContentLoaded", async () => {
     const statusElement = document.getElementById("status")
     const modeOptions = document.querySelectorAll(".mode-option")
@@ -122,7 +127,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const popupMode = e.target.value
 
             try {
-                await chrome.storage.local.set({ popupMode: popupMode })
+                await chrome.storage.local.set({ popupMode })
                 showStatus(`Popup mode changed to: ${popupMode}`, "success")
 
                 setTimeout(() => {

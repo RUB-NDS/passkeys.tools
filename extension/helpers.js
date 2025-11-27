@@ -1,3 +1,8 @@
+/**
+ * Helper utilities for the Passkeys.Tools extension.
+ * Provides encoding/decoding, popup handling, and response creation functions.
+ */
+
 _pk.helpers = {}
 
 /* Base64url encoding/decoding utilities */

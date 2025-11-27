@@ -1,3 +1,9 @@
+/**
+ * WebAuthn API hooks for intercepting credential operations.
+ * Replaces navigator.credentials.create/get with custom implementations
+ * that open a popup for user interaction and response manipulation.
+ */
+
 /* Compatibility check */
 const requiredFeatures = [
     ["navigator.credentials", navigator.credentials],
