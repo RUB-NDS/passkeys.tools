@@ -148,26 +148,30 @@ setupEncodingHandlers({
 /* attestation -> attestationObject */
 
 const encodeAttestationAttestationObject = async () => {
-    const data = editors.attestationAttestationObjectDecEditor.getValue()
-    const b64url = encoders.attestationObject(data, "b64url")
-    attestationAttestationObjectEncB64urlTextarea.value = b64url
-    const b64 = encoders.attestationObject(data, "b64")
-    attestationAttestationObjectEncB64Textarea.value = b64
-    const hex = encoders.attestationObject(data, "hex")
-    attestationAttestationObjectEncHexTextarea.value = hex
-    const b64urlAuthData = encoders.attestationObject(data, "b64url", "authData")
-    attestationAuthenticatorDataEncB64urlTextarea.value = b64urlAuthData
-    const b64AuthData = encoders.attestationObject(data, "b64", "authData")
-    attestationAuthenticatorDataEncB64Textarea.value = b64AuthData
-    const hexAuthData = encoders.attestationObject(data, "hex", "authData")
-    attestationAuthenticatorDataEncHexTextarea.value = hexAuthData
-    const jwk = data.authData.attestedCredentialData.credentialPublicKey
-    const derB64url = await encoders.keys(jwk, "der", "b64url")
-    attestationPublicKeyDerB64urlTextarea.value = derB64url
-    const derB64 = await encoders.keys(jwk, "der", "b64")
-    attestationPublicKeyDerB64Textarea.value = derB64
-    const derHex = await encoders.keys(jwk, "der", "hex")
-    attestationPublicKeyDerHexTextarea.value = derHex
+    try {
+        const data = editors.attestationAttestationObjectDecEditor.getValue()
+        const b64url = encoders.attestationObject(data, "b64url")
+        attestationAttestationObjectEncB64urlTextarea.value = b64url
+        const b64 = encoders.attestationObject(data, "b64")
+        attestationAttestationObjectEncB64Textarea.value = b64
+        const hex = encoders.attestationObject(data, "hex")
+        attestationAttestationObjectEncHexTextarea.value = hex
+        const b64urlAuthData = encoders.attestationObject(data, "b64url", "authData")
+        attestationAuthenticatorDataEncB64urlTextarea.value = b64urlAuthData
+        const b64AuthData = encoders.attestationObject(data, "b64", "authData")
+        attestationAuthenticatorDataEncB64Textarea.value = b64AuthData
+        const hexAuthData = encoders.attestationObject(data, "hex", "authData")
+        attestationAuthenticatorDataEncHexTextarea.value = hexAuthData
+        const jwk = data.authData.attestedCredentialData.credentialPublicKey
+        const derB64url = await encoders.keys(jwk, "der", "b64url")
+        attestationPublicKeyDerB64urlTextarea.value = derB64url
+        const derB64 = await encoders.keys(jwk, "der", "b64")
+        attestationPublicKeyDerB64Textarea.value = derB64
+        const derHex = await encoders.keys(jwk, "der", "hex")
+        attestationPublicKeyDerHexTextarea.value = derHex
+    } catch {
+        // Silently ignore encoding errors during initial load when JWK is empty
+    }
 }
 
 setupEncodingHandlers({
@@ -346,17 +350,21 @@ signAssertionWithStoredKeyBtn.onclick = async () => {
 /* keys */
 
 const encodeKeys = async () => {
-    const data = editors.keysJwkEditor.getValue()
-    const b64url = await encoders.keys(data, "cose", "b64url")
-    keysCoseB64urlTextarea.value = b64url
-    const b64 = await encoders.keys(data, "cose", "b64")
-    keysCoseB64Textarea.value = b64
-    const hex = await encoders.keys(data, "cose", "hex")
-    keysCoseHexTextarea.value = hex
-    const pem = await encoders.keys(data, "pem", "b64")
-    keysPemB64Textarea.value = pem
-    const der = await encoders.keys(data, "der", "b64url")
-    keysDerB64urlTextarea.value = der
+    try {
+        const data = editors.keysJwkEditor.getValue()
+        const b64url = await encoders.keys(data, "cose", "b64url")
+        keysCoseB64urlTextarea.value = b64url
+        const b64 = await encoders.keys(data, "cose", "b64")
+        keysCoseB64Textarea.value = b64
+        const hex = await encoders.keys(data, "cose", "hex")
+        keysCoseHexTextarea.value = hex
+        const pem = await encoders.keys(data, "pem", "b64")
+        keysPemB64Textarea.value = pem
+        const der = await encoders.keys(data, "der", "b64url")
+        keysDerB64urlTextarea.value = der
+    } catch {
+        // Silently ignore encoding errors during initial load when JWK is empty
+    }
 }
 
 setupEncodingHandlers({
