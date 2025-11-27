@@ -37,7 +37,7 @@
 
                 <h6><i class="bi bi-lightning me-2"></i>Interceptor Mode</h6>
                 <p class="text-muted small mb-2">Live interception and modification of WebAuthn API calls</p>
-                <p>Builds on standalone mode by adding real-time interception via the <a href="extension.zip">browser extension</a>. The extension hooks into the WebAuthn API to capture and modify all <code>navigator.credentials.create()</code> and <code>get()</code> calls before they reach the relying party—similar to <a href="https://portswigger.net/burp">Burp Suite</a> but specialized for WebAuthn. Data remains in localStorage.</p>
+                <p>Builds on Standalone Mode by adding real-time interception via the <a href="extension.zip">browser extension</a>. The extension hooks into the WebAuthn API to capture and modify all <code>navigator.credentials.create()</code> and <code>get()</code> calls before they reach the relying party—similar to <a href="https://portswigger.net/burp">Burp Suite</a> but specialized for WebAuthn. Data remains in localStorage.</p>
                 <p><strong>Use when:</strong> You need to test a relying party's server-side validation by modifying live WebAuthn responses.</p>
                 <p class="mb-3"><strong>Example:</strong> Intercept a registration, replace the challenge with random bytes, and verify if the server properly validates challenge binding. Or flip a bit in the signature to test signature verification.</p>
 
@@ -45,7 +45,7 @@
 
                 <h6><i class="bi bi-window-stack me-2"></i>Cross-Browser Mode</h6>
                 <p class="text-muted small mb-2">Multi-browser testing with shared remote storage</p>
-                <p>Extends interceptor mode with a remote storage backend, enabling two browser profiles (e.g., victim and attacker) to share keys, users, and history in real-time. This is essential for testing cross-session attacks where data must flow between separate browser instances. Optional end-to-end encryption protects your data on the server.</p>
+                <p>Extends Interceptor Mode with a remote storage backend, enabling two browser profiles (e.g., victim and attacker) to share keys, users, and history in real-time. This is essential for testing cross-session attacks where data must flow between separate browser instances. Optional end-to-end encryption protects your data on the server.</p>
                 <p><strong>Use when:</strong> You need to simulate attacks involving multiple parties, such as session binding or credential reuse across different sessions.</p>
                 <p><strong>Example:</strong> In browser A (victim), start a passkey registration and dismiss it. In browser B (attacker), intercept a registration and swap in the victim's challenge. If the server accepts this, it indicates a session binding vulnerability.</p>
             </div>
@@ -83,6 +83,92 @@
 
                 <h6><i class="bi bi-lightning me-2"></i>Interceptor</h6>
                 <p>Central hub for live WebAuthn interception (requires <a href="extension.zip">browser extension</a>). View request details, select credentials and keys, apply one-click security tests (challenge manipulation, signature tampering, flag modifications), and craft custom responses.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-rocket-takeoff me-2"></i>Getting Started</h5>
+            </div>
+            <div class="card-body">
+                <p>Follow these step-by-step instructions to set up your preferred usage mode:</p>
+
+                <h6 class="mt-3"><i class="bi bi-box me-2"></i>Standalone Mode Setup</h6>
+                <p class="mb-3">No setup required! Simply open <span class="small-caps">Passkeys.Tools</span> in your browser and start using the Attestation, Assertion, Keys, and Converters tabs. All data is automatically stored in your browser's localStorage and persists across sessions.</p>
+
+                <hr>
+
+                <h6><i class="bi bi-lightning me-2"></i>Interceptor Mode Setup</h6>
+                <p>To intercept live WebAuthn operations, you need to install and configure the browser extension:</p>
+
+                <ol>
+                    <li class="mb-2">
+                        <strong>Download the extension:</strong> Click <a href="extension.zip">Extension</a> in the navbar to download the extension package.
+                    </li>
+                    <li class="mb-2">
+                        <strong>Install the extension:</strong> Extract the downloaded archive. In Chrome, navigate to <code>chrome://extensions</code>, enable "Developer mode" (top right), click "Load unpacked", and select the extracted extension folder.
+                    </li>
+                    <li class="mb-2">
+                        <strong>Configure the extension:</strong> Click the extension icon in your browser toolbar to open the popup. Configure these settings:
+                        <ul class="mt-2">
+                            <li><strong>Frontend URL:</strong> The URL of your <span class="small-caps">Passkeys.Tools</span> instance (default: <code>https://passkeys.tools</code>). Change this if you're self-hosting.</li>
+                            <li><strong>Operation Mode:</strong> Select <em>Default</em>. Each website gets its own credential scoped to that website (normal behavior).</li>
+                            <li><strong>Popup Display Mode:</strong> Choose <em>Detached Window</em> (opens in a separate 1200x800 window) or <em>Inline Popup</em> (opens as an overlay).</li>
+                        </ul>
+                    </li>
+                    <li class="mb-2">
+                        <strong>Storage:</strong> Data is stored in your browser's localStorage by default. No additional configuration needed.
+                    </li>
+                    <li class="mb-2">
+                        <strong>Start intercepting:</strong> Visit any website that uses WebAuthn passkeys. When a registration or authentication is triggered, <span class="small-caps">Passkeys.Tools</span> will open automatically, allowing you to inspect and modify the request before responding.
+                    </li>
+                </ol>
+
+                <hr>
+
+                <h6><i class="bi bi-window-stack me-2"></i>Cross-Browser Mode Setup</h6>
+                <p>To share data between multiple browser profiles or browsers, you need to configure the extension for profile mode and enable remote storage:</p>
+
+                <ol>
+                    <li class="mb-2">
+                        <strong>Install the extension</strong> in all Chrome profiles you want to use (see Interceptor Mode steps 1-2).
+                    </li>
+                    <li class="mb-2">
+                        <strong>Configure Operation Mode:</strong> In the extension popup, select <em>Profile 1</em> in one browser (e.g., attacker) and <em>Profile 2</em> in another (e.g., victim). All websites will share the same credential scoped to the selected profile, enabling cross-browser credential swapping tests.
+                    </li>
+                    <li class="mb-2">
+                        <strong>Enable Remote Storage:</strong> Navigate to the <a href="#" onclick="showTab('settings'); return false;">Settings</a> tab and select <em>Remote Storage</em> mode.
+                    </li>
+                    <li class="mb-2">
+                        <strong>Set the Server URL:</strong> Enter the URL of your storage backend:
+                        <ul class="mt-2">
+                            <li><em>Hosted backend:</em> Use our provided backend at <code>https://db.passkeys.tools</code> (no setup required).</li>
+                            <li><em>Self-hosted:</em> Run your own backend server and enter its URL.</li>
+                        </ul>
+                    </li>
+                    <li class="mb-2">
+                        <strong>Configure a Secret:</strong> Enter a unique secret string. This secret:
+                        <ul class="mt-2">
+                            <li>Acts as your "account identifier" on the backend—all browsers using the same secret share the same data.</li>
+                            <li>Must be identical across all browsers/profiles you want to sync.</li>
+                            <li>Should be kept private; anyone with your secret can access your stored data.</li>
+                            <li><strong>Important:</strong> If you lose your secret while using E2E encryption, your encrypted data cannot be recovered. Store your secret securely.</li>
+                        </ul>
+                    </li>
+                    <li class="mb-2">
+                        <strong>Enable End-to-End Encryption (recommended):</strong> When enabled, all data is encrypted in your browser before being sent to the server. The server only stores encrypted blobs and cannot read your keys, users, or history. The encryption key is derived from your secret and never leaves your browser.
+                    </li>
+                    <li class="mb-2">
+                        <strong>Apply settings in all browsers:</strong> Use the exact same Server URL, Secret, and E2E Encryption setting in every browser profile that should share data.
+                    </li>
+                    <li class="mb-2">
+                        <strong>Verify sync:</strong> Create a test key in one browser, then check the Keys tab in another browser—it should appear automatically.
+                    </li>
+                </ol>
             </div>
         </div>
     </div>
