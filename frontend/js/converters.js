@@ -1,3 +1,8 @@
+/**
+ * Data conversion utilities for WebAuthn.
+ * Handles encoding/decoding between base64url, hex, Uint8Array, and other formats.
+ */
+
 import cosekey from "./parse-cosekey"
 
 const b64urlToB64NoPadding = (b64url) => b64url.replace(/-/g, "+").replace(/_/g, "/")

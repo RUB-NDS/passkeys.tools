@@ -1,4 +1,10 @@
+/**
+ * Storage module for managing local and remote data storage.
+ * Supports end-to-end encryption (E2EE) for remote storage.
+ */
+
 import { setStatusMessage, clearStatus } from "./helpers.js"
+import logger from "./logger.js"
 
 const STORAGE_CONFIG_KEY = "storageConfig"
 const THEME_CONFIG_KEY = "themeConfig"
@@ -199,7 +205,7 @@ class StorageInterface {
 
             return data || {}
         } catch (error) {
-            console.error("Error fetching from remote storage:", error)
+            logger.error("Error fetching from remote storage:", error)
             throw error
         }
     }
@@ -244,7 +250,7 @@ class StorageInterface {
 
             return true
         } catch (error) {
-            console.error("Error saving to remote storage:", error)
+            logger.error("Error saving to remote storage:", error)
             throw error
         }
     }
@@ -270,7 +276,7 @@ class StorageInterface {
 
             return true
         } catch (error) {
-            console.error("Connection test failed:", error)
+            logger.error("Connection test failed:", error)
             return false
         }
     }
@@ -351,7 +357,7 @@ class StorageInterface {
 
             return value
         } catch (error) {
-            console.error("Error fetching item from remote storage:", error)
+            logger.error("Error fetching item from remote storage:", error)
             throw error
         }
     }
@@ -392,7 +398,7 @@ class StorageInterface {
 
             return true
         } catch (error) {
-            console.error("Error saving item to remote storage:", error)
+            logger.error("Error saving item to remote storage:", error)
             throw error
         }
     }
@@ -426,7 +432,7 @@ class StorageInterface {
 
             return true
         } catch (error) {
-            console.error("Error deleting item from remote storage:", error)
+            logger.error("Error deleting item from remote storage:", error)
             throw error
         }
     }

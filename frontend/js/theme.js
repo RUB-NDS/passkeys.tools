@@ -1,3 +1,8 @@
+/**
+ * Theme management module.
+ * Handles light/dark theme switching with system preference support.
+ */
+
 import { getThemeConfig } from "./storage.js"
 
 export const applyTheme = (theme) => {

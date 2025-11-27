@@ -1,3 +1,8 @@
+/**
+ * JSON Editor instances for WebAuthn data structures.
+ * Configures and exports JSONEditor instances for various data types.
+ */
+
 import {
     attestationObjectSchema, assertionAuthenticatorDataSchema, clientDataJSONSchema,
     jwkSchema, createSchema, getSchema, mediationSchema

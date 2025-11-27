@@ -1,3 +1,8 @@
+/**
+ * Modification presets for WebAuthn request/response manipulation.
+ * Provides predefined modifications for security testing scenarios.
+ */
+
 import * as editors from "./editors.js"
 import { b64urlToUint8, uint8ToB64url } from "./converters.js"
 import { getHistory } from "./history.js"

@@ -1,7 +1,13 @@
-import { uint8ToHex, strSha256Uint8 } from "./converters.js"
+/**
+ * PublicKeyCredentialRequestOptions (PKCRO) processing.
+ * Converts request options to assertion response data.
+ */
 
-export const pkcroToAssertion = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=undefined) => {
-    console.log("PKCRO to Assertion:", pkcro, origin, mode, crossOrigin, topOrigin)
+import { uint8ToHex, strSha256Uint8 } from "./converters.js"
+import logger from "./logger.js"
+
+export const pkcroToAssertion = async (pkcro, origin, mode, crossOrigin = undefined, topOrigin = undefined) => {
+    logger.debug("PKCRO to Assertion:", pkcro, origin, mode, crossOrigin, topOrigin)
 
     // clientDataJSON
     const clientDataJSON = {}

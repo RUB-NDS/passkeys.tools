@@ -1,7 +1,12 @@
+/**
+ * Keyboard shortcuts for quick navigation and actions.
+ */
+
 import { showTab } from "./main.js"
+import logger from "./logger.js"
 
 const selectCredentialAndKey = (keyName) => {
-    console.log(`Selecting credential and key: ${keyName}`)
+    logger.debug(`Selecting credential and key: ${keyName}`)
 
     // Find the select elements
     const createCredentialIdSelect = document.querySelector("#createCredentialIdSelect")

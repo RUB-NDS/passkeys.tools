@@ -1,3 +1,8 @@
+/**
+ * General helper utilities for the frontend.
+ * Provides DOM manipulation helpers and utility functions.
+ */
+
 export const deepEqual = (a, b) => {
     if (a === b) return true
 

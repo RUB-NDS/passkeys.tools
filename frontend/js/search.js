@@ -1,4 +1,9 @@
-/* Search module for history entries */
+/**
+ * Search module for history entries.
+ * Provides a query language for filtering history with field comparisons and logical operators.
+ */
+
+import logger from "./logger.js"
 
 // Token types for the lexer
 const TokenType = {
@@ -362,7 +367,7 @@ export function searchHistory(entries, query) {
 
         return entries.filter(entry => evaluator.evaluate(entry))
     } catch (error) {
-        console.error("Search query error:", error)
+        logger.error("Search query error:", error)
         // On error, fall back to simple text search
         const searchLower = query.toLowerCase()
         return entries.filter(entry => {

@@ -1,7 +1,12 @@
+/**
+ * History management module for tracking WebAuthn interception events.
+ */
+
 import { storage } from "./storage.js"
 import { searchHistory } from "./search.js"
 import { showStorageError } from "./main.js"
 import { setButtonContent, setButtonIcon } from "./helpers.js"
+import logger from "./logger.js"
 
 /* History entry structure:
 {
@@ -86,7 +91,7 @@ export const importHistory = async (file) => {
             overwritten: overwrittenCount
         }
     } catch (error) {
-        console.error("Error importing history:", error)
+        logger.error("Error importing history:", error)
         return {
             success: false,
             error: error.message
@@ -144,7 +149,7 @@ export const renderHistory = async (searchQuery = "") => {
     try {
         allHistory = await getHistory()
     } catch (error) {
-        console.error("Error loading history:", error)
+        logger.error("Error loading history:", error)
         showStorageError()
     }
 

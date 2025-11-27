@@ -1,3 +1,7 @@
+/**
+ * JSON Schema definitions for WebAuthn data structures.
+ * Used by JSONEditor for form validation and structure.
+ */
 
 // https://w3c.github.io/webauthn/#client-data
 // https://w3c.github.io/webauthn/#clientdatajson-serialization

@@ -1,3 +1,8 @@
+/**
+ * Interceptor module for handling WebAuthn request/response interception.
+ * Parses URL parameters and manages the interceptor UI workflow.
+ */
+
 import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
 import { showTab, highlightTabs } from "./main.js"
@@ -10,6 +15,7 @@ import { renderUsers } from "./main.js"
 import { renderModifications } from "./modifications.js"
 import { addHistoryEntry } from "./history.js"
 import { createIcon, setButtonContent, setButtonIcon } from "./helpers.js"
+import logger from "./logger.js"
 
 const updateStatusBanner = (type, origin, mode) => {
     const banner = document.getElementById("interceptorStatusBanner")
@@ -89,7 +95,7 @@ export const initializeCopyButtons = () => {
                         copyRequestBtn.className = "btn btn-sm btn-outline-secondary"
                     }, 2000)
                 } catch (e) {
-                    console.error("Failed to parse request as JSON:", e)
+                    logger.error("Failed to parse request as JSON:", e)
                 }
             }
         })
@@ -112,7 +118,7 @@ export const initializeCopyButtons = () => {
                         copyResponseBtn.className = "btn btn-sm btn-outline-secondary"
                     }, 2000)
                 } catch (e) {
-                    console.error("Failed to parse response as JSON:", e)
+                    logger.error("Failed to parse response as JSON:", e)
                 }
             }
         })
@@ -287,7 +293,7 @@ const addUserHandleSelect = async (operation, rpId, mode) => {
 
     select.addEventListener("change", () => {
         const userId = select.value
-        console.log("Selected User ID:", userId)
+        logger.debug("Selected User ID:", userId)
         if (operation === "create") {
             // there is no user handle in create operation, so we do nothing
         } else if (operation === "get") {
@@ -348,7 +354,7 @@ const addCredentialIdSelect = async (operation, rpId, mode) => {
             crypto.getRandomValues(random)
             credentialId = uint8ToHex(random)
         }
-        console.log("Selected Credential ID:", credentialId)
+        logger.debug("Selected Credential ID:", credentialId)
         if (operation === "create") {
             const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
             attestationObject.authData.attestedCredentialData.credentialId = credentialId
@@ -397,7 +403,7 @@ const addKeySelect = async (operation, rpId, mode) => {
 
     select.addEventListener("change", async () => {
         const name = select.value
-        console.log("Selected Key Name:", name)
+        logger.debug("Selected Key Name:", name)
         if (operation === "create") {
             const key = await getKey(name)
             const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
@@ -415,7 +421,7 @@ const addKeySelect = async (operation, rpId, mode) => {
 }
 
 const loadPkcco = (pkcco) => {
-    console.log("Load PKCCO:", pkcco)
+    logger.debug("Load PKCCO:", pkcco)
     editors.createEditor.on("change", async () => {
         interceptorRequestTextarea.value = JSON.stringify(editors.createEditor.getValue(), null, 2)
     })
@@ -423,7 +429,7 @@ const loadPkcco = (pkcco) => {
 }
 
 const storeUserFromPkcco = async (pkcco, origin, mode) => {
-    console.log("Store User from PKCCO:", pkcco, origin, mode)
+    logger.debug("Store User from PKCCO:", pkcco, origin, mode)
     const rpId = pkcco.rp.id || (new URL(origin)).hostname
     const userId = b64urlToHex(pkcco.user.id) || ""
     const userName = pkcco.user.name || ""
@@ -434,15 +440,15 @@ const storeUserFromPkcco = async (pkcco, origin, mode) => {
 }
 
 const loadPkcro = (pkcro) => {
-    console.log("Load PKCRO:", pkcro)
+    logger.debug("Load PKCRO:", pkcro)
     editors.getEditor.on("change", async () => {
         interceptorRequestTextarea.value = JSON.stringify(editors.getEditor.getValue(), null, 2)
     })
     editors.getEditor.setValue(pkcro)
 }
 
-const applyPkcco = async (pkcco, origin, mode, crossOrigin=undefined, topOrigin=undefined) => {
-    console.log("Apply PKCCO:", pkcco, origin, mode, crossOrigin, topOrigin)
+const applyPkcco = async (pkcco, origin, mode, crossOrigin = undefined, topOrigin = undefined) => {
+    logger.debug("Apply PKCCO:", pkcco, origin, mode, crossOrigin, topOrigin)
     const { clientDataJSON, attestationObject } = await pkccoToAttestation(pkcco, origin, mode, crossOrigin, topOrigin)
 
     editors.attestationClientDataJSONDecEditor.on("change", async () => {
@@ -479,8 +485,8 @@ const applyPkcco = async (pkcco, origin, mode, crossOrigin=undefined, topOrigin=
     editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
 }
 
-const applyPkcro = async (pkcro, origin, mode, crossOrigin=undefined, topOrigin=undefined) => {
-    console.log("Apply PKCRO:", pkcro, origin, mode, crossOrigin, topOrigin)
+const applyPkcro = async (pkcro, origin, mode, crossOrigin = undefined, topOrigin = undefined) => {
+    logger.debug("Apply PKCRO:", pkcro, origin, mode, crossOrigin, topOrigin)
     const { clientDataJSON, authenticatorData } = await pkcroToAssertion(pkcro, origin, mode, crossOrigin, topOrigin)
 
     // default user handle

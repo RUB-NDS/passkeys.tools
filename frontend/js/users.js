@@ -1,5 +1,10 @@
+/**
+ * User management module for storing and retrieving user data.
+ */
+
 import { storage } from "./storage.js"
 import { renderUsers } from "./main.js"
+import logger from "./logger.js"
 
 export const storeUser = async (userId, user) => {
     await storage.setItem("users", userId, user)
@@ -77,7 +82,7 @@ export const importUsers = async (file) => {
             overwritten: overwrittenCount
         }
     } catch (error) {
-        console.error("Error importing users:", error)
+        logger.error("Error importing users:", error)
         return {
             success: false,
             error: error.message

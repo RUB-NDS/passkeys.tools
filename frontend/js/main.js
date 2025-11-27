@@ -10,6 +10,7 @@ import { getUsers, storeUser, deleteUser } from "./users.js"
 import { algs, getKey, getKeys, storeKey, generateKey, deleteKey, generateModeKeys } from "./keys.js"
 import { navigatorCredentialsCreate, navigatorCredentialsGet } from "./webapi.js"
 import { renderStorageSettings, renderThemeSettings } from "./storage.js"
+import logger from "./logger.js"
 import { initShortcuts, renderShortcuts } from "./shortcuts.js"
 import { renderHistory } from "./history.js"
 import {
@@ -202,7 +203,7 @@ attestationStoreKeyBtn.onclick = async () => {
     const attestationObject = editors.attestationAttestationObjectDecEditor.getValue()
     const key = attestationObject.authData.attestedCredentialData.credentialPublicKey
     const credentialId = attestationObject.authData.attestedCredentialData.credentialId
-    await storeKey(name, { credentialId, [type]:  key })
+    await storeKey(name, { credentialId, [type]: key })
     await renderKeys()
 }
 
@@ -369,7 +370,7 @@ export const renderKeys = async () => {
     try {
         keys = await getKeys()
     } catch (error) {
-        console.error("Error loading keys:", error)
+        logger.error("Error loading keys:", error)
         showStorageError()
     }
 
@@ -473,7 +474,7 @@ keysStoreKeyBtn.onclick = async () => {
     const name = keysStoreKeyNameInput.value
     const type = keysStoreKeyTypeSelect.value
     const key = editors.keysJwkEditor.getValue()
-    await storeKey(name, { [type]:  key })
+    await storeKey(name, { [type]: key })
     await renderKeys()
 }
 
@@ -545,7 +546,7 @@ export const renderUsers = async () => {
     try {
         users = await getUsers()
     } catch (error) {
-        console.error("Error loading users:", error)
+        logger.error("Error loading users:", error)
         showStorageError()
     }
 
@@ -696,7 +697,7 @@ window.addEventListener("load", async () => {
     try {
         await generateModeKeys(["profile1", "profile2"])
     } catch (error) {
-        console.error("Error generating profile keys:", error)
+        logger.error("Error generating profile keys:", error)
         showStorageError()
     }
 

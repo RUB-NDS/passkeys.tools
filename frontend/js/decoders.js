@@ -1,8 +1,14 @@
+/**
+ * Decoders for WebAuthn data structures.
+ * Converts encoded data (base64url, hex) to structured objects.
+ */
+
 import { decode as decodeCbor, decodeFirst } from "cborg"
 import {
     b64urlToStr, hexToStr, b64urlToUint8, uint8ToHex, uint8ToInt,
     hexToUint8, coseToJwk, pemToJwk, b64ToStr, b64ToUint8
 } from "./converters.js"
+import logger from "./logger.js"
 
 export const clientDataJSON = (data, codec) => {
     if (codec == "b64url") {
@@ -31,7 +37,7 @@ export const attestationObject = (data, codec) => {
     // attestationObject
     const [c0, c1] = decodeFirst(uint8)
     const attestationObject = {}
-    console.log("attestationObject", c0)
+    logger.debug("Decoded attestationObject:", c0)
 
     // attestationObject -> fmt
     const fmt = c0["fmt"]
@@ -113,12 +119,12 @@ export const attestationObject = (data, codec) => {
     const [c2, c3] = decodeFirst(authData.slice(55 + uint8ToInt(credentialIdLength)), {useMaps: true})
 
     // attestationObject -> authData -> attestedCredentialData -> credentialPublicKey
-    console.log("credentialPublicKey", c2)
+    logger.debug("Decoded credentialPublicKey:", c2)
     const jwk = coseToJwk(c2)
     attestationObject["authData"]["attestedCredentialData"]["credentialPublicKey"] = jwk
 
     // attestationObject -> authData -> extensions
-    console.log("extensions", c3)
+    logger.debug("Decoded extensions:", c3)
     attestationObject["authData"]["extensions"] = uint8ToHex(c3)
 
     return attestationObject
@@ -138,7 +144,7 @@ export const authenticatorData = (data, codec) => {
 
     // authenticatorData
     const authenticatorData = {}
-    console.log("authenticatorData", uint8)
+    logger.debug("Decoded authenticatorData:", uint8)
 
     // authenticatorData -> rpIdHash
     const rpIdHash = uint8.slice(0, 32)
@@ -170,7 +176,7 @@ export const authenticatorData = (data, codec) => {
 
     // authenticatorData -> extensions
     const extensions = uint8.slice(37)
-    console.log("extensions", extensions)
+    logger.debug("Decoded extensions:", extensions)
     authenticatorData["extensions"] = uint8ToHex(extensions)
 
     return authenticatorData

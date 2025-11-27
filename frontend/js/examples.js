@@ -1,4 +1,9 @@
-// https://w3c.github.io/webauthn/#sctn-test-vectors
+/**
+ * WebAuthn test vector examples.
+ * Contains official W3C test vectors for various attestation formats.
+ * Data source: https://w3c.github.io/webauthn/#sctn-test-vectors
+ */
+
 export const examples = {
 
     // https://w3c.github.io/webauthn/#sctn-test-vectors-none-es256

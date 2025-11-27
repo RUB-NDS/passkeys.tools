@@ -1,8 +1,13 @@
+/**
+ * Key management module for generating, storing, and retrieving cryptographic keys.
+ */
+
 import * as jose from "jose"
 import { renderKeys } from "./main.js"
 import { uint8ToHex } from "./converters.js"
 import { storage } from "./storage.js"
 import { deepEqual } from "./helpers.js"
+import logger from "./logger.js"
 
 export const algs = {"ES256": -7, "ES384": -35, "ES512": -36, "PS256": -37, "PS384": -38, "PS512": -39, "RS256": -257, "RS384": -258, "RS512": -259, "EdDSA": -8}
 
@@ -136,7 +141,7 @@ export const importKeys = async (file) => {
             overwritten: overwrittenCount
         }
     } catch (error) {
-        console.error("Error importing keys:", error)
+        logger.error("Error importing keys:", error)
         return {
             success: false,
             error: error.message

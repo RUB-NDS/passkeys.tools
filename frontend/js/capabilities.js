@@ -1,6 +1,12 @@
+/**
+ * Browser capabilities detection for WebAuthn/Passkey features.
+ */
+
+import logger from "./logger.js"
+
 export const renderCapabilities = () => {
     if (!PublicKeyCredential || !PublicKeyCredential.getClientCapabilities) {
-        console.error("PublicKeyCredential.getClientCapabilities is not supported in this browser.")
+        logger.warn("PublicKeyCredential.getClientCapabilities is not supported in this browser.")
         const capEl = document.getElementById("capabilities")
         capEl.replaceChildren()
         const p = document.createElement("p")
@@ -9,7 +15,7 @@ export const renderCapabilities = () => {
         capEl.appendChild(p)
     } else {
         PublicKeyCredential.getClientCapabilities().then(capabilities => {
-            console.info("PublicKeyCredential.getClientCapabilities:", capabilities)
+            logger.debug("PublicKeyCredential.getClientCapabilities:", capabilities)
             const table = document.createElement("table")
             table.classList.add("table", "table-striped", "table-bordered")
             const thead = document.createElement("thead")

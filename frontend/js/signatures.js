@@ -1,5 +1,10 @@
+/**
+ * Signature signing and verification utilities for WebAuthn assertions.
+ */
+
 import * as format from "ecdsa-sig-formatter"
 import { hexToUint8, uint8ToHex, concatUint8, jwkToCryptoKey, b64urlToUint8 } from "./converters.js"
+import logger from "./logger.js"
 
 const sign = async (jwk, payload) => {
     let algorithm
@@ -42,10 +47,10 @@ export const signAssertion = async (clientDataHash, authenticatorData, jwk) => {
     const authenticatorDataUint8 = hexToUint8(authenticatorData)
 
     const payload = concatUint8(authenticatorDataUint8, clientDataHashUint8)
-    console.log("payload", uint8ToHex(payload))
+    logger.debug("signAssertion payload:", uint8ToHex(payload))
 
     const signature = await sign(jwk, payload)
-    console.log("signature", uint8ToHex(signature))
+    logger.debug("signAssertion signature:", uint8ToHex(signature))
 
     return signature
 }
@@ -91,13 +96,13 @@ export const verifyAssertion = async (clientDataHash, authenticatorData, signatu
     const clientDataHashUint8 = hexToUint8(clientDataHash)
     const authenticatorDataUint8 = hexToUint8(authenticatorData)
     const signatureUint8 = hexToUint8(signature)
-    console.log("signature", uint8ToHex(signatureUint8))
+    logger.debug("verifyAssertion signature:", uint8ToHex(signatureUint8))
 
     const payload = concatUint8(authenticatorDataUint8, clientDataHashUint8)
-    console.log("payload", uint8ToHex(payload))
+    logger.debug("verifyAssertion payload:", uint8ToHex(payload))
 
     const valid = await verify(jwk, payload, signatureUint8)
-    console.log("valid", valid)
+    logger.debug("verifyAssertion result:", valid)
 
     return valid
 }

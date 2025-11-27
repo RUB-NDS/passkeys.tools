@@ -1,10 +1,16 @@
+/**
+ * PublicKeyCredentialCreationOptions (PKCCO) processing.
+ * Converts creation options to attestation response data.
+ */
+
 import { renderKeys } from "./main.js"
 import { getSupportedAlgorithm } from "./keys.js"
 import { uint8ToHex, strSha256Uint8 } from "./converters.js"
 import { generateKey, storeKey, getKey } from "./keys.js"
+import logger from "./logger.js"
 
-export const pkccoToAttestation = async (pkcco, origin, mode, crossOrigin=undefined, topOrigin=undefined) => {
-    console.log("PKCCO to Attestation:", pkcco, origin, mode, crossOrigin, topOrigin)
+export const pkccoToAttestation = async (pkcco, origin, mode, crossOrigin = undefined, topOrigin = undefined) => {
+    logger.debug("PKCCO to Attestation:", pkcco, origin, mode, crossOrigin, topOrigin)
 
     // clientDataJSON
     const clientDataJSON = {}

@@ -1,9 +1,15 @@
+/**
+ * Encoders for WebAuthn data structures.
+ * Converts structured objects to encoded data (base64url, hex, CBOR).
+ */
+
 import { encode as encodeCbor } from "cborg"
 import {
     strToB64url, strToHex, intToHex, hexToB64url, hexToUint8, jwkToCose,
     uint8ToHex, uint8ToB64url, jwkToPem, b64ToB64url, b64urlToHex,
     hexToB64, strToB64, uint8ToB64,
 } from "./converters.js"
+import logger from "./logger.js"
 
 export const clientDataJSON = (data, codec) => {
     if (codec == "b64url") {
@@ -90,9 +96,9 @@ export const attestationObject = (data, codec, limit="") => {
 
     // attestationObject -> authData -> attestedCredentialData -> credentialPublicKey
     const credentialPublicKey = attestedCredentialData["credentialPublicKey"]
-    console.log("credentialPublicKey (jwk)", credentialPublicKey)
+    logger.debug("credentialPublicKey (JWK):", credentialPublicKey)
     const credentialPublicKeyCose = jwkToCose(credentialPublicKey)
-    console.log("credentialPublicKey (cose)", credentialPublicKeyCose)
+    logger.debug("credentialPublicKey (COSE):", credentialPublicKeyCose)
     const credentialPublicKeyCbor = encodeCbor(credentialPublicKeyCose)
     attestationObject["authData"] = attestationObject["authData"].concat(uint8ToHex(credentialPublicKeyCbor))
 
@@ -103,7 +109,7 @@ export const attestationObject = (data, codec, limit="") => {
     // cbor encode
     attestationObject["authData"] = hexToUint8(attestationObject["authData"])
     const attestationObjectCbor = encodeCbor(attestationObject)
-    console.log("attestationObject", attestationObject)
+    logger.debug("Encoded attestationObject:", attestationObject)
 
     if (codec == "b64url") {
         if (limit == "authData") {

@@ -1,4 +1,9 @@
-// https://github.com/passkeydeveloper/passkey-authenticator-aaguids
+/**
+ * AAGUID (Authenticator Attestation GUID) lookup module.
+ * Maps authenticator AAGUIDs to human-readable names.
+ * Data source: https://github.com/passkeydeveloper/passkey-authenticator-aaguids
+ */
+
 import aaguids from "./combined_aaguid.json"
 
 export const getAaguids = () => {
