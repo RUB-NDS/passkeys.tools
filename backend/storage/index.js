@@ -1,19 +1,29 @@
+/**
+ * Storage factory module.
+ * Provides a unified interface for different storage backends.
+ */
+
 import { FileStorage } from "./FileStorage.js"
 import { MongoStorage } from "./MongoStorage.js"
+import logger from "../logger.js"
 
 let storageInstance = null
 
+/**
+ * Create and initialize the appropriate storage backend.
+ * Uses MongoDB in production with MONGO_URL set, otherwise uses file storage.
+ * @returns {Promise<StorageInterface>} The initialized storage instance
+ */
 export async function createStorage() {
-    // Check if we should use MongoDB
     const isProduction = process.env.NODE_ENV === "production"
     const mongoUrl = process.env.MONGO_URL
 
     if (isProduction && mongoUrl) {
-        console.log("Using MongoDB storage")
+        logger.info("Initializing MongoDB storage")
         storageInstance = new MongoStorage(mongoUrl)
     } else {
-        console.log("Using file storage")
         const dataFile = process.env.DATA_FILE || "data.json"
+        logger.info(`Initializing file storage: ${dataFile}`)
         storageInstance = new FileStorage(dataFile)
     }
 
@@ -21,6 +31,10 @@ export async function createStorage() {
     return storageInstance
 }
 
+/**
+ * Get the current storage instance, creating it if necessary.
+ * @returns {Promise<StorageInterface>} The storage instance
+ */
 export async function getStorage() {
     if (!storageInstance) {
         storageInstance = await createStorage()
@@ -28,9 +42,13 @@ export async function getStorage() {
     return storageInstance
 }
 
+/**
+ * Close the storage connection and reset the instance.
+ */
 export async function closeStorage() {
     if (storageInstance) {
         await storageInstance.close()
         storageInstance = null
+        logger.info("Storage connection closed")
     }
 }
