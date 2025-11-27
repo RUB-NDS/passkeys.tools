@@ -10,31 +10,11 @@
     <div class="col">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Overview</h5>
+                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Overview</h5>
             </div>
             <div class="card-body">
-                <p><span class="small-caps">Passkeys.Tools</span> is a comprehensive suite of development and debugging tools for WebAuthn/Passkey implementations. These tools enable full emulation of clients (browsers) and authenticators to thoroughly test relying party implementations, security compliance, and edge cases.</p>
-
-                <h6>Featured Tools:</h6>
-                <ul>
-                    <li><strong>Create:</strong> Simulates <code>navigator.credentials.create()</code> WebAuthn API calls to test credential registration flows.</li>
-                    <li><strong>Get:</strong> Simulates <code>navigator.credentials.get()</code> for testing authentication flows.</li>
-                    <li><strong>Attestation:</strong> Decode, modify, and encode attestation objects in various formats (like <a href="https://www.jwt.io">jwt.io</a> for WebAuthn). Load custom keys or store keys in integrated storage.</li>
-                    <li><strong>Assertion:</strong> Decode, modify, and encode assertions. Sign with arbitrary keys from storage or verify existing signatures.</li>
-                    <li><strong>Keys:</strong> Integrated key storage with import/export capabilities. Convert between COSE, JWK, and other formats. Generate new keys with all standardized algorithms and manage credential IDs.</li>
-                    <li><strong>Users:</strong> Manage user accounts across relying parties with RP IDs, usernames, display names, and user IDs. Automatically captures users from registrations.</li>
-                    <li><strong>Converters:</strong> Simple utilities for converting between various encoding formats.</li>
-                    <li><strong>Interceptor:</strong> Requires <a href="extension.zip">companion browser extension</a>. Intercepts all WebAuthn operations for modification (like <a href="https://portswigger.net/burp/documentation/desktop/tools/proxy/intercept-messages">Burp Suite</a> for WebAuthn). Includes built-in security and compliance tests.</li>
-                    <li><strong>History:</strong> Tracks all interceptions and modifications, enabling value swaps across different passkey operations and browser profiles.</li>
-                </ul>
-
-                <h6>Usage Modes:</h6>
-                <p>There are three different ways to use <span class="small-caps">Passkeys.Tools</span>:</p>
-                <ul>
-                    <li><strong>Standalone Testing:</strong> The simplest way to use these tools. Everything runs on this website and stays in your browser with no server-side components or browser extensions required. You can create keys that are stored securely in localStorage in your browser and not sent to anyone. Use these keys to manually create attestations, encode/decode existing ones, sign assertions, verify signatures, and test create/get API calls.</li>
-                    <li><strong>Live Testing:</strong> Requires installation of the <a href="extension.zip">companion browser extension</a>, which overwrites the WebAuthn APIs in the browser to intercept all API calls and present them in the tool. This allows live capturing and modifications of ongoing WebAuthn operations. History is stored in localStorage - again, nothing is sent server-side. All operations happen locally in your browser.</li>
-                    <li><strong>Cross-Browser Testing:</strong> Required when two browser profiles are used to simulate WebAuthn operations simultaneously (Profile 1 and Profile 2). Since data needs to be shared across browsers, a backend component is required. In this case, keys, users, and history are stored server-side but protected with a unique key so only you can access the data. Do not use this server-side storage for real production passkeys or private accounts - only for testing. This setup enables scenarios like replacing the challenge in a passkey registration in Profile 1 with a challenge from Profile 2 to test if the challenge is correctly validated.</li>
-                </ul>
+                <p><span class="small-caps">Passkeys.Tools</span> is a comprehensive security testing and development toolkit for WebAuthn (passkey) implementations. It provides full emulation of both the client (browser) and authenticator layers, allowing security researchers, penetration testers, and developers to analyze relying party implementations for vulnerabilities and compliance issues.</p>
+                <p class="mb-0"><strong>Key Capabilities:</strong> Decode and inspect WebAuthn attestations and assertions • Craft credentials with any algorithm • Intercept and modify WebAuthn API calls • Test challenge binding, signature verification, and origin validation • Simulate cross-session attacks between multiple browser profiles • Verify compliance with the <a href="https://www.w3.org/TR/webauthn-3/">WebAuthn specification</a>.</p>
             </div>
         </div>
     </div>
@@ -44,7 +24,75 @@
     <div class="col-lg-6">
         <div class="card h-100">
             <div class="card-header">
-                <h5 class="mb-0">Client Capabilities</h5>
+                <h5 class="mb-0"><i class="bi bi-sliders me-2"></i>Usage Modes</h5>
+            </div>
+            <div class="card-body">
+                <h6><i class="bi bi-box me-2"></i>Standalone Mode</h6>
+                <p class="text-muted small mb-2">Offline analysis and manual crafting of WebAuthn data</p>
+                <p>A passive toolkit for decoding, modifying, and encoding WebAuthn attestations and assertions—think <a href="https://www.jwt.io">jwt.io</a> but for passkeys. All data (keys, users, history) is stored locally in your browser's localStorage.</p>
+                <p><strong>Use when:</strong> You have captured WebAuthn data (e.g., from network logs) and need to analyze or modify it offline.</p>
+                <p class="mb-3"><strong>Example:</strong> Decode an attestation object to inspect the credential public key, modify the signature counter, then re-encode it for replay testing.</p>
+
+                <hr>
+
+                <h6><i class="bi bi-lightning me-2"></i>Interceptor Mode</h6>
+                <p class="text-muted small mb-2">Live interception and modification of WebAuthn API calls</p>
+                <p>Builds on standalone mode by adding real-time interception via the <a href="extension.zip">browser extension</a>. The extension hooks into the WebAuthn API to capture and modify all <code>navigator.credentials.create()</code> and <code>get()</code> calls before they reach the relying party—similar to <a href="https://portswigger.net/burp">Burp Suite</a> but specialized for WebAuthn. Data remains in localStorage.</p>
+                <p><strong>Use when:</strong> You need to test a relying party's server-side validation by modifying live WebAuthn responses.</p>
+                <p class="mb-3"><strong>Example:</strong> Intercept a registration, replace the challenge with random bytes, and verify if the server properly validates challenge binding. Or flip a bit in the signature to test signature verification.</p>
+
+                <hr>
+
+                <h6><i class="bi bi-window-stack me-2"></i>Cross-Browser Mode</h6>
+                <p class="text-muted small mb-2">Multi-browser testing with shared remote storage</p>
+                <p>Extends interceptor mode with a remote storage backend, enabling two browser profiles (e.g., victim and attacker) to share keys, users, and history in real-time. This is essential for testing cross-session attacks where data must flow between separate browser instances. Optional end-to-end encryption protects your data on the server.</p>
+                <p><strong>Use when:</strong> You need to simulate attacks involving multiple parties, such as session binding or credential reuse across different sessions.</p>
+                <p><strong>Example:</strong> In browser A (victim), start a passkey registration and dismiss it. In browser B (attacker), intercept a registration and swap in the victim's challenge. If the server accepts this, it indicates a session binding vulnerability.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-tools me-2"></i>Available Tools</h5>
+            </div>
+            <div class="card-body">
+                <h6 class="mt-1"><i class="bi bi-box-arrow-in-down me-2"></i>Create</h6>
+                <p class="mb-3">Trigger <code>navigator.credentials.create()</code> API calls with custom PublicKeyCredentialCreationOptions. Test how the browser and authenticator handle different registration parameters, algorithms, and attestation preferences.</p>
+
+                <h6><i class="bi bi-box-arrow-up me-2"></i>Get</h6>
+                <p class="mb-3">Trigger <code>navigator.credentials.get()</code> API calls with custom PublicKeyCredentialRequestOptions. Test authentication flows with specific credential IDs, user verification requirements, and mediation settings.</p>
+
+                <h6><i class="bi bi-person-plus-fill me-2"></i>Attestation</h6>
+                <p class="mb-3">Decode, inspect, modify, and re-encode attestation objects and clientDataJSON. Supports <code>none</code> and <code>packed</code> attestation formats. Manipulate flags, AAGUID, credential IDs, public keys, and extensions.</p>
+
+                <h6><i class="bi bi-person-badge-fill me-2"></i>Assertion</h6>
+                <p class="mb-3">Decode, modify, and encode assertion authenticatorData, clientDataJSON, and signatures. Sign assertions using stored private keys or verify existing signatures against stored public keys.</p>
+
+                <h6><i class="bi bi-key me-2"></i>Keys</h6>
+                <p class="mb-3">Manage cryptographic keys with full import/export support. Generate key pairs for all WebAuthn algorithms (ES256, ES384, ES512, RS256, PS256, EdDSA, etc.). Associate credential IDs with keys for realistic credential emulation.</p>
+
+                <h6><i class="bi bi-people me-2"></i>Users</h6>
+                <p class="mb-3">Store and manage user account data including RP IDs, usernames, display names, and user handles. Users are automatically captured during registration interceptions for easy reuse in authentication tests.</p>
+
+                <h6><i class="bi bi-clock-history me-2"></i>History</h6>
+                <p class="mb-3">Complete audit log of all intercepted operations. Search, filter, and export entries. Copy values between sessions to perform cross-operation attacks like challenge swapping or credential reuse.</p>
+
+                <h6><i class="bi bi-arrow-left-right me-2"></i>Converters</h6>
+                <p class="mb-3">Encoding utilities for Base64, Base64URL, and Hex conversions. Convert keys between JWK, COSE, PEM, and DER formats for compatibility with different tools and libraries.</p>
+
+                <h6><i class="bi bi-lightning me-2"></i>Interceptor</h6>
+                <p>Central hub for live WebAuthn interception (requires <a href="extension.zip">browser extension</a>). View request details, select credentials and keys, apply one-click security tests (challenge manipulation, signature tampering, flag modifications), and craft custom responses.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-cpu me-2"></i>Client Capabilities</h5>
             </div>
             <div class="card-body">
                 <div id="capabilities"></div>
@@ -54,7 +102,7 @@
     <div class="col-lg-6">
         <div class="card h-100">
             <div class="card-header">
-                <h5 class="mb-0">Keyboard Shortcuts</h5>
+                <h5 class="mb-0"><i class="bi bi-keyboard me-2"></i>Keyboard Shortcuts</h5>
             </div>
             <div class="card-body">
                 <table class="table table-sm table-hover mb-0" id="shortcutsTable">
@@ -68,6 +116,19 @@
                         <!-- Dynamically populated -->
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-envelope me-2"></i>Contact</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-0">TBD</p>
             </div>
         </div>
     </div>
