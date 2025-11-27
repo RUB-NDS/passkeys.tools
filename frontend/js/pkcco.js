@@ -23,8 +23,8 @@ export const pkccoToAttestation = async (pkcco, origin, mode, crossOrigin = unde
     // attestationObject
     const attestationObject = {}
 
-    // attestationObject.format
-    attestationObject.format = "none"
+    // attestationObject.fmt
+    attestationObject.fmt = "none"
 
     // attestationObject.attStmt
     attestationObject.attStmt = {}

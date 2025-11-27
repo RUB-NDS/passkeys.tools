@@ -27,7 +27,9 @@ export const generateKey = async (alg) => {
 }
 
 export const storeKey = async (name, key) => {
-    await storage.setItem("keys", name, key)
+    const existing = await storage.getItem("keys", name) || {}
+    const merged = { ...existing, ...key }
+    await storage.setItem("keys", name, merged)
 }
 
 export const deleteKey = async (name) => {
