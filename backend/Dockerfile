@@ -10,6 +10,7 @@ RUN npm install --production
 
 # Copy application files
 COPY server.js ./
+COPY logger.js ./
 COPY storage/ ./storage/
 
 # Create data directory
