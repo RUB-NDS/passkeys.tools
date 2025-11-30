@@ -8,7 +8,7 @@ import { b64urlToUint8, uint8ToB64url } from "./converters.js"
 import { getHistory } from "./history.js"
 import { createResultAlert } from "./main.js"
 import { algs } from "./keys.js"
-import { createIcon } from "./helpers.js"
+import { createIcon, toCrossSiteHostname } from "./helpers.js"
 
 const modifications = {
 
@@ -110,7 +110,7 @@ const modifications = {
         "Origin | Cross Site": (pkcco, origin, mode, crossOrigin, topOrigin, mediation) => {
             const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
             const url = new URL(clientDataJSON.origin)
-            url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+            url.hostname = toCrossSiteHostname(url.hostname)
             clientDataJSON.origin = url.origin
             editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
         },
@@ -151,11 +151,11 @@ const modifications = {
             const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
             if (topOrigin) {
                 const url = new URL(clientDataJSON.topOrigin)
-                url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+                url.hostname = toCrossSiteHostname(url.hostname)
                 clientDataJSON.topOrigin = url.origin
             } else {
                 const url = new URL(origin)
-                url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+                url.hostname = toCrossSiteHostname(url.hostname)
                 clientDataJSON.topOrigin = url.origin
             }
             editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
@@ -214,8 +214,8 @@ const modifications = {
             // Get RP ID from pkcco.rp.id or fallback to origin hostname
             const rpId = pkcco.rp?.id || (new URL(origin)).hostname
 
-            // Change TLD to .rocks for cross site
-            const modifiedRpId = rpId.replace(/\.[^.]+$/, ".rocks")
+            // Change to cross site
+            const modifiedRpId = toCrossSiteHostname(rpId)
 
             // Set the modified RP ID in the input field and click the button
             attestationRpIdInput.value = modifiedRpId
@@ -466,7 +466,7 @@ const modifications = {
         "Origin | Cross Site": (pkcro, origin, mode, crossOrigin, topOrigin, mediation) => {
             const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
             const url = new URL(clientDataJSON.origin)
-            url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+            url.hostname = toCrossSiteHostname(url.hostname)
             clientDataJSON.origin = url.origin
             editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
         },
@@ -507,11 +507,11 @@ const modifications = {
             const clientDataJSON = editors.assertionClientDataJSONDecEditor.getValue()
             if (topOrigin) {
                 const url = new URL(clientDataJSON.topOrigin)
-                url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+                url.hostname = toCrossSiteHostname(url.hostname)
                 clientDataJSON.topOrigin = url.origin
             } else {
                 const url = new URL(origin)
-                url.hostname = url.hostname.replace(/\.[^.]+$/, ".rocks")
+                url.hostname = toCrossSiteHostname(url.hostname)
                 clientDataJSON.topOrigin = url.origin
             }
             editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
@@ -570,8 +570,8 @@ const modifications = {
             // Get RP ID from pkcro.rpId or fallback to origin hostname
             const rpId = pkcro.rpId || (new URL(origin)).hostname
 
-            // Change TLD to .rocks for cross site
-            const modifiedRpId = rpId.replace(/\.[^.]+$/, ".rocks")
+            // Change to cross site
+            const modifiedRpId = toCrossSiteHostname(rpId)
 
             // Set the modified RP ID in the input field and click the button
             assertionRpIdInput.value = modifiedRpId

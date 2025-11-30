@@ -56,3 +56,13 @@ export const setStatusMessage = (element, message, type = "info") => {
 export const clearStatus = (element) => {
     element.replaceChildren()
 }
+
+// Helper to change hostname to a different site (handles localhost and single-part domains)
+export const toCrossSiteHostname = (hostname) => {
+    // If hostname has a dot, replace the TLD
+    if (hostname.includes(".")) {
+        return hostname.replace(/\.[^.]+$/, ".rocks")
+    }
+    // For localhost or single-part domains, append .rocks
+    return hostname + ".rocks"
+}
