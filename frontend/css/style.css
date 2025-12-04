@@ -332,16 +332,26 @@ textarea {
     min-width: 200px;
 }
 
+/* Interceptor card layout */
+.col-md-4 > .card.full-height {
+    display: flex;
+    flex-direction: column;
+}
+
+.col-md-4 > .card.full-height > .card-body {
+    flex: 1;
+    min-height: 0;
+}
+
 /* Interceptor styling */
 #interceptorRequestTextarea,
 #interceptorResponseTextarea {
     height: 100%;
-    min-height: 850px;
     resize: none;
 }
 
 #interceptorControls {
-    max-height: 850px;
+    height: 100%;
     overflow-y: auto;
 }
 
