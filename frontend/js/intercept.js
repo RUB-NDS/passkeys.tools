@@ -125,10 +125,26 @@ export const initializeCopyButtons = () => {
     }
 }
 
+const responseKeyOrder = [
+    "id", "clientDataJSON", "attestationObject", "authenticatorData",
+    "publicKey", "publicKeyAlgorithm", "authenticatorAttachment", "transports"
+]
+
 const updateInterceptorResponseTextarea = (dict) => {
     let response = JSON.parse(interceptorResponseTextarea.value || "{}")
     response = {...response, ...dict}
-    interceptorResponseTextarea.value = JSON.stringify(response, null, 2)
+
+    // Sort keys according to specified order
+    const sorted = {}
+    for (const key of responseKeyOrder) {
+        if (key in response) sorted[key] = response[key]
+    }
+    // Add any remaining keys not in the order
+    for (const key of Object.keys(response)) {
+        if (!(key in sorted)) sorted[key] = response[key]
+    }
+
+    interceptorResponseTextarea.value = JSON.stringify(sorted, null, 2)
 }
 
 const addSendButton = (operation) => {
@@ -483,6 +499,12 @@ const applyPkcco = async (pkcco, origin, mode, crossOrigin = undefined, topOrigi
 
     editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
     editors.attestationAttestationObjectDecEditor.setValue(attestationObject)
+
+    // Set default transports and authenticatorAttachment (editable by user)
+    updateInterceptorResponseTextarea({
+        transports: ["internal", "hybrid"],
+        authenticatorAttachment: "platform"
+    })
 }
 
 const applyPkcro = async (pkcro, origin, mode, crossOrigin = undefined, topOrigin = undefined) => {
@@ -546,6 +568,12 @@ const applyPkcro = async (pkcro, origin, mode, crossOrigin = undefined, topOrigi
 
     editors.assertionClientDataJSONDecEditor.setValue(clientDataJSON)
     editors.assertionAuthenticatorDataDecEditor.setValue(authenticatorData)
+
+    // Set default transports and authenticatorAttachment (editable by user)
+    updateInterceptorResponseTextarea({
+        transports: ["internal", "hybrid"],
+        authenticatorAttachment: "platform"
+    })
 }
 
 export const parseInterceptParams = async () => {

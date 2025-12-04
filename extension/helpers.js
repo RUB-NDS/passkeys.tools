@@ -121,10 +121,13 @@ _pk.helpers.createAttestationResponse = (response) => {
         throw new Error("Invalid attestation response")
     }
 
+    const transports = response.transports || ["internal", "hybrid"]
+    const authenticatorAttachment = response.authenticatorAttachment || "platform"
+
     const authenticatorAttestationResponse = {
         clientDataJSON: _pk.helpers.b64urlToUint8(response.clientDataJSON).buffer,
         attestationObject: _pk.helpers.b64urlToUint8(response.attestationObject).buffer,
-        getTransports: () => ["internal", "hybrid"],
+        getTransports: () => transports,
         getAuthenticatorData: () => _pk.helpers.b64urlToUint8(response.authenticatorData).buffer,
         getPublicKey: () => _pk.helpers.b64urlToUint8(response.publicKey).buffer,
         getPublicKeyAlgorithm: () => response.publicKeyAlgorithm
@@ -135,21 +138,21 @@ _pk.helpers.createAttestationResponse = (response) => {
         type: "public-key",
         id: response.id,
         rawId: _pk.helpers.b64urlToUint8(response.id).buffer,
-        authenticatorAttachment: "platform",
+        authenticatorAttachment: authenticatorAttachment,
         response: authenticatorAttestationResponse,
         getClientExtensionResults: () => ({}),
         toJSON: () => ({
             type: "public-key",
             id: response.id,
             rawId: response.id,
-            authenticatorAttachment: "platform",
+            authenticatorAttachment: authenticatorAttachment,
             response: {
                 clientDataJSON: response.clientDataJSON,
                 attestationObject: response.attestationObject,
                 authenticatorData: response.authenticatorData,
                 publicKey: response.publicKey,
                 publicKeyAlgorithm: response.publicKeyAlgorithm,
-                transports: ["internal", "hybrid"]
+                transports: transports
             },
             clientExtensionResults: {}
         })
@@ -166,6 +169,9 @@ _pk.helpers.createAssertionResponse = (response) => {
         throw new Error("Invalid assertion response")
     }
 
+    const transports = response.transports || ["internal", "hybrid"]
+    const authenticatorAttachment = response.authenticatorAttachment || "platform"
+
     const authenticatorAssertionResponse = {
         clientDataJSON: _pk.helpers.b64urlToUint8(response.clientDataJSON).buffer,
         authenticatorData: _pk.helpers.b64urlToUint8(response.authenticatorData).buffer,
@@ -178,20 +184,20 @@ _pk.helpers.createAssertionResponse = (response) => {
         type: "public-key",
         id: response.id,
         rawId: _pk.helpers.b64urlToUint8(response.id).buffer,
-        authenticatorAttachment: "platform",
+        authenticatorAttachment: authenticatorAttachment,
         response: authenticatorAssertionResponse,
         getClientExtensionResults: () => ({}),
         toJSON: () => ({
             type: "public-key",
             id: response.id,
             rawId: response.id,
-            authenticatorAttachment: "platform",
+            authenticatorAttachment: authenticatorAttachment,
             response: {
                 clientDataJSON: response.clientDataJSON,
                 authenticatorData: response.authenticatorData,
                 signature: response.signature,
                 userHandle: response.userHandle,
-                transports: ["internal", "hybrid"]
+                transports: transports
             },
             clientExtensionResults: {}
         })
