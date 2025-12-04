@@ -284,7 +284,50 @@ const addDismissButton = (operation) => {
     interceptorResponseActions.appendChild(dismissButton)
 }
 
-const addUserHandleSelect = async (operation, rpId, mode) => {
+const addPassthroughButton = (operation) => {
+    const passthroughButton = document.createElement("button")
+    passthroughButton.id = `interceptorPassthroughButton`
+    passthroughButton.className = "btn btn-sm btn-warning"
+    setButtonContent(passthroughButton, "bi-arrow-right-circle", "Passthrough")
+    passthroughButton.addEventListener("click", async () => {
+        try {
+            const request = JSON.parse(interceptorRequestTextarea.value || "{}")
+
+            // Show loading state
+            setButtonContent(passthroughButton, "bi-hourglass-split", "Closing...")
+            passthroughButton.disabled = true
+
+            if (window.opener) {
+                // Send passthrough request with all context needed to reopen
+                window.opener.postMessage({
+                    type: "passkey-interceptor-passthrough",
+                    operation: operation,
+                    request: request,
+                    // Include current URL hash so opener can reopen with same context
+                    originalHash: window.location.hash
+                }, "*")
+                logger.info("Sent passthrough request to extension, closing popup")
+
+                // Close popup so original page gets focus for WebAuthn
+                setTimeout(() => window.close(), 100)
+            } else {
+                throw new Error("No opener window available")
+            }
+        } catch (e) {
+            logger.error("Failed to send passthrough request:", e)
+            setButtonContent(passthroughButton, "bi-exclamation-triangle", "Error")
+            passthroughButton.className = "btn btn-sm btn-danger"
+            setTimeout(() => {
+                setButtonContent(passthroughButton, "bi-arrow-right-circle", "Passthrough")
+                passthroughButton.className = "btn btn-sm btn-warning"
+                passthroughButton.disabled = false
+            }, 2000)
+        }
+    })
+    interceptorRequestActions.appendChild(passthroughButton)
+}
+
+const addUserHandleSelect = async (operation, rpId, mode, skipDefault = false) => {
     const div = document.createElement("div")
     div.classList.add("input-group", "mb-3")
 
@@ -307,8 +350,11 @@ const addUserHandleSelect = async (operation, rpId, mode) => {
         select.appendChild(option)
     }
 
+    if (skipDefault) select.selectedIndex = -1
+
     select.addEventListener("change", () => {
         const userId = select.value
+        if (!userId) return
         logger.debug("Selected User ID:", userId)
         if (operation === "create") {
             // there is no user handle in create operation, so we do nothing
@@ -321,7 +367,7 @@ const addUserHandleSelect = async (operation, rpId, mode) => {
     interceptorActions.appendChild(div)
 }
 
-const addCredentialIdSelect = async (operation, rpId, mode) => {
+const addCredentialIdSelect = async (operation, rpId, mode, skipDefault = false) => {
     const div = document.createElement("div")
     div.classList.add("input-group", "mb-3")
 
@@ -363,8 +409,11 @@ const addCredentialIdSelect = async (operation, rpId, mode) => {
     randomOption.text = "32 random bytes"
     select.appendChild(randomOption)
 
+    if (skipDefault) select.selectedIndex = -1
+
     select.addEventListener("change", () => {
         let credentialId = select.value
+        if (!credentialId) return
         if (credentialId === "random") {
             const random = new Uint8Array(32)
             crypto.getRandomValues(random)
@@ -385,7 +434,7 @@ const addCredentialIdSelect = async (operation, rpId, mode) => {
     interceptorActions.appendChild(div)
 }
 
-const addKeySelect = async (operation, rpId, mode) => {
+const addKeySelect = async (operation, rpId, mode, skipDefault = false) => {
     const div = document.createElement("div")
     div.classList.add("input-group", "mb-3")
 
@@ -417,8 +466,11 @@ const addKeySelect = async (operation, rpId, mode) => {
         select.appendChild(option)
     }
 
+    if (skipDefault) select.selectedIndex = -1
+
     select.addEventListener("change", async () => {
         const name = select.value
+        if (!name) return // keep current value
         logger.debug("Selected Key Name:", name)
         if (operation === "create") {
             const key = await getKey(name)
@@ -463,7 +515,7 @@ const loadPkcro = (pkcro) => {
     editors.getEditor.setValue(pkcro)
 }
 
-const applyPkcco = async (pkcco, origin, mode, crossOrigin = undefined, topOrigin = undefined) => {
+const applyPkcco = async (pkcco, origin, mode, crossOrigin = undefined, topOrigin = undefined, skipDefault = false) => {
     logger.debug("Apply PKCCO:", pkcco, origin, mode, crossOrigin, topOrigin)
     const { clientDataJSON, attestationObject } = await pkccoToAttestation(pkcco, origin, mode, crossOrigin, topOrigin)
 
@@ -489,12 +541,14 @@ const applyPkcco = async (pkcco, origin, mode, crossOrigin = undefined, topOrigi
         const id = attestationObject.authData.attestedCredentialData.credentialId
         updateInterceptorResponseTextarea({id: hexToB64url(id)})
 
-        const idOption = document.querySelector(`#createCredentialIdSelect option[value="${id}"]`)
-        if (idOption) idOption.selected = true
+        if (!skipDefault) {
+            const idOption = document.querySelector(`#createCredentialIdSelect option[value="${id}"]`)
+            if (idOption) idOption.selected = true
 
-        const name = await getNameFromPublicKey(jwk)
-        const nameOption = document.querySelector(`#createKeySelect option[value="${name}"]`)
-        if (nameOption) nameOption.selected = true
+            const name = await getNameFromPublicKey(jwk)
+            const nameOption = document.querySelector(`#createKeySelect option[value="${name}"]`)
+            if (nameOption) nameOption.selected = true
+        }
     })
 
     editors.attestationClientDataJSONDecEditor.setValue(clientDataJSON)
@@ -507,12 +561,12 @@ const applyPkcco = async (pkcco, origin, mode, crossOrigin = undefined, topOrigi
     })
 }
 
-const applyPkcro = async (pkcro, origin, mode, crossOrigin = undefined, topOrigin = undefined) => {
+const applyPkcro = async (pkcro, origin, mode, crossOrigin = undefined, topOrigin = undefined, skipDefault = false) => {
     logger.debug("Apply PKCRO:", pkcro, origin, mode, crossOrigin, topOrigin)
     const { clientDataJSON, authenticatorData } = await pkcroToAssertion(pkcro, origin, mode, crossOrigin, topOrigin)
 
     // default user handle
-    if (mode === "profile1" || mode === "profile2") {
+    if (!skipDefault && (mode === "profile1" || mode === "profile2")) {
         const user = await getUserByRpIdAndMode(pkcro.rpId || (new URL(origin)).hostname, mode)
         if (user) {
             const userOption = document.querySelector(`#getUserHandleSelect option[value="${user.userId}"]`)
@@ -534,16 +588,18 @@ const applyPkcro = async (pkcro, origin, mode, crossOrigin = undefined, topOrigi
     })
 
     // default key is the first allow credentials key
-    const allowCredentials = pkcro.allowCredentials || []
-    if (allowCredentials.length > 0) {
-        const defaultId = allowCredentials[0].id
-        updateInterceptorResponseTextarea({id: defaultId})
-        const defaultName = await getNameFromCredentialId(b64urlToHex(defaultId))
-        if (defaultName) {
-            verifyAssertionWithStoredKeySelect.value = defaultName
-            verifyAssertionWithStoredKeySelect.dispatchEvent(new Event("change"))
-            signAssertionWithStoredKeySelect.value = defaultName
-            signAssertionWithStoredKeySelect.dispatchEvent(new Event("change"))
+    if (!skipDefault) {
+        const allowCredentials = pkcro.allowCredentials || []
+        if (allowCredentials.length > 0) {
+            const defaultId = allowCredentials[0].id
+            updateInterceptorResponseTextarea({id: defaultId})
+            const defaultName = await getNameFromCredentialId(b64urlToHex(defaultId))
+            if (defaultName) {
+                verifyAssertionWithStoredKeySelect.value = defaultName
+                verifyAssertionWithStoredKeySelect.dispatchEvent(new Event("change"))
+                signAssertionWithStoredKeySelect.value = defaultName
+                signAssertionWithStoredKeySelect.dispatchEvent(new Event("change"))
+            }
         }
     }
 
@@ -611,17 +667,35 @@ export const parseInterceptParams = async () => {
         })
 
         // actions
+        const isPassthrough = hparams.has("passthrough")
         interceptorActions.replaceChildren()
-        await addCredentialIdSelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
-        await addKeySelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode)
+        await addCredentialIdSelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode, isPassthrough)
+        await addKeySelect("create", pkcco.rp.id || (new URL(origin)).hostname, mode, isPassthrough)
         addSendButton("create")
         addRejectButton("create")
         addDismissButton("create")
 
+        // passthrough
+        addPassthroughButton("create")
+
         // modifications
         await renderModifications("create", pkcco, origin, mode, crossOrigin, topOrigin, mediation)
 
-        await applyPkcco(pkcco, origin, mode, crossOrigin, topOrigin)
+        await applyPkcco(pkcco, origin, mode, crossOrigin, topOrigin, isPassthrough)
+
+        // If passthrough response exists, overwrite generated response (with delay to ensure async editor callbacks complete)
+        if (isPassthrough) {
+            setTimeout(() => {
+                try {
+                    const passthroughResponse = JSON.parse(hparams.get("passthrough"))
+                    logger.info("Passthrough response received:", passthroughResponse)
+                    interceptorResponseTextarea.value = JSON.stringify(passthroughResponse, null, 2)
+                    updateStatusBanner("create", origin, mode + " (passthrough)")
+                } catch (e) {
+                    logger.error("Failed to parse passthrough response:", e)
+                }
+            }, 100)
+        }
 
         highlightTabs(["create", "attestation", "interceptor"])
         showTab("interceptor")
@@ -658,23 +732,41 @@ export const parseInterceptParams = async () => {
         })
 
         // actions
+        const isPassthrough = hparams.has("passthrough")
         interceptorActions.replaceChildren()
-        await addUserHandleSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
-        await addCredentialIdSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
-        await addKeySelect("get", pkcro.rpId || (new URL(origin)).hostname, mode)
+        await addUserHandleSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode, isPassthrough)
+        await addCredentialIdSelect("get", pkcro.rpId || (new URL(origin)).hostname, mode, isPassthrough)
+        await addKeySelect("get", pkcro.rpId || (new URL(origin)).hostname, mode, isPassthrough)
         addSendButton("get")
         addRejectButton("get")
         addDismissButton("get")
 
+        // passthrough
+        addPassthroughButton("get")
+
         // modifications
         await renderModifications("get", pkcro, origin, mode, crossOrigin, topOrigin, mediation)
 
-        await applyPkcro(pkcro, origin, mode, crossOrigin, topOrigin)
+        await applyPkcro(pkcro, origin, mode, crossOrigin, topOrigin, isPassthrough)
+
+        // If passthrough response exists, overwrite generated response (with delay to ensure async editor callbacks complete)
+        if (isPassthrough) {
+            setTimeout(() => {
+                try {
+                    const passthroughResponse = JSON.parse(hparams.get("passthrough"))
+                    logger.info("Passthrough response received:", passthroughResponse)
+                    interceptorResponseTextarea.value = JSON.stringify(passthroughResponse, null, 2)
+                    updateStatusBanner("get", origin, mode + " (passthrough)")
+                } catch (e) {
+                    logger.error("Failed to parse passthrough response:", e)
+                }
+            }, 600)
+        } else {
+            setTimeout(() => signAssertionWithStoredKeyBtn.click(), 500)
+        }
 
         highlightTabs(["get", "assertion", "interceptor"])
         showTab("interceptor")
         initializeCopyButtons()
-
-        setTimeout(_ => signAssertionWithStoredKeyBtn.click(), 500)
     }
 }
