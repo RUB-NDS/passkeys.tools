@@ -37,7 +37,7 @@
 
                 <h6><i class="bi bi-lightning me-2"></i>Interceptor Mode</h6>
                 <p class="text-muted small mb-2">Live interception and modification of WebAuthn API calls</p>
-                <p>Builds on Standalone Mode by adding real-time interception via the <a href="extension.zip">browser extension</a>. The extension hooks into the WebAuthn API to capture and modify all <code>navigator.credentials.create()</code> and <code>get()</code> calls before they reach the relying party—similar to <a href="https://portswigger.net/burp">Burp Suite</a> but specialized for WebAuthn. Data remains in localStorage.</p>
+                <p>Builds on Standalone Mode by adding real-time interception via the <a href="extension.zip">browser extension</a>. The extension hooks into the WebAuthn API to capture and modify all <code>navigator.credentials.create()</code> and <code>get()</code> calls before they reach the relying party—similar to <a href="https://portswigger.net/burp">Burp Suite</a> but specialized for WebAuthn. Data remains in localStorage. Use passthrough to forward the request to your browser's or device's native authenticator (Touch ID, Windows Hello, etc.). The response is captured and displayed for inspection or modification before sending back to the relying party.</p>
                 <p><strong>Use when:</strong> You need to test a relying party's server-side validation by modifying live WebAuthn responses.</p>
                 <p class="mb-3"><strong>Example:</strong> Intercept a registration, replace the challenge with random bytes, and verify if the server properly validates challenge binding. Or flip a bit in the signature to test signature verification.</p>
 
@@ -82,7 +82,7 @@
                 <p class="mb-3">Encoding utilities for Base64, Base64URL, and Hex conversions. Convert keys between JWK, COSE, PEM, and DER formats for compatibility with different tools and libraries.</p>
 
                 <h6><i class="bi bi-lightning me-2"></i>Interceptor</h6>
-                <p>Central hub for live WebAuthn interception (requires <a href="extension.zip">browser extension</a>). View request details, select credentials and keys, apply one-click security tests (challenge manipulation, signature tampering, flag modifications), and craft custom responses.</p>
+                <p>Central hub for live WebAuthn interception (requires <a href="extension.zip">browser extension</a>). View request details, select credentials and keys, apply one-click security tests (challenge manipulation, signature tampering, flag modifications), and craft custom responses. Use passthrough to forward requests to your native authenticator and capture real responses for inspection or modification.</p>
             </div>
         </div>
     </div>
