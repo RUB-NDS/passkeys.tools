@@ -33,19 +33,19 @@ const setupEncodingHandlers = (elements, decoder, editor, encoder) => {
     const { b64urlTextarea, b64Textarea, hexTextarea } = elements
 
     b64urlTextarea.oninput = async () => {
-        const data = decoder(b64urlTextarea.value, "b64url")
+        const data = await decoder(b64urlTextarea.value, "b64url")
         editor.setValue(data)
         await encoder()
     }
 
     b64Textarea.oninput = async () => {
-        const data = decoder(b64Textarea.value, "b64")
+        const data = await decoder(b64Textarea.value, "b64")
         editor.setValue(data)
         await encoder()
     }
 
     hexTextarea.oninput = async () => {
-        const data = decoder(hexTextarea.value, "hex")
+        const data = await decoder(hexTextarea.value, "hex")
         editor.setValue(data)
         await encoder()
     }
