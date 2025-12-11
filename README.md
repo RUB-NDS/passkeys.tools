@@ -115,7 +115,3 @@ Share data between multiple browser profiles for cross-session attack testing:
 | 📜 **History** | Complete audit log of all intercepted operations with search and export |
 | 🔄 **Converters** | Encoding utilities for Base64, Base64URL, Hex, and key format conversions |
 | ⚡ **Interceptor** | Central hub for live WebAuthn interception with one-click security tests |
-
----
-
-Made with ❤️ in Bochum
