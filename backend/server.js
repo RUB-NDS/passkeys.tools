@@ -182,7 +182,7 @@ async function start() {
             logger.info(`Environment: ${process.env.NODE_ENV || "development"}`)
             logger.info(`Log level: ${logger.getLevel()}`)
 
-            if (process.env.NODE_ENV === "production" && process.env.MONGO_URL) {
+            if (process.env.USE_MONGO === "true") {
                 logger.info(`Using MongoDB storage`)
             } else {
                 logger.info(`Using file storage: ${process.env.DATA_FILE || "data.json"}`)

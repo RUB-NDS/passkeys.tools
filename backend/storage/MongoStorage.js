@@ -7,7 +7,6 @@ import { MongoClient } from "mongodb"
 import { StorageInterface } from "./StorageInterface.js"
 import logger from "../logger.js"
 
-const DB_NAME = "passkeys-tools"
 const COLLECTIONS = [
     "keys_plain", "keys_enc",
     "users_plain", "users_enc",
@@ -17,13 +16,29 @@ const COLLECTIONS = [
 export class MongoStorage extends StorageInterface {
     /**
      * Create a new MongoStorage instance.
-     * @param {string} mongoUrl - MongoDB connection URL
+     * @param {string} mongoUrl - MongoDB connection URL (database name parsed from path, defaults to passkeys-tools)
      */
     constructor(mongoUrl) {
         super()
         this.mongoUrl = mongoUrl
+        this.dbName = this.parseDbName(mongoUrl)
         this.client = null
         this.db = null
+    }
+
+    /**
+     * Parse database name from MongoDB URL.
+     * @param {string} url - MongoDB connection URL
+     * @returns {string} Database name or default
+     */
+    parseDbName(url) {
+        try {
+            const parsed = new URL(url)
+            const dbName = parsed.pathname.slice(1).split("?")[0]
+            return dbName || "passkeys-tools"
+        } catch {
+            return "passkeys-tools"
+        }
     }
 
     /**
@@ -82,7 +97,7 @@ export class MongoStorage extends StorageInterface {
         if (!this.client) {
             throw new Error("MongoDB client not initialized")
         }
-        return this.client.db(DB_NAME)
+        return this.client.db(this.dbName)
     }
 
     /**

@@ -11,14 +11,17 @@ let storageInstance = null
 
 /**
  * Create and initialize the appropriate storage backend.
- * Uses MongoDB in production with MONGO_URL set, otherwise uses file storage.
+ * Uses MongoDB if USE_MONGO=true, otherwise uses file storage.
  * @returns {Promise<StorageInterface>} The initialized storage instance
  */
 export async function createStorage() {
-    const isProduction = process.env.NODE_ENV === "production"
+    const useMongo = process.env.USE_MONGO === "true"
     const mongoUrl = process.env.MONGO_URL
 
-    if (isProduction && mongoUrl) {
+    if (useMongo) {
+        if (!mongoUrl) {
+            throw new Error("MONGO_URL is required when USE_MONGO=true")
+        }
         logger.info("Initializing MongoDB storage")
         storageInstance = new MongoStorage(mongoUrl)
     } else {

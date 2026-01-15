@@ -5,7 +5,7 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "dev": "node server.js",
+    "dev": "node --env-file=../.env server.js",
     "start": "node server.js"
   },
   "dependencies": {

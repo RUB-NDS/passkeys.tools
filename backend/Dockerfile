@@ -17,8 +17,9 @@ COPY storage/ ./storage/
 RUN mkdir -p /data
 
 # Set environment variables
+ENV NODE_ENV=production
 ENV PORT=3000
-ENV DATA_FILE=/data/database.json
+ENV DATA_FILE=/data/data.json
 
 # Expose port
 EXPOSE 3000

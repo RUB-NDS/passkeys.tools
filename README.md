@@ -1,4 +1,4 @@
-# 🔐 Passkeys.Tools
+# Passkeys.Tools
 
 A comprehensive security testing and development toolkit for WebAuthn (passkey) implementations. Passkeys.Tools provides full emulation of both the client (browser) and authenticator layers, allowing security researchers, penetration testers, and developers to analyze relying party implementations for vulnerabilities and compliance issues.
 
@@ -6,64 +6,115 @@ A comprehensive security testing and development toolkit for WebAuthn (passkey) 
 
 ![Passkeys.Tools Screenshot](screenshot.png)
 
-## 🛠️ Development Setup
-
-Run the frontend and backend separately:
+## Development Setup
 
 ```bash
-# Terminal 1: Start the frontend
-cd frontend
-npm install
-npm run dev
+cp .env.example .env
 
-# Terminal 2: Start the backend
-cd backend
-npm install
-npm run dev
+# Frontend
+cd frontend && npm install && npm run dev
+
+# Backend (separate terminal)
+cd backend && npm install && npm run dev
 ```
 
-The frontend will be available at `http://localhost:5173` and the backend at `http://localhost:3000`.
+Frontend: http://localhost:5173 | Backend: http://localhost:3000
 
-## 🐳 Production Setup with Docker
-
-Deploy the full stack using Docker Compose:
+## Production Deployment
 
 ```bash
-docker compose up -d
+cp .env.example .env
+# Edit .env for production
 ```
 
-### Environment Variables
+### Docker Run
 
-Configure the deployment by setting these environment variables (or create a `.env` file):
+```bash
+# Frontend
+docker run -d \
+  --name passkeys-tools-frontend \
+  -p 4173:4173 \
+  ghcr.io/rub-nds/passkeys-tools-frontend:latest
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOG_LEVEL` | `INFO` | Log level (`ERROR`, `WARN`, `INFO`, `DEBUG`) |
-| `NODE_ENV` | `production` | Environment mode (`production`, `development`) |
-| `DATA` | `/tmp/pkvolume` | Path for persistent data storage |
-| `ADMIN_USER` | `admin` | MongoDB admin username |
-| `ADMIN_PASS` | `changeme` | MongoDB admin password |
-| `ADMIN_HASH` | `admin:$2y$...` | Bcrypt hash for Traefik basic auth (format: `user:hash`) |
-| `FRONTEND_EXTERNAL_DOMAIN` | `frontend.docker.localhost` | Domain for the frontend |
-| `BACKEND_EXTERNAL_DOMAIN` | `backend.docker.localhost` | Domain for the backend API |
-| `MONGOEXPRESS_EXTERNAL_DOMAIN` | `mongoexpress.docker.localhost` | Domain for Mongo Express admin UI |
-| `TRAEFIK_EXTERNAL_DOMAIN` | `traefik.docker.localhost` | Domain for Traefik dashboard |
+# Backend
+docker run -d \
+  --name passkeys-tools-backend \
+  -p 3000:3000 \
+  --env-file .env \
+  -v passkeys-tools-data:/data \
+  ghcr.io/rub-nds/passkeys-tools-backend:latest
+```
 
-The stack includes:
-- 🌐 **Frontend** - Vite-based web application (port 4173)
-- ⚙️ **Backend** - Express.js API server (port 3000)
-- 🗄️ **MongoDB** - Database for remote storage mode (port 27017)
-- 🔀 **Traefik** - Reverse proxy with automatic HTTPS (ports 80, 443)
+### Docker Compose
 
-## 📖 Usage Modes
+```yaml
+services:
+  passkeys-tools-frontend:
+    image: ghcr.io/rub-nds/passkeys-tools-frontend:latest
+    restart: unless-stopped
+    expose:
+      - "4173"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.passkeys-tools-frontend.rule=Host(`YOUR_FRONTEND_DOMAIN`)"
+      - "traefik.http.routers.passkeys-tools-frontend.entrypoints=websecure"
+      - "traefik.http.routers.passkeys-tools-frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.passkeys-tools-frontend.loadbalancer.server.port=4173"
 
-### 📦 Standalone Mode
+  passkeys-tools-backend:
+    image: ghcr.io/rub-nds/passkeys-tools-backend:latest
+    restart: unless-stopped
+    env_file: .env
+    expose:
+      - "3000"
+    volumes:
+      - passkeys-tools-data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.passkeys-tools-backend.rule=Host(`YOUR_BACKEND_DOMAIN`)"
+      - "traefik.http.routers.passkeys-tools-backend.entrypoints=websecure"
+      - "traefik.http.routers.passkeys-tools-backend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.passkeys-tools-backend.loadbalancer.server.port=3000"
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+
+  traefik:
+    image: traefik:v3.2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - TRAEFIK_PROVIDERS_DOCKER=true
+      - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=false
+      - TRAEFIK_ENTRYPOINTS_WEB_ADDRESS=:80
+      - TRAEFIK_ENTRYPOINTS_WEBSECURE_ADDRESS=:443
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL=YOUR_EMAIL
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_STORAGE=/letsencrypt/acme.json
+      - TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_HTTPCHALLENGE_ENTRYPOINT=web
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt-data:/letsencrypt
+
+volumes:
+  passkeys-tools-data:
+  mongo-data:
+  letsencrypt-data:
+```
+
+## Usage Modes
+
+### Standalone Mode
 
 No setup required. Open [Passkeys.Tools](https://passkeys.tools) in your browser and start using the Attestation, Assertion, Keys, and Converters tabs. All data is stored locally in your browser's localStorage.
 
 **Use when:** You have captured WebAuthn data (e.g., from network logs) and need to analyze or modify it offline.
 
-### ⚡ Interceptor Mode
+### Interceptor Mode
 
 Intercept and modify live WebAuthn API calls using the browser extension:
 
@@ -80,7 +131,7 @@ Intercept and modify live WebAuthn API calls using the browser extension:
 
 **Use when:** You need to test a relying party's server-side validation by modifying live WebAuthn responses.
 
-### 🌐 Cross-Browser Mode
+### Cross-Browser Mode
 
 Share data between multiple browser profiles for cross-session attack testing:
 
@@ -102,16 +153,16 @@ Share data between multiple browser profiles for cross-session attack testing:
 
 **Use when:** You need to simulate attacks involving multiple parties, such as session binding or credential reuse across different sessions.
 
-## 🧰 Available Tools
+## Available Tools
 
 | Tool | Description |
 |------|-------------|
-| 📥 **Create** | Trigger `navigator.credentials.create()` API calls with custom PublicKeyCredentialCreationOptions |
-| 📤 **Get** | Trigger `navigator.credentials.get()` API calls with custom PublicKeyCredentialRequestOptions |
-| 📝 **Attestation** | Decode, inspect, modify, and re-encode attestation objects and clientDataJSON |
-| ✍️ **Assertion** | Decode, modify, and encode assertion authenticatorData, clientDataJSON, and signatures |
-| 🔑 **Keys** | Manage cryptographic keys with full import/export support for all WebAuthn algorithms |
-| 👥 **Users** | Store and manage user account data including RP IDs, usernames, and user handles |
-| 📜 **History** | Complete audit log of all intercepted operations with search and export |
-| 🔄 **Converters** | Encoding utilities for Base64, Base64URL, Hex, and key format conversions |
-| ⚡ **Interceptor** | Central hub for live WebAuthn interception with one-click security tests |
+| **Create** | Trigger `navigator.credentials.create()` API calls with custom PublicKeyCredentialCreationOptions |
+| **Get** | Trigger `navigator.credentials.get()` API calls with custom PublicKeyCredentialRequestOptions |
+| **Attestation** | Decode, inspect, modify, and re-encode attestation objects and clientDataJSON |
+| **Assertion** | Decode, modify, and encode assertion authenticatorData, clientDataJSON, and signatures |
+| **Keys** | Manage cryptographic keys with full import/export support for all WebAuthn algorithms |
+| **Users** | Store and manage user account data including RP IDs, usernames, and user handles |
+| **History** | Complete audit log of all intercepted operations with search and export |
+| **Converters** | Encoding utilities for Base64, Base64URL, Hex, and key format conversions |
+| **Interceptor** | Central hub for live WebAuthn interception with one-click security tests |
