@@ -6,7 +6,7 @@
 import * as editors from "./editors.js"
 import * as encoders from "./encoders.js"
 import { showTab, highlightTabs } from "./main.js"
-import { algs, getKeys, getKey, getNameFromPublicKey, getNameFromCredentialId } from "./keys.js"
+import { algs, getKeys, getKey, getNameFromPublicKey, getNameFromCredentialId, getSupportedAlgorithm } from "./keys.js"
 import { pkccoToAttestation } from "./pkcco.js"
 import { pkcroToAssertion } from "./pkcro.js"
 import { b64urlToHex, hexToB64url, uint8ToHex, strSha256Uint8 } from "./converters.js"
@@ -518,6 +518,34 @@ const loadPkcro = (pkcro) => {
 const applyPkcco = async (pkcco, origin, mode, crossOrigin = undefined, topOrigin = undefined, skipDefault = false) => {
     logger.debug("Apply PKCCO:", pkcco, origin, mode, crossOrigin, topOrigin)
     const { clientDataJSON, attestationObject } = await pkccoToAttestation(pkcco, origin, mode, crossOrigin, topOrigin)
+
+    // Add newly created key to select elements if not already present
+    const credentialId = attestationObject.authData.attestedCredentialData.credentialId
+    const credentialIdSelect = document.querySelector("#createCredentialIdSelect")
+    if (credentialIdSelect && !credentialIdSelect.querySelector(`option[value="${credentialId}"]`)) {
+        const alg = getSupportedAlgorithm(pkcco.pubKeyCredParams)
+        let keyName
+        if (mode === "profile1" || mode === "profile2") {
+            keyName = `${mode} | ${alg}`
+        } else {
+            keyName = `${pkcco.rp.id} | ${pkcco.user.name} | ${alg}`
+        }
+
+        // Add to credential ID select
+        const idOption = document.createElement("option")
+        idOption.value = credentialId
+        idOption.text = keyName
+        credentialIdSelect.insertBefore(idOption, credentialIdSelect.firstChild)
+
+        // Add to key select
+        const keySelect = document.querySelector("#createKeySelect")
+        if (keySelect && !keySelect.querySelector(`option[value="${keyName}"]`)) {
+            const keyOption = document.createElement("option")
+            keyOption.value = keyName
+            keyOption.text = keyName
+            keySelect.insertBefore(keyOption, keySelect.firstChild)
+        }
+    }
 
     editors.attestationClientDataJSONDecEditor.on("change", async () => {
         const clientDataJSON = editors.attestationClientDataJSONDecEditor.getValue()
