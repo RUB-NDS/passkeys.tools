@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Passkeys.Tools - Interceptor",
     "version": "1.0.0",
-    "description": "Companion extension for https://passkeys.tools that intercepts and modifies WebAuthn operations for security testing, debugging, and research. Supports cross-browser simulation.",
+    "description": "Companion extension for https://passkeys.tools that intercepts and modifies WebAuthn operations.",
     "homepage_url": "https://passkeys.tools",
     "icons": {
         "16": "icons/icon16.png",
