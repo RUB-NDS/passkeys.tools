@@ -118,16 +118,14 @@ No setup required. Open [Passkeys.Tools](https://passkeys.tools) in your browser
 
 Intercept and modify live WebAuthn API calls using the browser extension:
 
-1. **Download the extension:** Click "Extension" in the navbar to download the extension package.
+1. **Install the extension:** Install the extension from the [Chrome Web Store](https://chromewebstore.google.com/detail/passkeystools-interceptor/jeocfgcignclemjmlnmmhlcnalfioflg).
 
-2. **Install the extension:** Extract the archive. In Chrome, go to `chrome://extensions`, enable "Developer mode", click "Load unpacked", and select the extracted folder.
-
-3. **Configure the extension:** Click the extension icon and configure:
+2. **Configure the extension:** Click the extension icon and configure:
    - **Frontend URL:** URL of your Passkeys.Tools instance (default: `https://passkeys.tools`)
    - **Operation Mode:** Select "Default" for normal per-site credential scoping
    - **Popup Display Mode:** Choose "Detached Window" or "Inline Popup"
 
-4. **Start intercepting:** Visit any website using WebAuthn. When a registration or authentication triggers, Passkeys.Tools opens automatically for inspection and modification.
+3. **Start intercepting:** Visit any website using WebAuthn. When a registration or authentication triggers, Passkeys.Tools opens automatically for inspection and modification.
 
 **Use when:** You need to test a relying party's server-side validation by modifying live WebAuthn responses.
 
@@ -135,7 +133,7 @@ Intercept and modify live WebAuthn API calls using the browser extension:
 
 Share data between multiple browser profiles for cross-session attack testing:
 
-1. **Install the extension** in all Chrome profiles you want to use.
+1. **Install the extension** from the [Chrome Web Store](https://chromewebstore.google.com/detail/passkeystools-interceptor/jeocfgcignclemjmlnmmhlcnalfioflg) in all Chrome profiles you want to use.
 
 2. **Configure Operation Mode:** Select "Profile 1" in one browser (e.g., attacker) and "Profile 2" in another (e.g., victim).
 
