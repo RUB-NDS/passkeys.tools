@@ -73,58 +73,60 @@
     </div>
 </div>
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <div class="card full-height">
-            <div class="card-header">
-                JWK <span class="ms-1 small-gray">JSON</span>
-            </div>
-            <div class="card-body" id="keysJwkCard">
-            </div>
+<div class="decoded-grid mb-3" style="grid-template-rows: repeat(5, 1fr);">
+    <div class="card" style="grid-column: 1; grid-row: 1 / 4;">
+        <div class="card-header">
+            JWK <span class="ms-1 small-gray">FORM</span>
+        </div>
+        <div class="card-body" id="keysJwkCard">
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="d-flex flex-column justify-content-between full-height">
-            <div class="card mb-3 fifth-height">
-                <div class="card-header">
-                    COSE <span class="ms-1 small-gray">B64URL</span>
-                </div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="keysCoseB64urlTextarea"></textarea>
-                </div>
-            </div>
-            <div class="card mb-3 fifth-height">
-                <div class="card-header">
-                    COSE <span class="ms-1 small-gray">B64</span>
-                </div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="keysCoseB64Textarea"></textarea>
-                </div>
-            </div>
-            <div class="card mb-3 fifth-height">
-                <div class="card-header">
-                    COSE <span class="ms-1 small-gray">HEX</span>
-                </div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="keysCoseHexTextarea"></textarea>
-                </div>
-            </div>
-            <div class="card mb-3 fifth-height">
-                <div class="card-header">
-                    PEM <span class="ms-1 small-gray">B64</span>
-                </div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="keysPemB64Textarea" disabled></textarea>
-                </div>
-            </div>
-            <div class="card fifth-height">
-                <div class="card-header">
-                    DER <span class="ms-1 small-gray">B64URL</span>
-                </div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="keysDerB64urlTextarea" disabled></textarea>
-                </div>
-            </div>
+    <div class="card" style="grid-column: 1; grid-row: 4 / 6;">
+        <div class="card-header">
+            JWK <span class="ms-1 small-gray">JSON</span>
+        </div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0 json-textarea" id="keysJwkJsonTextarea" spellcheck="false"></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 1;">
+        <div class="card-header">
+            COSE <span class="ms-1 small-gray">B64URL</span>
+        </div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="keysCoseB64urlTextarea"></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 2;">
+        <div class="card-header">
+            COSE <span class="ms-1 small-gray">B64</span>
+        </div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="keysCoseB64Textarea"></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 3;">
+        <div class="card-header">
+            COSE <span class="ms-1 small-gray">HEX</span>
+        </div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="keysCoseHexTextarea"></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 4;">
+        <div class="card-header">
+            PEM <span class="ms-1 small-gray">B64</span>
+        </div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="keysPemB64Textarea" disabled></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 5;">
+        <div class="card-header">
+            DER <span class="ms-1 small-gray">B64URL</span>
+        </div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="keysDerB64urlTextarea" disabled></textarea>
         </div>
     </div>
 </div>

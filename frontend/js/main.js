@@ -30,7 +30,8 @@ export const showStorageError = () => {
 }
 
 const setupEncodingHandlers = (elements, decoder, editor, encoder) => {
-    const { b64urlTextarea, b64Textarea, hexTextarea } = elements
+    const { b64urlTextarea, b64Textarea, hexTextarea, jsonTextarea } = elements
+    let jsonSyncInProgress = false
 
     b64urlTextarea.oninput = async () => {
         const data = await decoder(b64urlTextarea.value, "b64url")
@@ -51,8 +52,26 @@ const setupEncodingHandlers = (elements, decoder, editor, encoder) => {
     }
 
     editor.on("change", async () => {
+        if (jsonTextarea && !jsonSyncInProgress) {
+            jsonTextarea.value = JSON.stringify(editor.getValue(), null, 2)
+            jsonTextarea.classList.remove("is-invalid")
+        }
         await encoder()
     })
+
+    if (jsonTextarea) {
+        jsonTextarea.oninput = () => {
+            try {
+                const data = JSON.parse(jsonTextarea.value)
+                jsonTextarea.classList.remove("is-invalid")
+                jsonSyncInProgress = true
+                editor.setValue(data)
+                jsonSyncInProgress = false
+            } catch {
+                jsonTextarea.classList.add("is-invalid")
+            }
+        }
+    }
 }
 
 const populateSelectOptions = (selectElement, options, valueKey = "value", textKey = "text") => {
@@ -142,7 +161,8 @@ const encodeAttestationClientDataJSON = async () => {
 setupEncodingHandlers({
     b64urlTextarea: attestationClientDataJSONEncB64urlTextarea,
     b64Textarea: attestationClientDataJSONEncB64Textarea,
-    hexTextarea: attestationClientDataJSONEncHexTextarea
+    hexTextarea: attestationClientDataJSONEncHexTextarea,
+    jsonTextarea: attestationClientDataJSONJsonTextarea,
 }, decoders.clientDataJSON, editors.attestationClientDataJSONDecEditor, encodeAttestationClientDataJSON)
 
 /* attestation -> attestationObject */
@@ -177,7 +197,8 @@ const encodeAttestationAttestationObject = async () => {
 setupEncodingHandlers({
     b64urlTextarea: attestationAttestationObjectEncB64urlTextarea,
     b64Textarea: attestationAttestationObjectEncB64Textarea,
-    hexTextarea: attestationAttestationObjectEncHexTextarea
+    hexTextarea: attestationAttestationObjectEncHexTextarea,
+    jsonTextarea: attestationAttestationObjectJsonTextarea,
 }, decoders.attestationObject, editors.attestationAttestationObjectDecEditor, encodeAttestationAttestationObject)
 
 attestationSendKeyToParserBtn.onclick = () => {
@@ -252,7 +273,8 @@ const encodeAssertionClientDataJSON = async () => {
 setupEncodingHandlers({
     b64urlTextarea: assertionClientDataJSONEncB64urlTextarea,
     b64Textarea: assertionClientDataJSONEncB64Textarea,
-    hexTextarea: assertionClientDataJSONEncHexTextarea
+    hexTextarea: assertionClientDataJSONEncHexTextarea,
+    jsonTextarea: assertionClientDataJSONJsonTextarea,
 }, decoders.clientDataJSON, editors.assertionClientDataJSONDecEditor, encodeAssertionClientDataJSON)
 
 /* assertion -> authenticatorData */
@@ -270,7 +292,8 @@ const encodeAssertionAuthenticatorData = () => {
 setupEncodingHandlers({
     b64urlTextarea: assertionAuthenticatorDataEncB64urlTextarea,
     b64Textarea: assertionAuthenticatorDataEncB64Textarea,
-    hexTextarea: assertionAuthenticatorDataEncHexTextarea
+    hexTextarea: assertionAuthenticatorDataEncHexTextarea,
+    jsonTextarea: assertionAuthenticatorDataJsonTextarea,
 }, decoders.authenticatorData, editors.assertionAuthenticatorDataDecEditor, encodeAssertionAuthenticatorData)
 
 for (const e of ["change", "keydown", "paste", "input"]) {
@@ -370,7 +393,8 @@ const encodeKeys = async () => {
 setupEncodingHandlers({
     b64urlTextarea: keysCoseB64urlTextarea,
     b64Textarea: keysCoseB64Textarea,
-    hexTextarea: keysCoseHexTextarea
+    hexTextarea: keysCoseHexTextarea,
+    jsonTextarea: keysJwkJsonTextarea,
 }, (value, format) => decoders.keys(value, "cose", format), editors.keysJwkEditor, encodeKeys)
 
 export const renderKeys = async () => {

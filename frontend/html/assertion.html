@@ -4,40 +4,40 @@
     </div>
 </div>
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <div class="card full-height">
-            <div class="card-header">DECODED</div>
-            <div class="card-body" id="assertionClientDataJSONDecCard">
-            </div>
+<div class="decoded-grid mb-3" style="grid-template-rows: repeat(4, 1fr);">
+    <div class="card" style="grid-column: 1; grid-row: 1 / 4;">
+        <div class="card-header">DECODED <span class="ms-1 small-gray">FORM</span></div>
+        <div class="card-body" id="assertionClientDataJSONDecCard">
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="d-flex flex-column justify-content-between full-height">
-            <div class="card mb-3 quarter-height">
-                <div class="card-header">B64URL</div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="assertionClientDataJSONEncB64urlTextarea"></textarea>
-                </div>
-            </div>
-            <div class="card mb-3 quarter-height">
-                <div class="card-header">B64</div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="assertionClientDataJSONEncB64Textarea"></textarea>
-                </div>
-            </div>
-            <div class="card mb-3 quarter-height">
-                <div class="card-header">HEX</div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="assertionClientDataJSONEncHexTextarea"></textarea>
-                </div>
-            </div>
-            <div class="card quarter-height">
-                <div class="card-header">SHA256</div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="assertionClientDataJSONHashHexTextarea" disabled></textarea>
-                </div>
-            </div>
+    <div class="card" style="grid-column: 1; grid-row: 4;">
+        <div class="card-header">DECODED <span class="ms-1 small-gray">JSON</span></div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0 json-textarea" id="assertionClientDataJSONJsonTextarea" spellcheck="false"></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 1;">
+        <div class="card-header">B64URL</div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="assertionClientDataJSONEncB64urlTextarea"></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 2;">
+        <div class="card-header">B64</div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="assertionClientDataJSONEncB64Textarea"></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 3;">
+        <div class="card-header">HEX</div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="assertionClientDataJSONEncHexTextarea"></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 4;">
+        <div class="card-header">SHA256</div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="assertionClientDataJSONHashHexTextarea" disabled></textarea>
         </div>
     </div>
 </div>
@@ -61,34 +61,34 @@
     </div>
 </div>
 
-<div class="row mb-3">
-    <div class="col-md-6">
-        <div class="card full-height">
-            <div class="card-header">DECODED</div>
-            <div class="card-body" id="assertionAuthenticatorDataDecCard">
-            </div>
+<div class="decoded-grid mb-3" style="grid-template-rows: repeat(3, 1fr);">
+    <div class="card" style="grid-column: 1; grid-row: 1 / 3;">
+        <div class="card-header">DECODED <span class="ms-1 small-gray">FORM</span></div>
+        <div class="card-body" id="assertionAuthenticatorDataDecCard">
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="d-flex flex-column justify-content-between full-height">
-            <div class="card mb-3 one-third-height">
-                <div class="card-header">B64URL</div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="assertionAuthenticatorDataEncB64urlTextarea"></textarea>
-                </div>
-            </div>
-            <div class="card mb-3 one-third-height">
-                <div class="card-header">B64</div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="assertionAuthenticatorDataEncB64Textarea"></textarea>
-                </div>
-            </div>
-            <div class="card one-third-height">
-                <div class="card-header">HEX</div>
-                <div class="card-body p-0">
-                    <textarea class="form-control border-0" id="assertionAuthenticatorDataEncHexTextarea"></textarea>
-                </div>
-            </div>
+    <div class="card" style="grid-column: 1; grid-row: 3;">
+        <div class="card-header">DECODED <span class="ms-1 small-gray">JSON</span></div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0 json-textarea" id="assertionAuthenticatorDataJsonTextarea" spellcheck="false"></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 1;">
+        <div class="card-header">B64URL</div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="assertionAuthenticatorDataEncB64urlTextarea"></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 2;">
+        <div class="card-header">B64</div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="assertionAuthenticatorDataEncB64Textarea"></textarea>
+        </div>
+    </div>
+    <div class="card" style="grid-column: 2; grid-row: 3;">
+        <div class="card-header">HEX</div>
+        <div class="card-body p-0">
+            <textarea class="form-control border-0" id="assertionAuthenticatorDataEncHexTextarea"></textarea>
         </div>
     </div>
 </div>

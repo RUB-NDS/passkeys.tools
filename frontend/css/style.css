@@ -385,6 +385,40 @@ textarea {
     min-width: 100px;
 }
 
+/* Decoded grid layout for form + JSON + encoded panes */
+.decoded-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    height: 900px;
+}
+
+.decoded-grid > * {
+    min-height: 0;
+    min-width: 0;
+}
+
+@media (max-width: 767.98px) {
+    .decoded-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: none !important;
+        height: auto;
+    }
+    .decoded-grid > * {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+        min-height: 200px;
+    }
+}
+
+/* JSON textarea styling */
+.json-textarea {
+    font-family: var(--bs-font-monospace);
+    font-size: 0.8rem;
+    tab-size: 2;
+    white-space: pre;
+}
+
 /* Fix json-editor bg-light class in dark mode */
 [data-bs-theme="dark"] .bg-light {
     background-color: var(--bs-body-bg) !important;
